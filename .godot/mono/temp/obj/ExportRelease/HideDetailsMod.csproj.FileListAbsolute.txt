@@ -1,0 +1,12 @@
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\bin\ExportRelease\HideDetailsMod.deps.json
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\bin\ExportRelease\HideDetailsMod.dll
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\bin\ExportRelease\HideDetailsMod.pdb
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\obj\ExportRelease\HideDetailsMod.csproj.AssemblyReference.cache
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\obj\ExportRelease\HideDetailsMod.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\obj\ExportRelease\HideDetailsMod.AssemblyInfoInputs.cache
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\obj\ExportRelease\HideDetailsMod.AssemblyInfo.cs
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\obj\ExportRelease\HideDetailsMod.csproj.CoreCompileInputs.cache
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\obj\ExportRelease\HideDetailsMod.dll
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\obj\ExportRelease\refint\HideDetailsMod.dll
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\obj\ExportRelease\HideDetailsMod.pdb
+C:\Users\omar\RiderProjects\HideDetailsMod\.godot\mono\temp\obj\ExportRelease\ref\HideDetailsMod.dll

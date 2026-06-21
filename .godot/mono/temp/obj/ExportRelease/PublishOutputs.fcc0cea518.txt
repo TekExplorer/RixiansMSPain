@@ -1,0 +1,5 @@
+C:\Users\omar\RiderProjects\HideDetailsMod\bin\ExportRelease\net9.0\publish\HideDetailsMod.dll
+C:\Users\omar\RiderProjects\HideDetailsMod\bin\ExportRelease\net9.0\publish\HideDetailsMod.pdb
+C:\Users\omar\RiderProjects\HideDetailsMod\bin\ExportRelease\net9.0\publish\GodotSharp.dll
+C:\Users\omar\RiderProjects\HideDetailsMod\bin\ExportRelease\net9.0\publish\GodotSharpEditor.dll
+C:\Users\omar\RiderProjects\HideDetailsMod\bin\ExportRelease\net9.0\publish\HideDetailsMod.deps.json
