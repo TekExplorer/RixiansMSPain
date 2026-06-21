@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HideDetailsMod")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+650606e7ab2fa12325c11d6b9e6fd25191df8d6b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b2119b8348200a0586510ad83610f24ad3e3196d")]
 [assembly: System.Reflection.AssemblyProductAttribute("HideDetailsMod")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HideDetailsMod")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

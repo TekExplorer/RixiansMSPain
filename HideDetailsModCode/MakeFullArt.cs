@@ -40,19 +40,6 @@ public class MakeFullArt
             if (MyModConfig.HideTitle && ____titleLabel != null)
             {
                 ____titleLabel.Visible = false;
-                if (model.IsUpgraded)
-                {
-                    if (model.CurrentUpgradeLevel == 1)
-                    {
-                        ____titleLabel.SetTextAutoSize("+");
-                    }
-                    else
-                    {
-                        ____titleLabel.SetTextAutoSize($"+{model.CurrentUpgradeLevel}");
-                    }
-
-                    ____titleLabel.Visible = true;
-                }
             }
         }
         catch (Exception err)

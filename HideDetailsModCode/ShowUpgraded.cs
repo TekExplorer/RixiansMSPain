@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Modding;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Cards;
+// ReSharper disable InconsistentNaming
 
 namespace HideDetailsMod.HideDetailsModCode;
 
@@ -22,26 +23,19 @@ public class ShowUpgraded
         // ref NinePatchRect? ____typePlaque
     )
     {
-        if (__instance == null) return;
-        var Model = __instance.Model;
-        if (Model == null) return;
+        if (!MyModConfig.HideTitle) return;
+        var model = __instance?.Model;
+        if (model == null || ____titleLabel == null) return;
         try
         {
-            // if (____typePlaque != null) ____typePlaque.Visible = false;
-            // if (____titleLabel != null) ____titleLabel.Visible = false;
-            // if (____descriptionLabel != null) ____descriptionLabel.Visible = false;
-            // if (____typeLabel != null) ____typeLabel.Visible = false;
-            if (Model.IsUpgraded && ____titleLabel != null)
-            {
-                ____titleLabel.SetTextAutoSize("UPGRADED");
-                ____titleLabel.Visible = true;
-            }
+            if (!model.IsUpgraded) return;
+            var text = model.CurrentUpgradeLevel == 1 ? "+" : $"+{model.CurrentUpgradeLevel}";
+            ____titleLabel.SetTextAutoSize(text);
+            ____titleLabel.Visible = true;
         }
         catch (Exception err)
         {
-            Log.Error($"Something broke 2 {err}");
+            Log.Error($"ShowUpgradedText: {err}");
         }
     }
-
-    
 }
