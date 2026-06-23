@@ -31,16 +31,8 @@ public class MakeFullArt
         {
             if (____typePlaque != null) ____typePlaque.Visible = !MyModConfig.HideType;
             if (____typeLabel != null) ____typeLabel.Visible = !MyModConfig.HideType;
-
-            if (MyModConfig.HideDescription && ____descriptionLabel != null)
-            {
-                ____descriptionLabel.Visible = false;
-            }
-
-            if (MyModConfig.HideTitle && ____titleLabel != null)
-            {
-                ____titleLabel.Visible = false;
-            }
+            if (____descriptionLabel != null) ____descriptionLabel.Visible = !MyModConfig.HideDescription;
+            if (____titleLabel != null) ____titleLabel.Visible = !MyModConfig.HideTitle;
         }
         catch (Exception err)
         {
@@ -75,51 +67,48 @@ public class MakeFullArt
         {
             // Log.Info($"HERE: {__instance.Model?.Id}");
             // if (__instance.Model?.Id.ToString() == "CARD.STRIKE_IRONCLAD")
-            if (true)
+            if (model.Rarity != CardRarity.Ancient) ____ancientPortrait.Texture = ____portrait.Texture;
+
+            ____portrait.Visible = false;
+            ____portraitBorder.Visible = false;
+            ____banner.Visible = false;
+
+            CardModel referenceCard = model.Type switch
             {
-                if (model.Rarity != CardRarity.Ancient) ____ancientPortrait.Texture = ____portrait.Texture;
+                CardType.Attack => ancientAttack,
+                CardType.Power => ancientPower,
+                _ => ancientSkill
+            };
 
-                ____portrait.Visible = false;
-                ____portraitBorder.Visible = false;
-                ____banner.Visible = false;
+            if (model.Rarity == CardRarity.Ancient) referenceCard = model;
+            if (MyModConfig.HideType) referenceCard = ancientSkill;
 
-                CardModel referenceCard = model.Type switch
-                {
-                    CardType.Attack => ancientAttack,
-                    CardType.Power => ancientPower,
-                    _ => ancientSkill
-                };
+            ____ancientBanner.Visible = !MyModConfig.HideTitle;
+            ____ancientBanner.Material = referenceCard.BannerMaterial;
 
-                if (model.Rarity == CardRarity.Ancient) referenceCard = model;
-                if (MyModConfig.HideType) referenceCard = ancientSkill;
+            // ____banner.Material = referenceCard.BannerMaterial;
+            // ____banner.Texture = null;
+            ____frame.Visible = false;
 
+            ____ancientPortrait.Visible = true;
+
+            ____ancientBorder.Visible = true;
+            ____ancientBorder.Texture = referenceCard.AncientBorder;
+
+            if (model.Rarity == CardRarity.Ancient)
                 ____ancientBanner.Visible = !MyModConfig.HideTitle;
-                ____ancientBanner.Material = referenceCard.BannerMaterial;
+            else
+                ____banner.Visible = !MyModConfig.HideTitle;
 
-                // ____banner.Material = referenceCard.BannerMaterial;
-                // ____banner.Texture = null;
-                ____frame.Visible = false;
+            ____ancientTextBg.Texture = referenceCard.AncientTextBg;
+            ____ancientTextBg.Visible = !MyModConfig.HideDescription;
 
-                ____ancientPortrait.Visible = true;
+            ____ancientBorderGlassOverlay.Visible = !MyModConfig.HideDescription;
 
-                ____ancientBorder.Visible = true;
-                ____ancientBorder.Texture = referenceCard.AncientBorder;
-
-                if (model.Rarity == CardRarity.Ancient)
-                    ____ancientBanner.Visible = !MyModConfig.HideTitle;
-                else
-                    ____banner.Visible = !MyModConfig.HideTitle;
-
-                ____ancientTextBg.Texture = referenceCard.AncientTextBg;
-                ____ancientTextBg.Visible = !MyModConfig.HideDescription;
-                
-                ____ancientBorderGlassOverlay.Visible = !MyModConfig.HideDescription;
-
-                if (____canvasGroupMaskMaterial == null)
-                    ____canvasGroupMaskMaterial =
-                        PreloadManager.Cache.GetMaterial("res://scenes/cards/card_canvas_group_mask_material.tres");
-                ____portraitCanvasGroup.Material = ____canvasGroupMaskMaterial;
-            }
+            if (____canvasGroupMaskMaterial == null)
+                ____canvasGroupMaskMaterial =
+                    PreloadManager.Cache.GetMaterial("res://scenes/cards/card_canvas_group_mask_material.tres");
+            ____portraitCanvasGroup.Material = ____canvasGroupMaskMaterial;
         }
         catch (Exception err)
         {

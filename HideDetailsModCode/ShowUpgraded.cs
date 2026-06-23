@@ -1,12 +1,10 @@
 ﻿using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.addons.mega_text;
-using MegaCrit.Sts2.Core.Assets;
-using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Logging;
-using MegaCrit.Sts2.Core.Modding;
-using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Nodes.Cards;
+
 // ReSharper disable InconsistentNaming
 
 namespace HideDetailsMod.HideDetailsModCode;
@@ -23,13 +21,17 @@ public class ShowUpgraded
         // ref NinePatchRect? ____typePlaque
     )
     {
-        if (!MyModConfig.HideTitle) return;
         var model = __instance?.Model;
         if (model == null || ____titleLabel == null) return;
+        if (!MyModConfig.HideTitle) return;
         try
         {
+            if (MyModConfig.ExcludeWither && model is Wither) ____titleLabel.Visible = true;
+            
             if (!model.IsUpgraded) return;
-            var text = model.CurrentUpgradeLevel == 1 ? "+" : $"+{model.CurrentUpgradeLevel}";
+            int upgradeLevel = model.CurrentUpgradeLevel;
+            var text = upgradeLevel == 1 ? "+" : $"+{upgradeLevel}";
+            
             ____titleLabel.SetTextAutoSize(text);
             ____titleLabel.Visible = true;
         }

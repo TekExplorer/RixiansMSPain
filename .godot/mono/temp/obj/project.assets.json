@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net9.0": {
-      "Alchyr.Sts2.BaseLib/3.2.1": {
+      "Alchyr.Sts2.BaseLib/3.3.2": {
         "type": "package",
         "compile": {
           "lib/net9.0/BaseLib.dll": {
@@ -70,10 +70,10 @@
     }
   },
   "libraries": {
-    "Alchyr.Sts2.BaseLib/3.2.1": {
-      "sha512": "RWcEvAIo9fYfNMEr5J0I8qI7B4hqzbNImi4buvIiGRc8zAt414ORbu2N8j/FCrWVQjZP9209swSKqTq2MklEVw==",
+    "Alchyr.Sts2.BaseLib/3.3.2": {
+      "sha512": "JrHKY63g3DyPLOxEjSvA7DAKoHVLaJEwutK6ZssGK8ndreXOoZhb5ZZAUlASeDM2+Vdxqu3cq5r3RLouuc+Swg==",
       "type": "package",
-      "path": "alchyr.sts2.baselib/3.2.1",
+      "path": "alchyr.sts2.baselib/3.3.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -81,7 +81,7 @@
         "Content/BaseLib.pck",
         "Content/BaseLib.props",
         "README.md",
-        "alchyr.sts2.baselib.3.2.1.nupkg.sha512",
+        "alchyr.sts2.baselib.3.3.2.nupkg.sha512",
         "alchyr.sts2.baselib.nuspec",
         "lib/net9.0/BaseLib.dll",
         "lib/net9.0/BaseLib.xml"

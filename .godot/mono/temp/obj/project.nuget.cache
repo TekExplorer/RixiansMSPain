@@ -4,7 +4,7 @@
   "success": true,
   "projectFilePath": "C:\\Users\\omar\\RiderProjects\\HideDetailsMod\\HideDetailsMod.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\omar\\.nuget\\packages\\alchyr.sts2.baselib\\3.2.1\\alchyr.sts2.baselib.3.2.1.nupkg.sha512",
+    "C:\\Users\\omar\\.nuget\\packages\\alchyr.sts2.baselib\\3.3.2\\alchyr.sts2.baselib.3.3.2.nupkg.sha512",
     "C:\\Users\\omar\\.nuget\\packages\\alchyr.sts2.modanalyzers\\0.1.9\\alchyr.sts2.modanalyzers.0.1.9.nupkg.sha512",
     "C:\\Users\\omar\\.nuget\\packages\\godot.sourcegenerators\\4.5.1\\godot.sourcegenerators.4.5.1.nupkg.sha512",
     "C:\\Users\\omar\\.nuget\\packages\\godotsharp\\4.5.1\\godotsharp.4.5.1.nupkg.sha512",
