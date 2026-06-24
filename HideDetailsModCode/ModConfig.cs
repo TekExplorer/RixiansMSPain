@@ -10,10 +10,6 @@ internal class MyModConfig : SimpleModConfig
     public static bool HideTitle { get; set; } = true;
     public static bool HideDescription { get; set; } = true;
     public static bool HideCardRewardRarityGlow { get; set; } = true;
-
-    public static bool ExcludeWither { get; set; } = false;
+    // public static bool ExcludeWither { get; set; } = false;
     public static bool ExcludeFranticEscape { get; set; } = false;
-
-    
-    // public static int ExplosionSize { get; set; } = 80;
 }

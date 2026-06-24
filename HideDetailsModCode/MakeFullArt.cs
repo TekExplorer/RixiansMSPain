@@ -19,10 +19,10 @@ public class MakeFullArt
     [HarmonyPostfix]
     static void HideText(
         ref NCard? __instance,
-        ref MegaLabel? ____titleLabel,
         ref MegaLabel? ____descriptionLabel,
         ref MegaLabel? ____typeLabel,
         ref NinePatchRect? ____typePlaque
+        // ref MegaLabel? ____titleLabel
     )
     {
         var model = __instance?.Model;
@@ -32,7 +32,7 @@ public class MakeFullArt
             if (____typePlaque != null) ____typePlaque.Visible = !MyModConfig.HideType;
             if (____typeLabel != null) ____typeLabel.Visible = !MyModConfig.HideType;
             if (____descriptionLabel != null) ____descriptionLabel.Visible = !MyModConfig.HideDescription;
-            if (____titleLabel != null) ____titleLabel.Visible = !MyModConfig.HideTitle;
+            // if (____titleLabel != null) ____titleLabel.Visible = !MyModConfig.HideTitle;
         }
         catch (Exception err)
         {
