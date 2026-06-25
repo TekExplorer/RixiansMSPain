@@ -35,6 +35,12 @@ if ($confirmation -ne 'UPLOAD') {
 }
 
 if (-not (Test-Path $uploaderPath)) {
+    $downloadUploader = Read-Host 'Uploader is missing. Download it now? (Y/N)'
+    if ($downloadUploader -notin @('Y', 'y', 'Yes', 'yes')) {
+        Write-Host 'Upload cancelled.'
+        exit 0
+    }
+
     & (Join-Path $PSScriptRoot 'get_uploader.ps1')
 
     if (-not (Test-Path $uploaderPath)) {
