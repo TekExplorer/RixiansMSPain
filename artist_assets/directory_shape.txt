@@ -1,0 +1,920 @@
+.
+│   ancient_beta.png
+│   beta.png
+│
+├───colorless
+│   │   alchemize.png
+│   │   anointed.png
+│   │   automation.png
+│   │   bandage_up.png
+│   │   beacon_of_hope.png
+│   │   beat_down.png
+│   │   believe_in_you.png
+│   │   beta.png
+│   │   bite.png
+│   │   bolas.png
+│   │   calamity.png
+│   │   calm.png
+│   │   catastrophe.png
+│   │   coordinate.png
+│   │   dark_shackles.png
+│   │   deep_breath.png
+│   │   discovery.png
+│   │   dramatic_entrance.png
+│   │   entropy.png
+│   │   equilibrium.png
+│   │   eternal_armor.png
+│   │   expunger.png
+│   │   fame_and_fortune.png
+│   │   fasten.png
+│   │   finesse.png
+│   │   fisticuffs.png
+│   │   flash_of_steel.png
+│   │   forethought.png
+│   │   gang_up.png
+│   │   golden_axe.png
+│   │   gold_axe.png
+│   │   hand_of_greed.png
+│   │   hidden_gem.png
+│   │   huddle_up.png
+│   │   impatience.png
+│   │   insight.png
+│   │   intercept.png
+│   │   jackpot.png
+│   │   jack_of_all_trades.png
+│   │   jax.png
+│   │   knockdown.png
+│   │   lift.png
+│   │   master_of_strategy.png
+│   │   mayhem.png
+│   │   mimic.png
+│   │   mind_blast.png
+│   │   nostalgia.png
+│   │   omnislice.png
+│   │   panache.png
+│   │   panic_button.png
+│   │   prep_time.png
+│   │   production.png
+│   │   prolong.png
+│   │   prowess.png
+│   │   purity.png
+│   │   rally.png
+│   │   rend.png
+│   │   restlessness.png
+│   │   ritual_dagger.png
+│   │   rolling_boulder.png
+│   │   safety.png
+│   │   salvo.png
+│   │   scrawl.png
+│   │   secret_technique.png
+│   │   secret_weapon.png
+│   │   seeker_strike.png
+│   │   shockwave.png
+│   │   smite.png
+│   │   splash.png
+│   │   stratagem.png
+│   │   tag_team.png
+│   │   the_bomb.png
+│   │   the_gambit.png
+│   │   thinking_ahead.png
+│   │   through_violence.png
+│   │   thrumming_hatchet.png
+│   │   transmutation.png
+│   │   trip.png
+│   │   ultimate_defend.png
+│   │   ultimate_strike.png
+│   │   violence.png
+│   │   volley.png
+│   │   wrath.png
+│   │
+│   └───beta
+│           automation.png
+│           beacon_of_hope.png
+│           beat_down.png
+│           believe_in_you.png
+│           calamity.png
+│           catastrophe.png
+│           coordinate.png
+│           entropy.png
+│           fasten.png
+│           fisticuffs.png
+│           gang_up.png
+│           hidden_gem.png
+│           huddle_up.png
+│           intercept.png
+│           jackpot.png
+│           knockdown.png
+│           lift.png
+│           mimic.png
+│           nostalgia.png
+│           omnislice.png
+│           prep_time.png
+│           production.png
+│           prowess.png
+│           rally.png
+│           rend.png
+│           rolling_boulder.png
+│           salvo.png
+│           scrawl.png
+│           seeker_strike.png
+│           shockwave.png
+│           splash.png
+│           stratagem.png
+│           ultimate_defend.png
+│           ultimate_strike.png
+│           volley.png
+│
+├───curse
+│   │   ascenders_bane.png
+│   │   bad_luck.png
+│   │   clumsy.png
+│   │   curse_of_the_bell.png
+│   │   debt.png
+│   │   decay.png
+│   │   doubt.png
+│   │   enthralled.png
+│   │   folly.png
+│   │   greed.png
+│   │   guilty.png
+│   │   injury.png
+│   │   normality.png
+│   │   poor_sleep.png
+│   │   regret.png
+│   │   shame.png
+│   │   spore_mind.png
+│   │   writhe.png
+│   │
+│   └───beta
+│           ascenders_bane.png
+│           bad_luck.png
+│           enthralled.png
+│           greed.png
+│           poor_sleep.png
+│           spore_mind.png
+│
+├───defect
+│   │   adaptive_strike.png
+│   │   all_for_one.png
+│   │   ball_lightning.png
+│   │   barrage.png
+│   │   beam_cell.png
+│   │   biased_cognition.png
+│   │   boost_away.png
+│   │   boot_sequence.png
+│   │   buffer.png
+│   │   bulk_up.png
+│   │   capacitor.png
+│   │   chaos.png
+│   │   charge_battery.png
+│   │   chill.png
+│   │   claw.png
+│   │   cold_snap.png
+│   │   compact.png
+│   │   compile_driver.png
+│   │   consume.png
+│   │   consuming_shadow.png
+│   │   coolant.png
+│   │   coolheaded.png
+│   │   creative_ai.png
+│   │   darkness.png
+│   │   defend_defect.png
+│   │   defragment.png
+│   │   double_energy.png
+│   │   dualcast.png
+│   │   echo_form.png
+│   │   energy_surge.png
+│   │   feral.png
+│   │   fight_through.png
+│   │   fission.png
+│   │   flak_cannon.png
+│   │   focused_strike.png
+│   │   ftl.png
+│   │   fusion.png
+│   │   genetic_algorithm.png
+│   │   glacier.png
+│   │   glasswork.png
+│   │   go_for_the_eyes.png
+│   │   gunk_up.png
+│   │   hailstorm.png
+│   │   helix_drill.png
+│   │   hologram.png
+│   │   hotfix.png
+│   │   hyperbeam.png
+│   │   ice_lance.png
+│   │   ignition.png
+│   │   iteration.png
+│   │   leap.png
+│   │   lightning_mastery.png
+│   │   lightning_rod.png
+│   │   lock_on.png
+│   │   loop.png
+│   │   machine_learning.png
+│   │   meteor_strike.png
+│   │   modded.png
+│   │   momentum_strike.png
+│   │   multi_cast.png
+│   │   null.png
+│   │   overclock.png
+│   │   quadcast.png
+│   │   rainbow.png
+│   │   reboot.png
+│   │   refract.png
+│   │   rocket_punch.png
+│   │   scavenge.png
+│   │   scrape.png
+│   │   seek.png
+│   │   self_repair.png
+│   │   shadow_shield.png
+│   │   shatter.png
+│   │   signal_boost.png
+│   │   skim.png
+│   │   smokestack.png
+│   │   spinner.png
+│   │   storm.png
+│   │   strike_defect.png
+│   │   subroutine.png
+│   │   sunder.png
+│   │   supercritical.png
+│   │   sweeping_beam.png
+│   │   synchronize.png
+│   │   synthesis.png
+│   │   tempest.png
+│   │   tesla_coil.png
+│   │   thunder.png
+│   │   thunder_strike.png
+│   │   trash_to_treasure.png
+│   │   turbo.png
+│   │   uproar.png
+│   │   voltaic.png
+│   │   white_noise.png
+│   │   zap.png
+│   │
+│   └───beta
+│           adaptive_strike.png
+│           barrage.png
+│           boost_away.png
+│           bulk_up.png
+│           compact.png
+│           consuming_shadow.png
+│           energy_surge.png
+│           feral.png
+│           fight_through.png
+│           flak_cannon.png
+│           focused_strike.png
+│           glasswork.png
+│           gunk_up.png
+│           hailstorm.png
+│           helix_drill.png
+│           hotfix.png
+│           ice_lance.png
+│           ignition.png
+│           iteration.png
+│           lightning_rod.png
+│           modded.png
+│           quadcast.png
+│           refract.png
+│           rocket_punch.png
+│           shadow_shield.png
+│           shatter.png
+│           smokestack.png
+│           spinner.png
+│           subroutine.png
+│           synchronize.png
+│           synthesis.png
+│           tesla_coil.png
+│           thunder.png
+│           trash_to_treasure.png
+│           turbo.png
+│           uproar.png
+│           voltaic.png
+│
+├───event
+│   │   apotheosis.png
+│   │   apparition.png
+│   │   brightest_flame.png
+│   │   byrd_swoop.png
+│   │   caltrops.png
+│   │   enlightenment.png
+│   │   exterminate.png
+│   │   feeding_frenzy.png
+│   │   hello_world.png
+│   │   mad_science_attack.png
+│   │   mad_science_power.png
+│   │   mad_science_skill.png
+│   │   maul.png
+│   │   metamorphosis.png
+│   │   neows_fury.png
+│   │   peck.png
+│   │   relax.png
+│   │   rip_and_tear.png
+│   │   squash.png
+│   │   toric_toughness.png
+│   │   whistle.png
+│   │   wish.png
+│   │
+│   └───beta
+│           apparition.png
+│           brightest_flame.png
+│           caltrops.png
+│           clash.png
+│           distraction.png
+│           dual_wield.png
+│           entrench.png
+│           feeding_frenzy.png
+│           hello_world.png
+│           maul.png
+│           outmaneuver.png
+│           rebound.png
+│           relax.png
+│           stack.png
+│           toric_toughness.png
+│           whistle.png
+│
+├───ironclad
+│   │   aggression.png
+│   │   anger.png
+│   │   armaments.png
+│   │   ashen_strike.png
+│   │   barricade.png
+│   │   bash.png
+│   │   battle_trance.png
+│   │   bloodletting.png
+│   │   blood_wall.png
+│   │   bludgeon.png
+│   │   body_slam.png
+│   │   brand.png
+│   │   break.png
+│   │   breakthrough.png
+│   │   bully.png
+│   │   burning_pact.png
+│   │   cascade.png
+│   │   cinder.png
+│   │   colossus.png
+│   │   conflagration.png
+│   │   corruption.png
+│   │   crimson_mantle.png
+│   │   cruelty.png
+│   │   dark_embrace.png
+│   │   defend_ironclad.png
+│   │   demonic_shield.png
+│   │   demon_form.png
+│   │   dismantle.png
+│   │   dominate.png
+│   │   drum_of_battle.png
+│   │   evil_eye.png
+│   │   expect_a_fight.png
+│   │   feed.png
+│   │   feel_no_pain.png
+│   │   fiend_fire.png
+│   │   fight_me.png
+│   │   flame_barrier.png
+│   │   forgotten_ritual.png
+│   │   havoc.png
+│   │   headbutt.png
+│   │   hellraiser.png
+│   │   hemokinesis.png
+│   │   howl_from_beyond.png
+│   │   impervious.png
+│   │   infernal_blade.png
+│   │   inferno.png
+│   │   inflame.png
+│   │   iron_wave.png
+│   │   juggernaut.png
+│   │   juggling.png
+│   │   limit_break.png
+│   │   mangle.png
+│   │   molten_fist.png
+│   │   not_yet.png
+│   │   offering.png
+│   │   one_two_punch.png
+│   │   pacts_end.png
+│   │   perfected_strike.png
+│   │   pillage.png
+│   │   pommel_strike.png
+│   │   primal_force.png
+│   │   pyre.png
+│   │   rage.png
+│   │   rampage.png
+│   │   rupture.png
+│   │   second_wind.png
+│   │   setup_strike.png
+│   │   shrug_it_off.png
+│   │   spite.png
+│   │   stampede.png
+│   │   stoke.png
+│   │   stomp.png
+│   │   stone_armor.png
+│   │   strike_ironclad.png
+│   │   sword_boomerang.png
+│   │   tank.png
+│   │   taunt.png
+│   │   tear_asunder.png
+│   │   thrash.png
+│   │   thunderclap.png
+│   │   tremble.png
+│   │   true_grit.png
+│   │   twin_strike.png
+│   │   unmovable.png
+│   │   unrelenting.png
+│   │   uppercut.png
+│   │   vicious.png
+│   │   whirlwind.png
+│   │
+│   └───beta
+│           cascade.png
+│           colossus.png
+│           conflagration.png
+│           crimson_mantle.png
+│           demonic_shield.png
+│           drum_of_battle.png
+│           fight_me.png
+│           juggling.png
+│           not_yet.png
+│           pillage.png
+│           spite.png
+│           tank.png
+│           unmovable.png
+│           vicious.png
+│
+├───necrobinder
+│   │   afterlife.png
+│   │   banshees_cry.png
+│   │   blight_strike.png
+│   │   bodyguard.png
+│   │   bone_shards.png
+│   │   borrowed_time.png
+│   │   bury.png
+│   │   calcify.png
+│   │   call_of_the_void.png
+│   │   capture_spirit.png
+│   │   cleanse.png
+│   │   countdown.png
+│   │   danse_macabre.png
+│   │   deathbringer.png
+│   │   deaths_door.png
+│   │   death_march.png
+│   │   debilitate.png
+│   │   defend_necrobinder.png
+│   │   defile.png
+│   │   defy.png
+│   │   delay.png
+│   │   demesne.png
+│   │   devour_life.png
+│   │   dirge.png
+│   │   drain_power.png
+│   │   dredge.png
+│   │   eidolon.png
+│   │   end_of_days.png
+│   │   enfeebling_touch.png
+│   │   eradicate.png
+│   │   fear.png
+│   │   fetch.png
+│   │   flatten.png
+│   │   forbidden_grimoire.png
+│   │   friendship.png
+│   │   glimpse_beyond.png
+│   │   graveblast.png
+│   │   grave_warden.png
+│   │   hang.png
+│   │   haunt.png
+│   │   high_five.png
+│   │   invoke.png
+│   │   legion_of_bone.png
+│   │   lethality.png
+│   │   melancholy.png
+│   │   misery.png
+│   │   necro_mastery.png
+│   │   negative_pulse.png
+│   │   neurosurge.png
+│   │   no_escape.png
+│   │   oblivion.png
+│   │   pagestorm.png
+│   │   parse.png
+│   │   poke.png
+│   │   protector.png
+│   │   pull_aggro.png
+│   │   pull_from_below.png
+│   │   putrefy.png
+│   │   rabid.png
+│   │   rattle.png
+│   │   reanimate.png
+│   │   reap.png
+│   │   reaper_form.png
+│   │   reave.png
+│   │   right_hand_hand.png
+│   │   sacrifice.png
+│   │   scavenge.png
+│   │   scourge.png
+│   │   sculpting_strike.png
+│   │   seance.png
+│   │   sentry_mode.png
+│   │   severance.png
+│   │   shared_fate.png
+│   │   shroud.png
+│   │   sic_em.png
+│   │   sleight_of_flesh.png
+│   │   snap.png
+│   │   soul_storm.png
+│   │   sow.png
+│   │   spirit_of_ash.png
+│   │   spur.png
+│   │   squeeze.png
+│   │   strike_necrobinder.png
+│   │   the_scythe.png
+│   │   times_up.png
+│   │   transfigure.png
+│   │   undeath.png
+│   │   unleash.png
+│   │   veilpiercer.png
+│   │   wisp.png
+│   │
+│   └───beta
+│           afterlife.png
+│           banshees_cry.png
+│           bodyguard.png
+│           bone_shards.png
+│           bury.png
+│           call_of_the_void.png
+│           danse_macabre.png
+│           deaths_door.png
+│           debilitate.png
+│           defile.png
+│           delay.png
+│           demesne.png
+│           devour_life.png
+│           dirge.png
+│           dredge.png
+│           eidolon.png
+│           enfeebling_touch.png
+│           forbidden_grimoire.png
+│           glimpse_beyond.png
+│           graveblast.png
+│           hang.png
+│           haunt.png
+│           invoke.png
+│           legion_of_bone.png
+│           lethality.png
+│           misery.png
+│           necro_mastery.png
+│           neurosurge.png
+│           pagestorm.png
+│           pull_from_below.png
+│           rattle.png
+│           reap.png
+│           reaper_form.png
+│           right_hand_hand.png
+│           sculpting_strike.png
+│           seance.png
+│           severance.png
+│           shroud.png
+│           sic_em.png
+│           sleight_of_flesh.png
+│           snap.png
+│           soul_storm.png
+│           sow.png
+│           spirit_of_ash.png
+│           squeeze.png
+│           the_scythe.png
+│           transfigure.png
+│           undeath.png
+│           veilpiercer.png
+│           wisp.png
+│
+├───quest
+│   │   byrdonis_egg.png
+│   │   lantern_key.png
+│   │   spoils_map.png
+│   │
+│   └───beta
+│           lantern_key.png
+│           spoils_map.png
+│
+├───regent
+│   │   alignment.png
+│   │   arsenal.png
+│   │   astral_pulse.png
+│   │   beat_into_shape.png
+│   │   begone.png
+│   │   big_bang.png
+│   │   black_hole.png
+│   │   bombardment.png
+│   │   bulwark.png
+│   │   bundle_of_joy.png
+│   │   celestial_might.png
+│   │   charge.png
+│   │   child_of_the_stars.png
+│   │   cloak_of_stars.png
+│   │   collision_course.png
+│   │   comet.png
+│   │   conqueror.png
+│   │   convergence.png
+│   │   cosmic_indifference.png
+│   │   crash_landing.png
+│   │   crescent_spear.png
+│   │   crush_under.png
+│   │   decisions_decisions.png
+│   │   defend_regent.png
+│   │   devastate.png
+│   │   dying_star.png
+│   │   falling_star.png
+│   │   foregone_conclusion.png
+│   │   furnace.png
+│   │   gamma_blast.png
+│   │   gather_light.png
+│   │   genesis.png
+│   │   glimmer.png
+│   │   glitterstream.png
+│   │   glow.png
+│   │   guards.png
+│   │   guiding_star.png
+│   │   hammer_time.png
+│   │   heavenly_drill.png
+│   │   hegemony.png
+│   │   heirloom_hammer.png
+│   │   hidden_cache.png
+│   │   i_am_invincible.png
+│   │   kingly_kick.png
+│   │   kingly_punch.png
+│   │   knockout_blow.png
+│   │   know_thy_place.png
+│   │   largesse.png
+│   │   lunar_blast.png
+│   │   make_it_so.png
+│   │   manifest_authority.png
+│   │   meteor_shower.png
+│   │   monarchs_gaze.png
+│   │   monologue.png
+│   │   neutron_aegis.png
+│   │   orbit.png
+│   │   pale_blue_dot.png
+│   │   parry.png
+│   │   particle_wall.png
+│   │   patter.png
+│   │   photon_cut.png
+│   │   pillar_of_creation.png
+│   │   prophesize.png
+│   │   quasar.png
+│   │   radiate.png
+│   │   refine_blade.png
+│   │   reflect.png
+│   │   reserves.png
+│   │   resonance.png
+│   │   royalties.png
+│   │   royal_corona.png
+│   │   royal_gamble.png
+│   │   seeking_edge.png
+│   │   seven_stars.png
+│   │   shining_strike.png
+│   │   solar_strike.png
+│   │   spectrum_shift.png
+│   │   spoils_of_battle.png
+│   │   stardust.png
+│   │   strike_regent.png
+│   │   summon_forth.png
+│   │   supermassive.png
+│   │   sword_sage.png
+│   │   terraforming.png
+│   │   the_sealed_throne.png
+│   │   the_smith.png
+│   │   tyranny.png
+│   │   venerate.png
+│   │   void_form.png
+│   │   wrought_in_war.png
+│   │
+│   └───beta
+│           alignment.png
+│           arsenal.png
+│           astral_pulse.png
+│           beat_into_shape.png
+│           begone.png
+│           big_bang.png
+│           black_hole.png
+│           bombardment.png
+│           bulwark.png
+│           bundle_of_joy.png
+│           child_of_the_stars.png
+│           collision_course.png
+│           comet.png
+│           conqueror.png
+│           convergence.png
+│           cosmic_indifference.png
+│           crash_landing.png
+│           crush_under.png
+│           decisions_decisions.png
+│           devastate.png
+│           dying_star.png
+│           falling_star.png
+│           foregone_conclusion.png
+│           furnace.png
+│           gamma_blast.png
+│           gather_light.png
+│           genesis.png
+│           glow.png
+│           guiding_star.png
+│           hammer_time.png
+│           heavenly_drill.png
+│           hegemony.png
+│           heirloom_hammer.png
+│           hidden_cache.png
+│           i_am_invincible.png
+│           kingly_punch.png
+│           knockout_blow.png
+│           know_thy_place.png
+│           largesse.png
+│           lunar_blast.png
+│           make_it_so.png
+│           manifest_authority.png
+│           monologue.png
+│           neutron_aegis.png
+│           pale_blue_dot.png
+│           parry.png
+│           patter.png
+│           photon_cut.png
+│           pillar_of_creation.png
+│           quasar.png
+│           refine_blade.png
+│           reflect.png
+│           resonance.png
+│           royalties.png
+│           royal_gamble.png
+│           seeking_edge.png
+│           seven_stars.png
+│           shining_strike.png
+│           spectrum_shift.png
+│           spoils_of_battle.png
+│           summon_forth.png
+│           supermassive.png
+│           sword_sage.png
+│           terraforming.png
+│           the_sealed_throne.png
+│           tyranny.png
+│           venerate.png
+│           void_form.png
+│           wrought_in_war.png
+│
+├───silent
+│   │   abrasive.png
+│   │   accelerant.png
+│   │   accuracy.png
+│   │   acrobatics.png
+│   │   adrenaline.png
+│   │   afterimage.png
+│   │   anticipate.png
+│   │   assassinate.png
+│   │   backflip.png
+│   │   backstab.png
+│   │   blackened_blade.png
+│   │   blade_dance.png
+│   │   blade_of_ink.png
+│   │   blur.png
+│   │   bouncing_flask.png
+│   │   bubble_bubble.png
+│   │   bullet_time.png
+│   │   burst.png
+│   │   calculated_gamble.png
+│   │   cloak_and_dagger.png
+│   │   corpse_explosion.png
+│   │   corrosive_wave.png
+│   │   dagger_spray.png
+│   │   dagger_throw.png
+│   │   dash.png
+│   │   deadly_poison.png
+│   │   defend_silent.png
+│   │   deflect.png
+│   │   dodge_and_roll.png
+│   │   echoing_slash.png
+│   │   envenom.png
+│   │   escape_plan.png
+│   │   expertise.png
+│   │   expose.png
+│   │   fan_of_knives.png
+│   │   finisher.png
+│   │   flanking.png
+│   │   flechettes.png
+│   │   flick_flack.png
+│   │   footwork.png
+│   │   grand_finale.png
+│   │   hand_trick.png
+│   │   haze.png
+│   │   hidden_daggers.png
+│   │   infinite_blades.png
+│   │   knife_trap.png
+│   │   leading_strike.png
+│   │   leg_sweep.png
+│   │   malaise.png
+│   │   master_planner.png
+│   │   memento_mori.png
+│   │   mirage.png
+│   │   murder.png
+│   │   neutralize.png
+│   │   nightmare.png
+│   │   noxious_fumes.png
+│   │   outbreak.png
+│   │   phantom_blades.png
+│   │   piercing_wail.png
+│   │   pinpoint.png
+│   │   poisoned_stab.png
+│   │   pounce.png
+│   │   precise_cut.png
+│   │   predator.png
+│   │   prepared.png
+│   │   reflex.png
+│   │   ricochet.png
+│   │   scare.png
+│   │   serpent_form.png
+│   │   shadowmeld.png
+│   │   shadow_step.png
+│   │   skewer.png
+│   │   slice.png
+│   │   snakebite.png
+│   │   sneaky.png
+│   │   speedster.png
+│   │   storm_of_steel.png
+│   │   strangle.png
+│   │   strike_silent.png
+│   │   sucker_punch.png
+│   │   suppress.png
+│   │   survivor.png
+│   │   tactician.png
+│   │   the_gambit.png
+│   │   the_hunt.png
+│   │   tools_of_the_trade.png
+│   │   tracking.png
+│   │   untouchable.png
+│   │   up_my_sleeve.png
+│   │   well_laid_plans.png
+│   │   wraith_form.png
+│   │
+│   └───beta
+│           abrasive.png
+│           blade_of_ink.png
+│           bubble_bubble.png
+│           corrosive_wave.png
+│           haze.png
+│           hidden_daggers.png
+│           knife_trap.png
+│           leading_strike.png
+│           murder.png
+│           outbreak.png
+│           phantom_blades.png
+│           precise_cut.png
+│           ricochet.png
+│           serpent_form.png
+│           sneaky.png
+│           speedster.png
+│           strangle.png
+│           the_hunt.png
+│           tracking.png
+│           up_my_sleeve.png
+│
+├───status
+│   │   beckon.png
+│   │   burn.png
+│   │   dazed.png
+│   │   debris.png
+│   │   frantic_escape.png
+│   │   infection.png
+│   │   slimed.png
+│   │   soot.png
+│   │   toxic.png
+│   │   void.png
+│   │   wound.png
+│   │
+│   └───beta
+│           beckon.png
+│           debris.png
+│           disintegration.png
+│           frantic_escape.png
+│           infection.png
+│           mind_rot.png
+│           soot.png
+│           wither.png
+│
+└───token
+    │   disintegration.png
+    │   fuel.png
+    │   giant_rock.png
+    │   luminesce.png
+    │   mind_rot.png
+    │   minion_dive_bomb.png
+    │   minion_sacrifice.png
+    │   minion_strike.png
+    │   shiv.png
+    │   sloth.png
+    │   soul.png
+    │   sovereign_blade.png
+    │   starlight_sword.png
+    │   sweeping_gaze.png
+    │   waste_away.png
+    │
+    └───beta
+            fuel.png
+            giant_rock.png
+            luminesce.png
+            minion_sacrifice.png
+            minion_strike.png
+            sloth.png
+            soul.png
+            sovereign_blade.png
+            sweeping_gaze.png
+            waste_away.png
