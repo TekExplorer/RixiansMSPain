@@ -11,7 +11,7 @@ $uploaderName = if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.O
 $uploaderPath = Join-Path $workshopRoot "uploader\$uploaderName"
 
 if (-not (Test-Path $uploaderPath)) {
-    & (Join-Path $PSScriptRoot '_get_uploader.ps1')
+    & (Join-Path $PSScriptRoot 'get_uploader.ps1')
 
     if (-not (Test-Path $uploaderPath)) {
         throw 'Uploader was not downloaded.'
