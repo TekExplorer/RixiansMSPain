@@ -4,10 +4,10 @@ bin/
 .git/
 .idea/
 .vs/
-.vscode/
 publish/
 Properties/
 packages/
 .editorconfig
 *.user
 Directory.Build.props
+.vscode/settings.json

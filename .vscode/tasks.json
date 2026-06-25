@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build HideDetailsMod",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/HideDetailsMod.csproj",
+        // "-c",
+        // "Debug"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "Publish HideDetailsMod",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/HideDetailsMod.csproj",
+        "-c",
+        "Release"
+      ],
+      "problemMatcher": ["$msCompile"]
+    }
+  ]
+}

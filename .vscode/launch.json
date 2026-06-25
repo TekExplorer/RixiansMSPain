@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Build HideDetailsMod",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "dotnet build \"${workspaceFolder}/HideDetailsMod.csproj\" -c Debug"
+    },
+    {
+      "name": "Publish HideDetailsMod",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "dotnet publish \"${workspaceFolder}/HideDetailsMod.csproj\" -c Release"
+    }
+  ]
+}
