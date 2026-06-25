@@ -4,3 +4,4 @@ content/*.json
 content/*.pck
 content/*.pdb
 uploader/
+!bin/

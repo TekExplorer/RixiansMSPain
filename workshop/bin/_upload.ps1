@@ -1,5 +1,6 @@
 $ErrorActionPreference = 'Stop'
 
+$workshopRoot = Split-Path -Parent $PSScriptRoot
 $runtimeInfo = [System.Runtime.InteropServices.RuntimeInformation]
 $uploaderName = if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) {
     'ModUploader.exe'
@@ -7,7 +8,7 @@ $uploaderName = if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.O
     'ModUploader'
 }
 
-$uploaderPath = Join-Path $PSScriptRoot "uploader\$uploaderName"
+$uploaderPath = Join-Path $workshopRoot "uploader\$uploaderName"
 
 if (-not (Test-Path $uploaderPath)) {
     & (Join-Path $PSScriptRoot '_get_uploader.ps1')
@@ -17,4 +18,4 @@ if (-not (Test-Path $uploaderPath)) {
     }
 }
 
-& $uploaderPath upload -w $PSScriptRoot
+& $uploaderPath upload -w $workshopRoot

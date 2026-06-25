@@ -1,6 +1,6 @@
 param(
     [string]$Repository = 'megacrit/sts2-mod-uploader',
-    [string]$Destination = (Join-Path $PSScriptRoot 'uploader')
+    [string]$Destination = (Join-Path (Split-Path -Parent $PSScriptRoot) 'uploader')
 )
 
 function Get-PlatformId {

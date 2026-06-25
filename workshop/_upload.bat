@@ -1,2 +1,2 @@
 @echo off
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0_upload.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0bin\_upload.ps1"
