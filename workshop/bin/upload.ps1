@@ -9,6 +9,24 @@ $uploaderName = if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.O
 }
 
 $uploaderPath = Join-Path $workshopRoot "uploader\$uploaderName"
+$contentRoot = Join-Path $workshopRoot 'content'
+$requiredContentFiles = @(
+    'HideDetailsMod.dll'
+    'HideDetailsMod.json'
+    'HideDetailsMod.pdb'
+    'HideDetailsMod.pck'
+)
+
+$missingFiles = foreach ($fileName in $requiredContentFiles) {
+    $filePath = Join-Path $contentRoot $fileName
+    if (-not (Test-Path $filePath)) {
+        $fileName
+    }
+}
+
+if ($missingFiles) {
+    throw "Missing required workshop content files: $($missingFiles -join ', '). Build and publish before uploading."
+}
 
 $confirmation = Read-Host "Type UPLOAD to continue"
 if ($confirmation -ne 'UPLOAD') {
