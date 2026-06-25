@@ -2,9 +2,7 @@
 using HarmonyLib;
 using MegaCrit.Sts2.addons.mega_text;
 using MegaCrit.Sts2.Core.Assets;
-using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
-using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Nodes.Cards;
@@ -36,7 +34,7 @@ public class MakeFullArt
         }
         catch (Exception err)
         {
-            Log.Error($"Something broke 2 {err}");
+            MainFile.Logger.Error($"Something broke 2 {err}");
         }
     }
 
@@ -65,7 +63,7 @@ public class MakeFullArt
 
         try
         {
-            // Log.Info($"HERE: {__instance.Model?.Id}");
+            // MainFile.Logger.Info($"HERE: {__instance.Model?.Id}");
             // if (__instance.Model?.Id.ToString() == "CARD.STRIKE_IRONCLAD")
             
             // TODO: Load the arts separately so we can make it a setting
@@ -118,7 +116,7 @@ public class MakeFullArt
         }
         catch (Exception err)
         {
-            Log.Error($"Something broke {err}");
+            MainFile.Logger.Error($"Something broke {err}");
         }
     }
 
