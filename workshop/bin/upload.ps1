@@ -10,6 +10,12 @@ $uploaderName = if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.O
 
 $uploaderPath = Join-Path $workshopRoot "uploader\$uploaderName"
 
+$confirmation = Read-Host "Type UPLOAD to continue"
+if ($confirmation -ne 'UPLOAD') {
+    Write-Host 'Upload cancelled.'
+    exit 0
+}
+
 if (-not (Test-Path $uploaderPath)) {
     & (Join-Path $PSScriptRoot 'get_uploader.ps1')
 
