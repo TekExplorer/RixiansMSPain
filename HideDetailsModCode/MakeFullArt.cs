@@ -16,11 +16,9 @@ public class MakeFullArt
 {
     [HarmonyPostfix]
     static void HideText(
-        ref NCard? __instance,
-        ref MegaLabel? ____typeLabel,
-        ref NinePatchRect? ____typePlaque
-        // ref MegaLabel? ____descriptionLabel
-        // ref MegaLabel? ____titleLabel
+        NCard? __instance,
+        MegaLabel? ____typeLabel,
+        NinePatchRect? ____typePlaque
     )
     {
         var model = __instance?.Model;
@@ -40,18 +38,18 @@ public class MakeFullArt
 
     [HarmonyPostfix]
     static void UseFullArt(
-        ref NCard? __instance,
-        ref TextureRect? ____frame,
-        ref TextureRect? ____ancientBorder,
-        ref TextureRect? ____portraitBorder,
-        ref TextureRect? ____portrait,
-        ref TextureRect? ____ancientPortrait,
-        ref TextureRect? ____banner,
-        ref Material? ____canvasGroupMaskMaterial,
-        ref CanvasGroup? ____portraitCanvasGroup,
-        ref TextureRect? ____ancientTextBg,
-        ref Control? ____ancientBanner,
-        ref TextureRect? ____ancientBorderGlassOverlay
+        NCard? __instance,
+        TextureRect? ____frame,
+        TextureRect? ____portraitBorder,
+        TextureRect? ____ancientBorder,
+        TextureRect? ____portrait,
+        TextureRect? ____ancientPortrait,
+        TextureRect? ____banner,
+        Control? ____ancientBanner,
+        TextureRect? ____ancientTextBg,
+        TextureRect? ____ancientBorderGlassOverlay,
+        Material? ____canvasGroupMaskMaterial,
+        CanvasGroup? ____portraitCanvasGroup
     )
     {
         CardModel? model = __instance?.Model;
@@ -65,7 +63,7 @@ public class MakeFullArt
         {
             // MainFile.Logger.Info($"HERE: {__instance.Model?.Id}");
             // if (__instance.Model?.Id.ToString() == "CARD.STRIKE_IRONCLAD")
-            
+
             // TODO: Load the arts separately so we can make it a setting
             if (model.Rarity != CardRarity.Ancient) ____ancientPortrait.Texture = ____portrait.Texture;
 
@@ -97,17 +95,17 @@ public class MakeFullArt
             // Title
             ____ancientBanner.Visible = !MyModConfig.HideTitle;
             ____ancientBanner.Material = referenceCard.BannerMaterial;
-            
+
             if (model.Rarity == CardRarity.Ancient)
                 ____ancientBanner.Visible = !MyModConfig.HideTitle;
             else
                 ____banner.Visible = !MyModConfig.HideTitle;
-            
+
             // Description
             ____ancientTextBg.Texture = referenceCard.AncientTextBg;
             ____ancientTextBg.Visible = !MyModConfig.HideDescription;
             ____ancientBorderGlassOverlay.Visible = !MyModConfig.HideDescription;
-            
+
             // Card Shape Mask
             if (____canvasGroupMaskMaterial == null)
                 ____canvasGroupMaskMaterial =

@@ -1,6 +1,7 @@
 using BaseLib.Config;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Modding;
 
 namespace HideDetailsMod.HideDetailsModCode;
@@ -23,5 +24,11 @@ public partial class MainFile : Node
         Harmony harmony = new(ModId);
 
         harmony.PatchAll();
+    }
+
+    public static void Setup()
+    {
+        PreloadManager.Cache.GetMaterial("res://scenes/cards/card_canvas_group_mask_material.tres");
+
     }
 }
