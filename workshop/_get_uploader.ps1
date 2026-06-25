@@ -3,27 +3,38 @@ param(
     [string]$Destination = (Join-Path $PSScriptRoot 'uploader')
 )
 
-$runtime = [System.Runtime.InteropServices.RuntimeInformation]
-$osId = if ($runtime::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) {
-    'win'
-} elseif ($runtime::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Linux)) {
-    'linux'
-} elseif ($runtime::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::OSX)) {
-    'osx'
-} else {
+function Get-PlatformId {
+    $runtimeInfo = [System.Runtime.InteropServices.RuntimeInformation]
+
+    if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) {
+        return 'win'
+    }
+
+    if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Linux)) {
+        return 'linux'
+    }
+
+    if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::OSX)) {
+        return 'osx'
+    }
+
     throw 'Unsupported operating system.'
 }
 
-$architecture = switch ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture) {
-    'Arm64' { 'arm64' }
-    default { 'x64' }
+function Get-ArchitectureId {
+    switch ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture) {
+        'Arm64' { 'arm64' }
+        default { 'x64' }
+    }
 }
 
-$assetName = "ModUploader-$osId-$architecture.zip"
-$releaseUri = "https://api.github.com/repos/$Repository/releases/latest"
-$headers = @{ 'User-Agent' = 'PowerShell' }
-$release = Invoke-RestMethod -Uri $releaseUri -Headers $headers
-$asset = $release.assets | Where-Object { $_.name -eq $assetName } | Select-Object -First 1
+$platformId = Get-PlatformId
+$architectureId = Get-ArchitectureId
+$assetName = "ModUploader-$platformId-$architectureId.zip"
+$releaseUrl = "https://api.github.com/repos/$Repository/releases/latest"
+$requestHeaders = @{ 'User-Agent' = 'PowerShell' }
+$release = Invoke-RestMethod -Uri $releaseUrl -Headers $requestHeaders
+$asset = $release.assets | Where-Object Name -eq $assetName | Select-Object -First 1
 
 if (-not $asset) {
     throw "Could not find asset '$assetName' in the latest release '$($release.tag_name)'."
@@ -36,7 +47,7 @@ $zipPath = Join-Path $tempRoot $assetName
 New-Item -ItemType Directory -Path $extractRoot -Force | Out-Null
 
 try {
-    Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $zipPath -Headers $headers
+    Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $zipPath -Headers $requestHeaders
 
     if (Test-Path $Destination) {
         Remove-Item $Destination -Recurse -Force
@@ -46,9 +57,9 @@ try {
 
     Expand-Archive -Path $zipPath -DestinationPath $extractRoot -Force
 
-    $topLevelItems = Get-ChildItem -Path $extractRoot -Force
-    $sourceRoot = if ($topLevelItems.Count -eq 1 -and $topLevelItems[0].PSIsContainer) {
-        $topLevelItems[0].FullName
+    $extractedItems = Get-ChildItem -Path $extractRoot -Force
+    $sourceRoot = if ($extractedItems.Count -eq 1 -and $extractedItems[0].PSIsContainer) {
+        $extractedItems[0].FullName
     } else {
         $extractRoot
     }
