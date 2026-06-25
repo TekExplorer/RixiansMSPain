@@ -19,9 +19,9 @@ public class MakeFullArt
     [HarmonyPostfix]
     static void HideText(
         ref NCard? __instance,
-        ref MegaLabel? ____descriptionLabel,
         ref MegaLabel? ____typeLabel,
         ref NinePatchRect? ____typePlaque
+        // ref MegaLabel? ____descriptionLabel
         // ref MegaLabel? ____titleLabel
     )
     {
@@ -31,7 +31,7 @@ public class MakeFullArt
         {
             if (____typePlaque != null) ____typePlaque.Visible = !MyModConfig.HideType;
             if (____typeLabel != null) ____typeLabel.Visible = !MyModConfig.HideType;
-            if (____descriptionLabel != null) ____descriptionLabel.Visible = !MyModConfig.HideDescription;
+            // if (____descriptionLabel != null) ____descriptionLabel.Visible = !MyModConfig.HideDescription;
             // if (____titleLabel != null) ____titleLabel.Visible = !MyModConfig.HideTitle;
         }
         catch (Exception err)
@@ -67,6 +67,8 @@ public class MakeFullArt
         {
             // Log.Info($"HERE: {__instance.Model?.Id}");
             // if (__instance.Model?.Id.ToString() == "CARD.STRIKE_IRONCLAD")
+            
+            // TODO: Load the arts separately so we can make it a setting
             if (model.Rarity != CardRarity.Ancient) ____ancientPortrait.Texture = ____portrait.Texture;
 
             ____portrait.Visible = false;
@@ -83,8 +85,7 @@ public class MakeFullArt
             if (model.Rarity == CardRarity.Ancient) referenceCard = model;
             if (MyModConfig.HideType) referenceCard = ancientSkill;
 
-            ____ancientBanner.Visible = !MyModConfig.HideTitle;
-            ____ancientBanner.Material = referenceCard.BannerMaterial;
+
 
             // ____banner.Material = referenceCard.BannerMaterial;
             // ____banner.Texture = null;
@@ -95,16 +96,21 @@ public class MakeFullArt
             ____ancientBorder.Visible = true;
             ____ancientBorder.Texture = referenceCard.AncientBorder;
 
+            // Title
+            ____ancientBanner.Visible = !MyModConfig.HideTitle;
+            ____ancientBanner.Material = referenceCard.BannerMaterial;
+            
             if (model.Rarity == CardRarity.Ancient)
                 ____ancientBanner.Visible = !MyModConfig.HideTitle;
             else
                 ____banner.Visible = !MyModConfig.HideTitle;
-
+            
+            // Description
             ____ancientTextBg.Texture = referenceCard.AncientTextBg;
             ____ancientTextBg.Visible = !MyModConfig.HideDescription;
-
             ____ancientBorderGlassOverlay.Visible = !MyModConfig.HideDescription;
-
+            
+            // Card Shape Mask
             if (____canvasGroupMaskMaterial == null)
                 ____canvasGroupMaskMaterial =
                     PreloadManager.Cache.GetMaterial("res://scenes/cards/card_canvas_group_mask_material.tres");
