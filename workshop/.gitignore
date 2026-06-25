@@ -3,3 +3,4 @@ content/*.dll
 content/*.json
 content/*.pck
 content/*.pdb
+uploader/
