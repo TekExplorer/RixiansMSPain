@@ -1,0 +1,16 @@
+{
+  "RANDOMEXPLOSIONS.mod_title": "Random Explosions",
+  "HIDEDETAILSMOD-HIDE_ENERGY.title": "Hide Energy",
+  "HIDEDETAILSMOD-HIDE_STARS.title": "Hide Stars",
+
+  "HIDEDETAILSMOD-HIDE_TYPE.title": "Hide Type",
+
+  "HIDEDETAILSMOD-HIDE_TITLE.title": "Hide Title",
+  "HIDEDETAILSMOD-HIDE_DESCRIPTION.title": "Hide Description",
+
+  "HIDEDETAILSMOD-HIDE_CARD_REWARD_RARITY_GLOW.title": "Hide Card Reward Rarity Glow",
+  "HIDEDETAILSMOD-HIDE_CARD_REWARD_RARITY_GLOW.desc": "This is the glow you'll see behind cards in the card reward selection screen",
+
+  "HIDEDETAILSMOD-EXCLUDE_FRANTIC_ESCAPE.title": "Exclude Frantic Escape",
+  "HIDEDETAILSMOD-EXCLUDE_FRANTIC_ESCAPE.desc": "Enable this if you want to be able to see the energy cost of Frantic Escapes"
+}

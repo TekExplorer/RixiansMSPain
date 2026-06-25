@@ -2,7 +2,7 @@
   "title": "Improved* Card Readability",
   "description": "A funky mod by Rixian and TekExplorer",
   "visibility": "unlisted",
-  "changeNote": "Fixed the Wither title issue properly, and removed the config in the process.\nAlso properly hides card names in Multiplayer",
+  "changeNote": "Config options now have more human text",
   "tags": [],
   "dependencies": [3737335127]
 }
