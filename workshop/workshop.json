@@ -1,7 +1,4 @@
 ﻿{
-  "title": "Improved* Card Readability",
-  "description": "A funky mod by Rixian and TekExplorer",
-  "visibility": "unlisted",
   "changeNote": "Config options now have more human text",
   "tags": [],
   "dependencies": [3737335127]
