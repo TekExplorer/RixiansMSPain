@@ -1,7 +1,13 @@
+using BaseLib.Extensions;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.addons.mega_text;
+using MegaCrit.Sts2.Core.Assets;
+using MegaCrit.Sts2.Core.Factories;
+using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.HoverTips;
+using MegaCrit.Sts2.Core.Localization;
+using MegaCrit.Sts2.Core.Modding;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Nodes.Cards;
@@ -33,8 +39,29 @@ public class HideDetails
     [HarmonyPostfix]
     [HarmonyPatch(typeof(CardModel), "HoverTips", MethodType.Getter)]
     // [HarmonyPatch(typeof(CardModel), "ExtraHoverTips", MethodType.Getter)]
-    static void RemoveHoverTooltips(ref IEnumerable<IHoverTip> __result) => __result = [];
+    static void RemoveHoverTooltips(CardModel __instance, ref IEnumerable<IHoverTip> __result)
+    {
+        if (__instance == null) return;
+        List<IHoverTip> tips = [];
+        // tips.AddItem(new HoverTip(new LocString("credits", ".title")));
+        __result = tips;
+    }
+    // static string GetCardName(CardModel card, string variant = "")
+    // {
+    //     if (!variant.Equals("")) variant = "_" + variant;
+    //     return $"{card.Id.Entry.ToLowerInvariant()}{variant}";
+    // }
+    // static string GetAltImage(CardModel card, string variant = "")
+    // {
+    //     var img = $"atlases/alt_card_arts/{card.Pool.Title.ToLowerInvariant()}/{GetCardName(card, variant)}.tres";
+    //     return ImageHelper.GetImagePath(img);
+    // }
 
+    // static bool FileExists(string filePath)
+    // {
+    // ResourceLoader.Exists
+    //     return File.Exists(filePath);
+    // }
 
     [HarmonyPrefix]
     [HarmonyPatch(typeof(NCard), "ActivateRewardScreenGlow")]

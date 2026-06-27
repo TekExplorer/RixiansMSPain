@@ -1,6 +1,5 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Context;
-using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
@@ -55,6 +54,21 @@ public class AlternatePredator
         catch { }
     }
 
+    // private static Dictionary<Type, (IEnumerable<string?>, Func<CardModel, string?>)> stuff = new()
+    // {
+    //     [typeof(Predator)] = ([gold_axe_variant], card =>
+    //         {
+    //             var me = card.Owner ?? LocalContext.GetMe(card.RunState);
+    //             if (me == null) return null;
+
+    //             if (me.Deck.Cards.OfType<GoldAxe>().Any())
+    //                 return gold_axe_variant;
+
+    //             return null;
+    //         }
+
+    //     )
+    // };
     static string gold_axe_variant_png = "res://artist_assets/predator_gold_axe.png";
     static string gold_axe_variant = ImageHelper.GetImagePath($"atlases/card_atlas.sprites/predator_gold_axe.tres");
 }
