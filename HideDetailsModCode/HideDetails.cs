@@ -44,6 +44,16 @@ public class HideDetails
         if (__instance == null) return;
         List<IHoverTip> tips = [];
         // tips.AddItem(new HoverTip(new LocString("credits", ".title")));
+        if (MyModConfig.ShowCreditsTooltip)
+        {
+            var credit = AlternateArtsCredits.CreditFor(__instance);
+            if (credit != null)
+            {
+                // Figure out localization stuff.
+                // tips.Add(new HoverTip(new LocString("settings_ui", "HIDEDETAILSMOD-CREDITS.title"), $"Art by {credit}"));
+            }
+        }
+        if (!MyModConfig.HideTooltips) tips.AddRange(__result);
         __result = tips;
     }
     // static string GetCardName(CardModel card, string variant = "")

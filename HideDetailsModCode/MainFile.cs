@@ -17,6 +17,7 @@ public partial class MainFile : Node
 
     public static void Initialize()
     {
+        AlternateArtsCredits.LoadCreditsFromFile();
         ModConfigRegistry.Register(ModId, new MyModConfig());
         //If you want to use scripts defined in your mod for Godot scenes, uncomment the following line.
         //Godot.Bridge.ScriptManagerBridge.LookupScriptsInAssembly(Assembly.GetExecutingAssembly());
@@ -28,7 +29,15 @@ public partial class MainFile : Node
 
     public static void Setup()
     {
-        PreloadManager.Cache.GetMaterial("res://scenes/cards/card_canvas_group_mask_material.tres");
+        var altArts = AlternateArts.stuff.Values
+            .SelectMany(pair => pair.cardImgs)
+            .Where(img => img != null) // Optional: Filters out any null values
+            .ToList();
 
+        foreach (var art in altArts)
+        {
+            if (art == null) return;
+            PreloadManager.Cache.GetTexture2D(art.PortraitPath);
+        }
     }
 }

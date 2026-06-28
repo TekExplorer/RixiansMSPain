@@ -11,6 +11,13 @@
   "HIDEDETAILSMOD-HIDE_CARD_REWARD_RARITY_GLOW.title": "Hide Card Reward Rarity Glow",
   "HIDEDETAILSMOD-HIDE_CARD_REWARD_RARITY_GLOW.desc": "This is the glow you'll see behind cards in the card reward selection screen",
 
+  "HIDEDETAILSMOD-HIDE_TOOLTIPS.title": "Hide Tooltips",
+
+  "HIDEDETAILSMOD-SHOW_CREDITS_TOOLTIP.title": "Show credits tooltip",
+
   "HIDEDETAILSMOD-EXCLUDE_FRANTIC_ESCAPE.title": "Exclude Frantic Escape",
-  "HIDEDETAILSMOD-EXCLUDE_FRANTIC_ESCAPE.desc": "Enable this if you want to be able to see the energy cost of Frantic Escapes"
+  "HIDEDETAILSMOD-EXCLUDE_FRANTIC_ESCAPE.desc": "Enable this if you want to be able to see the energy cost of Frantic Escapes",
+
+  "HIDEDETAILSMOD-USE_BETA_SHIV_ART.title": "Use Beta Shiv Art",
+  "HIDEDETAILSMOD-USE_BETA_SHIV_ART.desc": "This switches the Shiv art to the one originally submitted prior to some complaints"
 }

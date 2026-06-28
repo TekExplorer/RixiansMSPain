@@ -1,7 +1,6 @@
-using System.Reflection.Metadata;
-using BaseLib.Extensions;
+
+using Godot;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Helpers;
@@ -13,6 +12,37 @@ namespace HideDetailsMod.HideDetailsModCode;
 [HarmonyPatch]
 public class AlternateArts
 {
+    private static readonly CardImg predatorGoldAxe = new("predator_gold_axe");
+    private static readonly CardImg shiv2 = new("shiv_2");
+    public static Dictionary<Type, (List<CardImg?> cardImgs, Func<CardModel, CardImg?> factory)> stuff = new()
+    {
+        [typeof(Predator)] = ([predatorGoldAxe], card =>
+            {
+                var me = GetOwner(card);
+                if (me == null) return null;
+                if (me.Deck.Cards.OfType<GoldAxe>().Any())
+                    return predatorGoldAxe;
+
+                return null;
+            }
+
+        ),
+        [typeof(Shiv)] = ([shiv2], card =>
+            {
+                if (MyModConfig.UseBetaShivArt) return shiv2;
+                return null;
+            }
+        ),
+    };
+
+    public class CardImg(string path)
+    {
+        public string PortraitPath { get; } = ImageHelper.GetImagePath($"atlases/card_atlas.sprites/{path}.tres");
+        public string PortraitPngPath { get; } = $"res://artist_assets/{path}.png";
+        // public string PortraitPngPath { get; } = ImageHelperExtensions.GetModImagePath($"{path}.png");
+    }
+
+
     [HarmonyPostfix]
     [HarmonyPatch(typeof(CardModel), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
     static void AllPortraitPaths(CardModel __instance, ref IEnumerable<string> __result)
@@ -83,38 +113,5 @@ public class AlternateArts
         catch (Exception e) { MainFile.Logger.Warn($"LocalContext.GetMe(card.RunState) errored with: {e}"); }
         return player;
 
-    }
-
-    private static Dictionary<Type, (List<CardImg?> cardImgs, Func<CardModel, CardImg?> factory)> stuff = new()
-    {
-        [typeof(Predator)] = ([gold_axe_variant], card =>
-            {
-
-                var me = GetOwner(card);
-                if (me == null) return null;
-
-                if (me.Deck.Cards.OfType<GoldAxe>().Any())
-                    return gold_axe_variant;
-
-                return null;
-            }
-
-        ),
-        [typeof(Shiv)] = ([shiv_variant], card =>
-            {
-                if (MyModConfig.UseBetaShivArt) return shiv_variant;
-                return null;
-            }
-        ),
-    };
-
-    public static CardImg gold_axe_variant = new("predator_gold_axe");
-    public static CardImg shiv_variant = new("shiv_2");
-
-    public class CardImg(string path)
-    {
-        public string PortraitPath { get; } = ImageHelper.GetImagePath($"atlases/card_atlas.sprites/{path}.tres");
-        public string PortraitPngPath { get; } = $"res://artist_assets/{path}.png";
-        // public string PortraitPngPath { get; } = ImageHelperExtensions.GetModImagePath($"{path}.png");
     }
 }

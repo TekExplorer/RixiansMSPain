@@ -12,9 +12,14 @@ internal class MyModConfig : SimpleModConfig
     public static bool HideTitle { get; set; } = true;
     public static bool HideDescription { get; set; } = true;
     public static bool HideCardRewardRarityGlow { get; set; } = true;
-    // public static bool ExcludeWither { get; set; } = false;
+    public static bool HideTooltips { get; set; } = true;
+
+    // TODO: Until issues are fixed
+    [ConfigHideInUI] public static bool ShowCreditsTooltip { get; set; } = true;
+
     [ConfigSection("Exclusions")]
     public static bool ExcludeFranticEscape { get; set; } = false;
     [ConfigSection("Alt Art")]
     public static bool UseBetaShivArt { get; set; } = false;
+
 }
