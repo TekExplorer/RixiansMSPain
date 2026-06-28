@@ -1,9 +1,11 @@
-﻿using BaseLib.Config;
+﻿using System.Dynamic;
+using BaseLib.Config;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
 internal class MyModConfig : SimpleModConfig
 {
+    [ConfigSection("Card UI")]
     public static bool HideEnergy { get; set; } = true;
     public static bool HideStars { get; set; } = true;
     public static bool HideType { get; set; } = true;
@@ -11,5 +13,8 @@ internal class MyModConfig : SimpleModConfig
     public static bool HideDescription { get; set; } = true;
     public static bool HideCardRewardRarityGlow { get; set; } = true;
     // public static bool ExcludeWither { get; set; } = false;
+    [ConfigSection("Exclusions")]
     public static bool ExcludeFranticEscape { get; set; } = false;
+    [ConfigSection("Alt Art")]
+    public static bool UseBetaShivArt { get; set; } = false;
 }
