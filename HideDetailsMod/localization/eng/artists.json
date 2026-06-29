@@ -1,5 +1,6 @@
 {
   ".description": "Art by [gold]@{Artist}[/gold]",
+  ".description.overlay": "Overlay by [gold]@{Artist}[/gold]",
   "colorless.alchemize": "ashlynrose",
   "colorless.anointed": "zenith_smk",
   "colorless.automation": "coilgunner",
@@ -158,5 +159,7 @@
   "silent.up_my_sleeve": "sakurafoxfyre",
   "silent.well_laid_plans": "darkmega5",
   "silent.wraith_form": "snappingdraco",
-  "token.shiv": "prozac0747"
+  "token.shiv": "prozac0747",
+  "curse.infection": "sharkie_bite",
+  "curse.infection.overlay": "jackydaw"
 }
