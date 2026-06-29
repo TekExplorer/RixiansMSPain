@@ -1,0 +1,97 @@
+[gd_scene load_steps=36 format=3 uid="uid://bjd6rk7la0n2a"]
+
+[ext_resource type="Texture2D" uid="uid://becu4u2go0msh" path="res://HideDetailsMod/infection_overlay/infectiona.png" id="1_7nvtr"]
+[ext_resource type="Texture2D" uid="uid://cdnwk6xk011v2" path="res://HideDetailsMod/infection_overlay/infection_00.png" id="1_cf637"]
+[ext_resource type="Texture2D" uid="uid://dp4m61ky3bio6" path="res://HideDetailsMod/infection_overlay/infection_01.png" id="2_v0qun"]
+[ext_resource type="Texture2D" uid="uid://d32yfnytqimhu" path="res://HideDetailsMod/infection_overlay/infection_02.png" id="3_ubwy2"]
+[ext_resource type="Texture2D" uid="uid://dmxt0adv4bu6f" path="res://HideDetailsMod/infection_overlay/infection_03.png" id="4_wtvh3"]
+[ext_resource type="Texture2D" uid="uid://cvpvc1f2k4t48" path="res://HideDetailsMod/infection_overlay/infection_04.png" id="5_68eoi"]
+[ext_resource type="Texture2D" uid="uid://danca5bvuppim" path="res://HideDetailsMod/infection_overlay/infection_05.png" id="6_raq71"]
+[ext_resource type="Texture2D" uid="uid://c4xg00b5iybxm" path="res://HideDetailsMod/infection_overlay/infection_06.png" id="7_yfmm2"]
+[ext_resource type="Texture2D" uid="uid://cm6jkj7ygeoo1" path="res://HideDetailsMod/infection_overlay/infection_07.png" id="8_o6ch2"]
+[ext_resource type="Texture2D" uid="uid://bkc1xr7fy6s84" path="res://HideDetailsMod/infection_overlay/infection_08.png" id="9_376cx"]
+[ext_resource type="Texture2D" uid="uid://bg30k0ihsmj3i" path="res://HideDetailsMod/infection_overlay/infection_09.png" id="10_oe4ct"]
+[ext_resource type="Texture2D" uid="uid://bjfep2ppmfegf" path="res://HideDetailsMod/infection_overlay/infection_10.png" id="11_24m7x"]
+[ext_resource type="Texture2D" uid="uid://dj3apietucp34" path="res://HideDetailsMod/infection_overlay/infection_11.png" id="12_n83hr"]
+[ext_resource type="Texture2D" uid="uid://c1tagdkg4hd7" path="res://HideDetailsMod/infection_overlay/infection_12.png" id="13_ban5k"]
+[ext_resource type="Texture2D" uid="uid://dyvypp56alwu5" path="res://HideDetailsMod/infection_overlay/infection_13.png" id="14_483du"]
+[ext_resource type="Texture2D" uid="uid://kh3b4lvdq35n" path="res://HideDetailsMod/infection_overlay/infection_14.png" id="15_eoq3r"]
+[ext_resource type="Texture2D" uid="uid://cubeijc5rytj" path="res://HideDetailsMod/infection_overlay/infection_15.png" id="16_sg8gc"]
+[ext_resource type="Texture2D" uid="uid://c7stnwfnf22be" path="res://HideDetailsMod/infection_overlay/infection_16.png" id="17_ui8fk"]
+[ext_resource type="Texture2D" uid="uid://jjn4fulkbjli" path="res://HideDetailsMod/infection_overlay/infection_17.png" id="18_vsog1"]
+[ext_resource type="Texture2D" uid="uid://crpaja7kbrrxa" path="res://HideDetailsMod/infection_overlay/infection_18.png" id="19_diis4"]
+[ext_resource type="Texture2D" uid="uid://bu1ay11p120f0" path="res://HideDetailsMod/infection_overlay/infection_19.png" id="20_0uaij"]
+[ext_resource type="Texture2D" uid="uid://jxitgcooi732" path="res://HideDetailsMod/infection_overlay/infection_20.png" id="21_p84v0"]
+[ext_resource type="Texture2D" uid="uid://d0qey2dclm8d" path="res://HideDetailsMod/infection_overlay/infection_21.png" id="22_kduxo"]
+[ext_resource type="Texture2D" uid="uid://dp1no1l0txpbs" path="res://HideDetailsMod/infection_overlay/infection_22.png" id="23_hfjg8"]
+[ext_resource type="Texture2D" uid="uid://b4cswen7wj5j1" path="res://HideDetailsMod/infection_overlay/infection_23.png" id="24_uvi5i"]
+[ext_resource type="Texture2D" uid="uid://g8j4fnhs2n3t" path="res://HideDetailsMod/infection_overlay/infection_24.png" id="25_0mur0"]
+[ext_resource type="Texture2D" uid="uid://cslwqt4atqv0k" path="res://HideDetailsMod/infection_overlay/infection_25.png" id="26_bvkk1"]
+[ext_resource type="Texture2D" uid="uid://dnv75pgf3hko1" path="res://HideDetailsMod/infection_overlay/infection_26.png" id="27_ssepx"]
+[ext_resource type="Texture2D" uid="uid://dgtjyyk80yxgv" path="res://HideDetailsMod/infection_overlay/infection_27.png" id="28_bv1i2"]
+[ext_resource type="Texture2D" uid="uid://c06d485tbde8q" path="res://HideDetailsMod/infection_overlay/infection_28.png" id="29_058rc"]
+[ext_resource type="Texture2D" uid="uid://bw6b2bvcebw1g" path="res://HideDetailsMod/infection_overlay/infection_29.png" id="30_vkyfg"]
+[ext_resource type="Script" uid="uid://bvm1iuxqxiv8q" path="res://src/Core/Nodes/Animation/NPhobiaAnimationToggler.cs" id="32_ubwy2"]
+
+[sub_resource type="Animation" id="Animation_2lslh"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("1_cf637")]
+}
+
+[sub_resource type="Animation" id="Animation_467nj"]
+resource_name = "infection_anim"
+length = 2.00001
+loop_mode = 1
+step = 0.0666667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.0667667, 0.133333, 0.2, 0.266667, 0.333333, 0.4, 0.466667, 0.533333, 0.6, 0.666667, 0.733333, 0.8, 0.866667, 0.933333, 1, 1.06667, 1.13333, 1.2, 1.26667, 1.33333, 1.4, 1.46667, 1.53333, 1.6, 1.66667, 1.73333, 1.8, 1.86667, 1.93333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("1_cf637"), ExtResource("1_cf637"), ExtResource("2_v0qun"), ExtResource("3_ubwy2"), ExtResource("4_wtvh3"), ExtResource("5_68eoi"), ExtResource("6_raq71"), ExtResource("7_yfmm2"), ExtResource("8_o6ch2"), ExtResource("9_376cx"), ExtResource("10_oe4ct"), ExtResource("11_24m7x"), ExtResource("12_n83hr"), ExtResource("13_ban5k"), ExtResource("14_483du"), ExtResource("15_eoq3r"), ExtResource("16_sg8gc"), ExtResource("17_ui8fk"), ExtResource("18_vsog1"), ExtResource("19_diis4"), ExtResource("20_0uaij"), ExtResource("21_p84v0"), ExtResource("22_kduxo"), ExtResource("23_hfjg8"), ExtResource("24_uvi5i"), ExtResource("25_0mur0"), ExtResource("26_bvkk1"), ExtResource("27_ssepx"), ExtResource("28_bv1i2"), ExtResource("29_058rc"), ExtResource("30_vkyfg")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6la6w"]
+_data = {
+&"RESET": SubResource("Animation_2lslh"),
+&"infection_anim": SubResource("Animation_467nj")
+}
+
+[node name="Infection" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="VisualLayer1" type="Sprite2D" parent="."]
+position = Vector2(-2.5, -7.99999)
+scale = Vector2(0.473862, 0.47199)
+texture = ExtResource("1_7nvtr")
+
+[node name="VisualLayer2" type="Sprite2D" parent="."]
+position = Vector2(-0.499993, -7.50001)
+scale = Vector2(0.510736, 0.520501)
+texture = ExtResource("1_cf637")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="VisualLayer2"]
+libraries = {
+&"": SubResource("AnimationLibrary_6la6w")
+}
+autoplay = "infection_anim"
+
+[node name="NPhobiaAnimationToggler" type="Node" parent="VisualLayer2" node_paths=PackedStringArray("_animationPlayer")]
+script = ExtResource("32_ubwy2")
+_animationPlayer = NodePath("../AnimationPlayer")
