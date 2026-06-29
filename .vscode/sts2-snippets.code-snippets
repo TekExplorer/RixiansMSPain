@@ -1,0 +1,63 @@
+{
+  // Place your RixiansRePaint workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  // "Print to console": {
+  // 	"scope": "javascript,typescript",
+  // 	"prefix": "log",
+  // 	"body": [
+  // 		"console.log('$1');",
+  // 		"$2"
+  // 	],
+  // 	"description": "Log output to console"
+  // }
+  //
+  // You can also restrict snippets to specific files using include/exclude patterns:
+  // "Test snippet": {
+  // 	"scope": "javascript,typescript",
+  // 	"prefix": "test",
+  // 	"body": "test('$1', () => {\n\t$0\n});",
+  // 	"include": ["**/*.test.ts", "*.spec.ts"],
+  // 	"exclude": ["**/temp/*.ts"],
+  // 	"description": "Insert test block"
+  // }
+  "Custom Card": {
+    "prefix": "customcard",
+    "body": [
+      "namespace ${1:Namespace};",
+      "",
+      "public class ${TM_FILENAME_BASE}() : BaseLib.Abstracts.CustomCardModel(${2:cost}, MegaCrit.Sts2.Core.Entities.Cards.CardType.${3|Attack,Skill,Power,Status,Curse,Quest|}, MegaCrit.Sts2.Core.Entities.Cards.CardRarity.${4|Basic,Common,Uncommon,Rare,Ancient,Event,Token,Status,Curse,Quest|}, MegaCrit.Sts2.Core.Entities.Cards.TargetType.${5|Self,AnyEnemy,AllEnemies,RandomEnemy,AnyPlayer,AnyAlly,AllAllies,Osty|}) {",
+      "    protected override IEnumerable<MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar> CanonicalVars => [];",
+      "",
+      "    protected override async System.Threading.Tasks.Task OnPlay(MegaCrit.Sts2.Core.GameActions.Multiplayer.PlayerChoiceContext choiceContext, MegaCrit.Sts2.Core.Entities.Cards.CardPlay play)",
+      "    {",
+      "        $0",
+      "    }",
+      "",
+      "    protected override void OnUpgrade() {",
+      "        ",
+      "    }",
+      "}",
+    ],
+    "description": "Generate a template for a Slay the Spire 2 Custom Card",
+  },
+
+  "Custom Relic": {
+    "prefix": "customrelic",
+    "body": [
+      "namespace ${1:Namespace};",
+      "",
+      "[BaseLib.Utils.Pool(typeof(${2:RelicPool}))]",
+      "public class ${TM_FILENAME_BASE}() : BaseLib.Abstracts.CustomRelicModel {",
+      "    public override MegaCrit.Sts2.Core.Entities.Relics.RelicRarity Rarity => MegaCrit.Sts2.Core.Entities.Relics.RelicRarity.${3|Starter,Common,Uncommon,Rare,Shop,Event,Ancient|};",
+      "    ",
+      "    $0",
+      "}",
+    ],
+    "description": "Generate a template for a Slay the Spire 2 Custom Relic",
+  },
+}
