@@ -15,7 +15,8 @@ internal class MyModConfig : SimpleModConfig
     public static bool HideTooltips { get; set; } = true;
 
     // TODO: Until issues are fixed
-    [ConfigHideInUI] public static bool ShowCreditsTooltip { get; set; } = true;
+    // [ConfigHideInUI]
+    public static bool ShowCreditsTooltip { get; set; } = true;
 
     [ConfigSection("Exclusions")]
     public static bool ExcludeFranticEscape { get; set; } = false;

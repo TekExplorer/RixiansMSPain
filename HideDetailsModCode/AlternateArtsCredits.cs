@@ -1,4 +1,5 @@
 
+using System.Security.Cryptography;
 using Godot;
 using MegaCrit.Sts2.Core.Models;
 
@@ -7,14 +8,21 @@ namespace HideDetailsMod.HideDetailsModCode;
 class AlternateArtsCredits
 {
     static public string? CreditFor<T>() where T : CardModel => CreditFor(ModelDb.Card<T>());
+
     static public string? CreditFor(CardModel card)
+    {
+        if (Credits.TryGetValue(KeyFor(card), out var value)) return value;
+        return null;
+    }
+
+    static public string KeyFor(CardModel card)
     {
         var pool = card.Pool.Title.ToLowerInvariant();
         var name = card.Id.Entry.ToLowerInvariant();
         var key = $"{pool}.{name}"; // "silent.predator"
-        if (Credits.TryGetValue(key, out var value)) return value;
-        return null;
+        return key;
     }
+
     public static Dictionary<string, string> Credits { get; set; } = [];
 
     public static void LoadCreditsFromFile()
@@ -36,12 +44,14 @@ class AlternateArtsCredits
             if (error == Error.Ok)
             {
                 // 4. Convert the parsed Variant data into a Godot Dictionary
-                Credits = jsonParser.Data.AsGodotDictionary().Cast<KeyValuePair<Variant, Variant>>().ToDictionary(kvp => kvp.Key.AsString(), kvp => kvp.Value.AsString());
+                Credits = jsonParser.Data.AsGodotDictionary().Cast<KeyValuePair<Variant, Variant>>()
+                    .ToDictionary(kvp => kvp.Key.AsString(), kvp => kvp.Value.AsString());
                 MainFile.Logger.Debug($"Credits file loaded: {Credits}");
             }
             else
             {
-                MainFile.Logger.Error($"LoadCreditsFromFile: JSON Parsing Error: {jsonParser.GetErrorMessage()} on line {jsonParser.GetErrorLine()}");
+                MainFile.Logger.Error(
+                    $"LoadCreditsFromFile: JSON Parsing Error: {jsonParser.GetErrorMessage()} on line {jsonParser.GetErrorLine()}");
             }
         }
     }

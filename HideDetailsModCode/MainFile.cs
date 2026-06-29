@@ -1,4 +1,5 @@
 using BaseLib.Config;
+using BaseLib.Utils;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Assets;
@@ -17,6 +18,8 @@ public partial class MainFile : Node
 
     public static void Initialize()
     {
+        CustomLocTableManager.Register("artists");
+
         AlternateArtsCredits.LoadCreditsFromFile();
         ModConfigRegistry.Register(ModId, new MyModConfig());
         //If you want to use scripts defined in your mod for Godot scenes, uncomment the following line.

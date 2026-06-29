@@ -19,5 +19,7 @@
   "HIDEDETAILSMOD-EXCLUDE_FRANTIC_ESCAPE.desc": "Enable this if you want to be able to see the energy cost of Frantic Escapes",
 
   "HIDEDETAILSMOD-USE_BETA_SHIV_ART.title": "Use Beta Shiv Art",
-  "HIDEDETAILSMOD-USE_BETA_SHIV_ART.desc": "This switches the Shiv art to the one originally submitted prior to some complaints"
+  "HIDEDETAILSMOD-USE_BETA_SHIV_ART.desc": "This switches the Shiv art to the one originally submitted prior to some complaints",
+
+  "HIDEDETAILSMOD-CREDITS.title": "Credits"
 }

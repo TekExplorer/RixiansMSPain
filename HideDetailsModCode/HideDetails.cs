@@ -51,6 +51,12 @@ public class HideDetails
             {
                 // Figure out localization stuff.
                 // tips.Add(new HoverTip(new LocString("settings_ui", "HIDEDETAILSMOD-CREDITS.title"), $"Art by {credit}"));
+                HoverTip item = new(
+                    // new LocString("settings_ui", "HIDEDETAILSMOD-CREDITS.title"),
+                    new LocString("artists", AlternateArtsCredits.KeyFor(__instance))
+                );
+                item.IsDebuff = true;
+                tips.Add(item);
             }
         }
         if (!MyModConfig.HideTooltips) tips.AddRange(__result);
