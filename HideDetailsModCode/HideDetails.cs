@@ -58,9 +58,10 @@ internal class HideDetails
             if (MyModConfig.ShowCreditsTooltip)
             {
                 var author = new LocString("artists", CreditsKeyFor(__instance));
+                // var uploader = new LocString("artists", CreditsKeyFor(__instance) + ".uploader");
                 if (author.Exists())
                 {
-                    var desc = new LocString("artists", "description");
+                    var desc = new LocString("artists", ".description");
                     desc.Add("Artist", author);
 
                     tips.Add(new HoverTip(desc) { IsDebuff = true });
