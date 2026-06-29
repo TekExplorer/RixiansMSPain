@@ -82,7 +82,6 @@ public class MakeFullArt
             if (MyModConfig.HideType) referenceCard = ancientSkill;
 
 
-
             // ____banner.Material = referenceCard.BannerMaterial;
             // ____banner.Texture = null;
             ____frame.Visible = false;
@@ -107,9 +106,8 @@ public class MakeFullArt
             ____ancientBorderGlassOverlay.Visible = !MyModConfig.HideDescription;
 
             // Card Shape Mask
-            if (____canvasGroupMaskMaterial == null)
-                ____canvasGroupMaskMaterial =
-                    PreloadManager.Cache.GetMaterial("res://scenes/cards/card_canvas_group_mask_material.tres");
+            ____canvasGroupMaskMaterial ??=
+                PreloadManager.Cache.GetMaterial("res://scenes/cards/card_canvas_group_mask_material.tres");
             ____portraitCanvasGroup.Material = ____canvasGroupMaskMaterial;
         }
         catch (Exception err)
@@ -118,7 +116,7 @@ public class MakeFullArt
         }
     }
 
-    private static CardModel ancientAttack = ModelDb.Card<NeowsFury>();
-    private static CardModel ancientPower = ModelDb.Card<Corruption>();
-    private static CardModel ancientSkill = ModelDb.Card<Apotheosis>();
+    private static readonly CardModel ancientAttack = ModelDb.Card<NeowsFury>();
+    private static readonly CardModel ancientPower = ModelDb.Card<Corruption>();
+    private static readonly CardModel ancientSkill = ModelDb.Card<Apotheosis>();
 }

@@ -1,13 +1,8 @@
-using BaseLib.Extensions;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.addons.mega_text;
-using MegaCrit.Sts2.Core.Assets;
-using MegaCrit.Sts2.Core.Factories;
-using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
-using MegaCrit.Sts2.Core.Modding;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Nodes.Cards;
@@ -15,11 +10,11 @@ using MegaCrit.Sts2.Core.Nodes.Cards;
 namespace HideDetailsMod.HideDetailsModCode;
 
 [HarmonyPatch]
-public class HideDetails
+internal class HideDetails
 {
     [HarmonyPostfix]
     [HarmonyPatch(typeof(NCard), "UpdateEnergyCostVisuals")]
-    static void MakeEnergyInvisible(ref NCard __instance, ref TextureRect ____energyIcon)
+    private static void MakeEnergyInvisible(ref NCard __instance, ref TextureRect ____energyIcon)
     {
         if (!MyModConfig.HideEnergy) return;
         if (MyModConfig.ExcludeFranticEscape && __instance.Model is FranticEscape) return;
@@ -29,7 +24,7 @@ public class HideDetails
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(NCard), "UpdateStarCostVisuals")]
-    static void MakeStarsInvisible(ref TextureRect ____starIcon)
+    private static void MakeStarsInvisible(ref TextureRect ____starIcon)
     {
         if (!MyModConfig.HideStars) return;
         ____starIcon.Visible = false;
@@ -39,7 +34,7 @@ public class HideDetails
     [HarmonyPostfix]
     [HarmonyPatch(typeof(CardModel), "HoverTips", MethodType.Getter)]
     // [HarmonyPatch(typeof(CardModel), "ExtraHoverTips", MethodType.Getter)]
-    static void RemoveHoverTooltips(CardModel __instance, ref IEnumerable<IHoverTip> __result)
+    private static void RemoveHoverTooltips(CardModel? __instance, ref IEnumerable<IHoverTip> __result)
     {
         if (__instance == null) return;
         List<IHoverTip> tips = [];
@@ -52,13 +47,14 @@ public class HideDetails
                 // Figure out localization stuff.
                 // tips.Add(new HoverTip(new LocString("settings_ui", "HIDEDETAILSMOD-CREDITS.title"), $"Art by {credit}"));
                 HoverTip item = new(
-                    // new LocString("settings_ui", "HIDEDETAILSMOD-CREDITS.title"),
-                    new LocString("artists", AlternateArtsCredits.KeyFor(__instance))
-                );
-                item.IsDebuff = true;
+                        // new LocString("settings_ui", "HIDEDETAILSMOD-CREDITS.title"),
+                        new LocString("artists", AlternateArtsCredits.KeyFor(__instance))
+                    )
+                    { IsDebuff = true };
                 tips.Add(item);
             }
         }
+
         if (!MyModConfig.HideTooltips) tips.AddRange(__result);
         __result = tips;
     }
@@ -81,7 +77,7 @@ public class HideDetails
 
     [HarmonyPrefix]
     [HarmonyPatch(typeof(NCard), "ActivateRewardScreenGlow")]
-    static bool RemoveRewardCardRarityGlow()
+    private static bool RemoveRewardCardRarityGlow()
     {
         if (MyModConfig.HideCardRewardRarityGlow) return false;
         return true;
@@ -90,7 +86,7 @@ public class HideDetails
     // TODO: make it a class and include hiding the description background
     [HarmonyPostfix]
     [HarmonyPatch(typeof(NCard), "Reload")]
-    static void HideDescription(MegaLabel? ____descriptionLabel)
+    private static void HideDescription(MegaLabel? ____descriptionLabel)
     {
         if (____descriptionLabel == null) return;
         if (MyModConfig.HideDescription) ____descriptionLabel.Visible = false;
@@ -101,7 +97,7 @@ public class HideDetails
     public class CardTitleIntercept
     {
         [HarmonyPostfix]
-        static void Intercept(ref CardModel? __instance, ref String __result)
+        private static void Intercept(ref CardModel? __instance, ref String __result)
         {
             if (__instance == null) return;
             if (!MyModConfig.HideTitle) return;
@@ -115,5 +111,4 @@ public class HideDetails
             return $"+{card.CurrentUpgradeLevel}";
         }
     }
-
 }

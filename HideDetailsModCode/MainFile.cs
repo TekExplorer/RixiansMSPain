@@ -2,7 +2,6 @@ using BaseLib.Config;
 using BaseLib.Utils;
 using Godot;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Modding;
 
 namespace HideDetailsMod.HideDetailsModCode;
@@ -30,17 +29,17 @@ public partial class MainFile : Node
         harmony.PatchAll();
     }
 
-    public static void Setup()
-    {
-        var altArts = AlternateArts.stuff.Values
-            .SelectMany(pair => pair.cardImgs)
-            .Where(img => img != null) // Optional: Filters out any null values
-            .ToList();
+    // public static void Setup()
+    // {
+    //     var altArts = AlternateArts.Cards.Values
+    //         .SelectMany(pair => pair.cardImgs)
+    //         .Where(img => img != null) // Optional: Filters out any null values
+    //         .ToList();
 
-        foreach (var art in altArts)
-        {
-            if (art == null) return;
-            PreloadManager.Cache.GetTexture2D(art.PortraitPath);
-        }
-    }
+    //     foreach (var art in altArts)
+    //     {
+    //         if (art == null) return;
+    //         PreloadManager.Cache.GetTexture2D(art.PortraitPath);
+    //     }
+    // }
 }

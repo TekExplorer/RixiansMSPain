@@ -1,5 +1,3 @@
-
-using System.Security.Cryptography;
 using Godot;
 using MegaCrit.Sts2.Core.Models;
 
@@ -7,15 +5,11 @@ namespace HideDetailsMod.HideDetailsModCode;
 
 class AlternateArtsCredits
 {
-    static public string? CreditFor<T>() where T : CardModel => CreditFor(ModelDb.Card<T>());
+    public static string? CreditFor<T>() where T : CardModel => CreditFor(ModelDb.Card<T>());
 
-    static public string? CreditFor(CardModel card)
-    {
-        if (Credits.TryGetValue(KeyFor(card), out var value)) return value;
-        return null;
-    }
+    public static string? CreditFor(CardModel card) => Credits.GetValueOrDefault(KeyFor(card));
 
-    static public string KeyFor(CardModel card)
+    public static string KeyFor(CardModel card)
     {
         var pool = card.Pool.Title.ToLowerInvariant();
         var name = card.Id.Entry.ToLowerInvariant();
@@ -28,31 +22,29 @@ class AlternateArtsCredits
     public static void LoadCreditsFromFile()
     {
         // json file
-        string filePath = "res://HideDetailsMod/credits.json"; // Use 'user://' for save files
+        const string filePath = "res://HideDetailsMod/credits.json"; // Use 'user://' for save files
 
-        if (Godot.FileAccess.FileExists(filePath))
+        if (!Godot.FileAccess.FileExists(filePath)) return;
+        // 1. Open the file
+        using var file = Godot.FileAccess.Open(filePath, Godot.FileAccess.ModeFlags.Read);
+
+        // 2. Read the raw text content
+        string jsonText = file.GetAsText();
+
+        // 3. Create a JSON parser instance and parse the text
+        Json jsonParser = new();
+        Error error = jsonParser.Parse(jsonText);
+        if (error == Error.Ok)
         {
-            // 1. Open the file
-            using var file = Godot.FileAccess.Open(filePath, Godot.FileAccess.ModeFlags.Read);
-
-            // 2. Read the raw text content
-            string jsonText = file.GetAsText();
-
-            // 3. Create a JSON parser instance and parse the text
-            Json jsonParser = new();
-            Error error = jsonParser.Parse(jsonText);
-            if (error == Error.Ok)
-            {
-                // 4. Convert the parsed Variant data into a Godot Dictionary
-                Credits = jsonParser.Data.AsGodotDictionary().Cast<KeyValuePair<Variant, Variant>>()
-                    .ToDictionary(kvp => kvp.Key.AsString(), kvp => kvp.Value.AsString());
-                MainFile.Logger.Debug($"Credits file loaded: {Credits}");
-            }
-            else
-            {
-                MainFile.Logger.Error(
-                    $"LoadCreditsFromFile: JSON Parsing Error: {jsonParser.GetErrorMessage()} on line {jsonParser.GetErrorLine()}");
-            }
+            // 4. Convert the parsed Variant data into a Godot Dictionary
+            Credits = jsonParser.Data.AsGodotDictionary()
+                .ToDictionary(kvp => kvp.Key.AsString(), kvp => kvp.Value.AsString());
+            MainFile.Logger.Debug($"Credits file loaded: {Credits}");
+        }
+        else
+        {
+            MainFile.Logger.Error(
+                $"LoadCreditsFromFile: JSON Parsing Error: {jsonParser.GetErrorMessage()} on line {jsonParser.GetErrorLine()}");
         }
     }
 }
