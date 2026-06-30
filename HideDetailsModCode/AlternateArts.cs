@@ -101,6 +101,7 @@ public class AlternateArts
     private static Player? GetOwner(CardModel? card)
     {
         if (card == null) return null;
+        if (card.IsCanonical) return null;
         Player? player = null;
         try
         {
