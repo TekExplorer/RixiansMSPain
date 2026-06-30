@@ -160,6 +160,6 @@
   "silent.well_laid_plans": "darkmega5",
   "silent.wraith_form": "snappingdraco",
   "token.shiv": "prozac0747",
-  "curse.infection": "sharkie_bite",
-  "curse.infection.overlay": "jackydaw"
+  "status.infection": "sharkie_bite",
+  "status.infection.overlay": "jackydaw"
 }

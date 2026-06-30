@@ -73,7 +73,7 @@ internal class HideDetails
                     {
                         var overlayDesc = new LocString("artists", ".description.overlay");
                         overlayDesc.Add("Artist", overlayAuthor);
-                        tips.Add(new HoverTip() { IsDebuff = true });
+                        tips.Add(new HoverTip(overlayDesc) { IsDebuff = true });
                     }
                 }
             }
