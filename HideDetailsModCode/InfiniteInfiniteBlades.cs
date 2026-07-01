@@ -65,7 +65,7 @@ public class InfiniteInfiniteBlades
         {
             if (!GodotObject.IsInstanceValid(cardNode) || !GodotObject.IsInstanceValid(container)) return;
 
-            if (cardNode.Model is not InfiniteBlades)
+            if (cardNode.Model is not InfiniteBlades || !MyModConfig.UseCustomArt)
             {
                 container.Visible = false;
                 return;

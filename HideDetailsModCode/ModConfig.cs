@@ -7,8 +7,11 @@ internal class MyModConfig : SimpleModConfig
     [ConfigSection("Credits")] public static bool ShowCreditsTooltip { get; set; } = true;
 
     [ConfigSection("Art")]
-    [ConfigSlider(0, 2000, 10)]
-    public static float InfiniteBladesLength { get; set; } = 2000;
+    //
+    [ConfigHideInUI]
+    public static bool UseCustomArt { get; set; } = true;
+
+    [ConfigSlider(0, 2000, 10)] public static float InfiniteBladesLength { get; set; } = 2000;
 
     public static bool UseBetaShivArt { get; set; } = false;
 
