@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
+using MegaCrit.Sts2.Core.Models.Relics;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
@@ -12,11 +13,13 @@ public class AlternateArts
 {
     private static readonly CardImg PredatorGoldAxe = new("predator_gold_axe");
     private static readonly CardImg Shiv2 = new("shiv_2");
+    private static readonly CardImg PoisonlessAccelerant = new("poisonless_accelerant");
 
     public static Dictionary<Type, (List<CardImg?> cardImgs, Func<CardModel, CardImg?> factory)> Cards { get; } = new()
     {
         [typeof(Predator)] = ([PredatorGoldAxe], card =>
                 {
+                    if (card.IsCanonical) return null;
                     var me = GetOwner(card);
                     if (me == null) return null;
                     if (me.Deck.Cards.OfType<GoldAxe>().Any())
@@ -26,6 +29,23 @@ public class AlternateArts
                 }
             ),
         [typeof(Shiv)] = ([Shiv2], _ => MyModConfig.UseBetaShivArt ? Shiv2 : null),
+        [typeof(Accelerant)] = ([PoisonlessAccelerant], card =>
+        {
+            if (card.IsCanonical) return null;
+            var me = GetOwner(card);
+            if (me == null) return null;
+
+            var AnyCardInDeckWithPoison =
+                me.Piles.Any(pile => pile.Cards.Any(Card => Card.DynamicVars.ContainsKey("PoisonPower")));
+
+
+            var HasPoisonRelic = me.Relics.Any(Relic =>
+                Relic is not SneckoSkull && Relic.DynamicVars.ContainsKey("PoisonPower"));
+
+            var HasPoison = AnyCardInDeckWithPoison || HasPoisonRelic;
+
+            return !HasPoison ? PoisonlessAccelerant : null;
+        }),
     };
 
     public class CardImg(string path)
@@ -42,6 +62,7 @@ public class AlternateArts
     static void AllPortraitPaths(CardModel? __instance, ref IEnumerable<string>? __result)
     {
         if (__instance == null || __result == null) return;
+        if (!MyModConfig.UseCustomArt) return;
         try
         {
             if (Cards.TryGetValue(__instance.GetType(), out var found))
@@ -61,6 +82,7 @@ public class AlternateArts
     [HarmonyPatch(typeof(CardModel), nameof(CardModel.PortraitPath), MethodType.Getter)]
     static void PortraitPath(CardModel? __instance, ref string __result)
     {
+        if (!MyModConfig.UseCustomArt) return;
         if (__instance == null) return;
         try
         {
@@ -82,6 +104,7 @@ public class AlternateArts
     [HarmonyPatch(typeof(CardModel), "PortraitPngPath", MethodType.Getter)]
     static void PortraitPngPath(CardModel? __instance, ref string __result)
     {
+        if (!MyModConfig.UseCustomArt) return;
         if (__instance == null) return;
         try
         {
@@ -98,7 +121,7 @@ public class AlternateArts
         }
     }
 
-    private static Player? GetOwner(CardModel? card)
+    public static Player? GetOwner(CardModel? card)
     {
         if (card == null) return null;
         if (card.IsCanonical) return null;
