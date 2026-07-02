@@ -14,10 +14,11 @@ class InfectionOverlay
     [HarmonyPatch(typeof(CardModel), nameof(CardModel.OverlayPath), MethodType.Getter)]
     static void SwitchToRed(CardModel __instance, ref string __result)
     {
-        if (!EnableInfection) return;
         if (!MyModConfig.UseCustomArt) return;
+        if (!EnableInfection) return;
         if (__instance is Infection)
-            __result = SceneHelper.GetScenePath("cards/overlays/" + "red_" + __instance.Id.Entry.ToLowerInvariant());
+            __result =
+                $"res://HideDetailsMod/scenes/cards/overlays/red_{__instance.Id.Entry.ToLowerInvariant()}.tscn";
     }
 
     // const string path = "res://HideDetailsMod/scenes/overlays/red_infection.tscn";
