@@ -110,7 +110,7 @@
   "silent.grand_finale": "warkatz",
   "silent.hand_trick": "whimsipop1",
   "silent.haze": "digitaldummy_",
-  "silent.hidden_daggers": "necroglados",
+  "silent.hidden_daggers": "lord_dialtone_1st",
   "silent.infinite_blades": "xplosy",
   "silent.knife_trap": "shadowhunter2737",
   "silent.leading_strike": "jackydaw",
@@ -135,7 +135,7 @@
   "silent.reflex": "de_mastu",
   "silent.ricochet": "xx69_SirScrinkle_69xx",
   "silent.scare": "plsmoviemaker",
-  "silent.serpent_form": "xpolsy",
+  "silent.serpent_form": "xlposy",
   "silent.shadow_step": "omlett",
   "silent.shadowmeld": "tiago_8484",
   "silent.skewer": "salmedix",
@@ -160,6 +160,6 @@
   "silent.well_laid_plans": "darkmega5",
   "silent.wraith_form": "snappingdraco",
   "token.shiv": "prozac0747",
-  "status.infection": "sharkie_bite",
-  "status.infection.overlay": "jackydaw"
+  "HIDE_status.infection": "sharkie_bite",
+  "HIDE_status.infection.overlay": "jackydaw"
 }
