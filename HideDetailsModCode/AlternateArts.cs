@@ -14,9 +14,12 @@ public class AlternateArts
     private static readonly CardImg PredatorGoldAxe = new("predator_gold_axe");
     private static readonly CardImg Shiv2 = new("shiv_2");
     private static readonly CardImg PoisonlessAccelerant = new("poisonless_accelerant");
+    private static readonly CardImg NoxiousFumesIfOutbreak = new("noxious_fumes_outbreak");
+    private static readonly CardImg AbrasivePlus = new("abrasive_plus");
 
     public static Dictionary<Type, (List<CardImg?> cardImgs, Func<CardModel, CardImg?> factory)> Cards { get; } = new()
     {
+        [typeof(Shiv)] = ([Shiv2], _ => MyModConfig.UseBetaShivArt ? Shiv2 : null),
         [typeof(Predator)] = ([PredatorGoldAxe], card =>
                 {
                     if (card.IsCanonical) return null;
@@ -28,7 +31,6 @@ public class AlternateArts
                     return null;
                 }
             ),
-        [typeof(Shiv)] = ([Shiv2], _ => MyModConfig.UseBetaShivArt ? Shiv2 : null),
         [typeof(Accelerant)] = ([PoisonlessAccelerant], card =>
         {
             if (card.IsCanonical) return null;
@@ -36,7 +38,7 @@ public class AlternateArts
             if (me == null) return null;
 
             var AnyCardInDeckWithPoison =
-                me.Piles.Any(pile => pile.Cards.Any(Card => Card.DynamicVars.ContainsKey("PoisonPower")));
+                CardInDeck(me, Card => Card.DynamicVars.ContainsKey("PoisonPower"));
 
 
             var HasPoisonRelic = me.Relics.Any(Relic =>
@@ -46,7 +48,25 @@ public class AlternateArts
 
             return !HasPoison ? PoisonlessAccelerant : null;
         }),
+        [typeof(NoxiousFumes)] = ([NoxiousFumesIfOutbreak], card =>
+                {
+                    if (card.IsCanonical) return null;
+                    var me = GetOwner(card);
+                    if (me == null) return null;
+
+                    var DeckHasOutbreak = CardInDeck<Outbreak>(me);
+
+                    return DeckHasOutbreak ? NoxiousFumesIfOutbreak : null;
+                }
+            ),
+        [typeof(Abrasive)] = ([AbrasivePlus], card => card.IsUpgraded ? AbrasivePlus : null),
     };
+
+    static bool CardInDeck<T>(Player owner) where T : CardModel => CardInDeck(owner, card => card is T);
+
+    static bool CardInDeck(Player owner, Func<CardModel, bool> predicate) =>
+        owner.Piles.Any(pile => pile.Cards.Any(predicate));
+
 
     public class CardImg(string path)
     {
