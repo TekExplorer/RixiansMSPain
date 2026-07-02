@@ -25,9 +25,7 @@ public class AlternateArts
                     if (card.IsCanonical) return null;
                     var me = GetOwner(card);
                     if (me == null) return null;
-                    if (me.Deck.Cards.OfType<GoldAxe>().Any())
-                        return PredatorGoldAxe;
-
+                    if (CardInDeck<GoldAxe>(me)) return PredatorGoldAxe;
                     return null;
                 }
             ),
