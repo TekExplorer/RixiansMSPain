@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Update Abrasive\nAdd Abrasive+ alt art\nAdd Noxious Fumes alt art",
+  "changeNote": "Update Abrasive\nAdd Abrasive+ alt art\nAdd Noxious Fumes alt art\nFix the description visibility not working when re-enabled",
   "tags": ["Art Pack", "Full Art", "Art", "Rixian"],
   "dependencies": [3737335127]
 }

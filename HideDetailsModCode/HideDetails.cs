@@ -116,7 +116,7 @@ internal class HideDetails
     private static void HideDescription(MegaLabel? ____descriptionLabel)
     {
         if (____descriptionLabel == null) return;
-        if (MyModConfig.HideDescription) ____descriptionLabel.Visible = false;
+        ____descriptionLabel.Visible = !MyModConfig.HideDescription;
     }
 
     [HarmonyPatch(typeof(CardModel), "Title", MethodType.Getter)]
