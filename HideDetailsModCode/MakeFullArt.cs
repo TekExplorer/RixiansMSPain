@@ -112,7 +112,7 @@ public class MakeFullArt
         }
         catch (Exception err)
         {
-            MainFile.Logger.Error($"Something broke {err}");
+            MainFile.Logger.Error($"UseFullArt: {err}");
         }
     }
 
