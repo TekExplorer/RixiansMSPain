@@ -1,9 +1,11 @@
+using BaseLib.Extensions;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
+using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 
 namespace HideDetailsMod.HideDetailsModCode;
@@ -54,7 +56,9 @@ public class AlternateArts
 
                     var DeckHasOutbreak = CardInDeck<Outbreak>(me);
 
-                    return DeckHasOutbreak ? NoxiousFumesIfOutbreak : null;
+                    var HasOutbreakPower = me.HasPower<OutbreakPower>();
+
+                    return (DeckHasOutbreak || HasOutbreakPower) ? NoxiousFumesIfOutbreak : null;
                 }
             ),
         [typeof(Abrasive)] = ([AbrasivePlus], card => card.IsUpgraded ? AbrasivePlus : null),
