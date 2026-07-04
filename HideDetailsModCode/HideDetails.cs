@@ -61,8 +61,11 @@ internal class HideDetails
                 // var uploader = new LocString("artists", CreditsKeyFor(__instance) + ".uploader");
                 if (author.Exists())
                 {
+                    LocString Replace(LocString str) =>
+                        LocString.GetIfExists("artists", ".discord.id." + str.GetRawText()) ?? str;
+
                     var desc = new LocString("artists", ".description");
-                    desc.Add("Artist", author);
+                    desc.Add("Artist", Replace(author));
 
                     tips.Add(new HoverTip(desc) { IsDebuff = true });
                     //
@@ -72,7 +75,7 @@ internal class HideDetails
                     if (overlayAuthor.Exists())
                     {
                         var overlayDesc = new LocString("artists", ".description.overlay");
-                        overlayDesc.Add("Artist", overlayAuthor);
+                        overlayDesc.Add("Artist", Replace(overlayAuthor));
                         tips.Add(new HoverTip(overlayDesc) { IsDebuff = true });
                     }
                 }

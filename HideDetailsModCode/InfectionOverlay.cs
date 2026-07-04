@@ -1,5 +1,4 @@
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 
@@ -8,7 +7,7 @@ namespace HideDetailsMod.HideDetailsModCode;
 [HarmonyPatch]
 class InfectionOverlay
 {
-    private static bool EnableInfection { get; } = false;
+    private static bool EnableInfection { get; } = true;
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(CardModel), nameof(CardModel.OverlayPath), MethodType.Getter)]

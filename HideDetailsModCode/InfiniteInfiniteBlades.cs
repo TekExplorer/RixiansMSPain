@@ -23,22 +23,23 @@ public class InfiniteInfiniteBlades
 
         // const float maxBladeLength = 100.0f;;
         const float tilt1 = -0.005f; // Left blade tilts left
-        const float tilt2 = 0.007f;  // Right blade tilts right
+        const float tilt2 = 0.007f; // Right blade tilts right
 
         const float width = 3.2f;
         // Color color = new(0.0f, 0.9f, 0.1f, 0.9f); // Vibrant Lightsaber Green
         Color color = Color.FromHtml("00C800");
 
-                // 1. Create a shared gradient config
+        // 1. Create a shared gradient config
         Gradient bladeGradient = new()
         {
             // Define two interpolation points (0.0 is the bottom start, 1.0 is the top end)
-            Offsets = [0.0f, 0.1f], 
-            
+            Offsets = [0.0f, 0.1f],
+
             // Set the colors:
-            Colors = [
-                new Color(0.0f, 0.78f, 0.0f, 0.9f),  // 0%  -> Completely Transparent Green
-                Color.FromHtml("00C800")             // 15% -> Full Solid Art Green (stays solid to the top)
+            Colors =
+            [
+                new Color(0.0f, 0.78f, 0.0f, 0.9f), // 0%  -> Completely Transparent Green
+                Color.FromHtml("00C800") // 15% -> Full Solid Art Green (stays solid to the top)
             ]
         };
 
