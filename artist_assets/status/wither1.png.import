@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dsv0fctl5cgtw"
-path="res://.godot/imported/poor_sleep.png-ae54c2ca19e6e8df1c384f71f5116264.ctex"
+uid="uid://ysntis02pox4"
+path="res://.godot/imported/wither1.png-bf1b48d3ae5342bdddcd37bbd126105c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/curse/poor_sleep.png"
-dest_files=["res://.godot/imported/poor_sleep.png-ae54c2ca19e6e8df1c384f71f5116264.ctex"]
+source_file="res://artist_assets/status/wither1.png"
+dest_files=["res://.godot/imported/wither1.png-bf1b48d3ae5342bdddcd37bbd126105c.ctex"]
 
 [params]
 
