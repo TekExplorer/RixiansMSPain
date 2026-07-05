@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6rkx18nd5a5v"
-path="res://.godot/imported/manifest_authority.png-e3b548bb37cbae6a60368bf870a0b600.ctex"
+uid="uid://btg5f8kn77pec"
+path="res://.godot/imported/manifest_authority.png-09436b7fb35b0a055944be2e43ae0fde.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/regent/manifest_authority.png"
-dest_files=["res://.godot/imported/manifest_authority.png-e3b548bb37cbae6a60368bf870a0b600.ctex"]
+source_file="res://artist_assets/regent/beta/manifest_authority.png"
+dest_files=["res://.godot/imported/manifest_authority.png-09436b7fb35b0a055944be2e43ae0fde.ctex"]
 
 [params]
 
