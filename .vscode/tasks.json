@@ -17,17 +17,6 @@
       "problemMatcher": ["$msCompile"]
     },
     {
-      "label": "Build HideDetailsMod (Beta)",
-      "type": "shell",
-      "command": "dotnet",
-      "args": [
-        "build",
-        "${workspaceFolder}/HideDetailsMod.csproj",
-        "-p:WorkshopChannel=Beta"
-      ],
-      "problemMatcher": ["$msCompile"]
-    },
-    {
       "label": "Publish HideDetailsMod (Production)",
       "type": "shell",
       "command": "dotnet",
@@ -37,19 +26,6 @@
         "-c",
         "Release",
         "-p:WorkshopChannel=Production"
-      ],
-      "problemMatcher": ["$msCompile"]
-    },
-    {
-      "label": "Publish HideDetailsMod (Beta)",
-      "type": "shell",
-      "command": "dotnet",
-      "args": [
-        "publish",
-        "${workspaceFolder}/HideDetailsMod.csproj",
-        "-c",
-        "Release",
-        "-p:WorkshopChannel=Beta"
       ],
       "problemMatcher": ["$msCompile"]
     },
@@ -66,6 +42,30 @@
         "${workspaceFolder}\\workshop\\upload_to_workshop.bat",
         "Production"
       ]
+    },
+    {
+      "label": "Build HideDetailsMod (Beta)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/HideDetailsMod.csproj",
+        "-p:WorkshopChannel=Beta"
+      ],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "Publish HideDetailsMod (Beta)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/HideDetailsMod.csproj",
+        "-c",
+        "Release",
+        "-p:WorkshopChannel=Beta"
+      ],
+      "problemMatcher": ["$msCompile"]
     },
     {
       "label": "Upload HideDetailsMod (Beta)",
