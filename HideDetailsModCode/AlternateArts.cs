@@ -111,7 +111,10 @@ public class AlternateArts
         public static CardImg Upgraded(CardModel card) => new CardImg(card).Upgraded();
 
         public string PortraitPath { get; } = $"res://images/atlases/card_atlas.sprites/{path}.tres";
-        public string PortraitPngPath { get; } = $"res://artist_assets/{path}.png";
+        private string _PortraitJpgPath { get; } = $"res://artist_assets/{path}.jpg";
+        private string _PortraitPngPath { get; } = $"res://artist_assets/{path}.png";
+        public string PortraitPngPath => ResourceLoader.Exists(_PortraitJpgPath) ? _PortraitJpgPath : _PortraitPngPath;
+
         // public string PortraitPngPath { get; } = ImageHelperExtensions.GetModImagePath($"{path}.png");
         public CardImg Upgraded()
         {
