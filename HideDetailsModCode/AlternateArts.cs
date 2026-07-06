@@ -1,8 +1,13 @@
+using BaseLib.Abstracts;
 using BaseLib.Extensions;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Context;
+using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
@@ -127,6 +132,32 @@ public class AlternateArts
         }
         ),
     };
+
+    // TODO: optimize
+    class UpdateOnPower : CustomSingletonModel
+    {
+        public UpdateOnPower() : base(HookType.Combat) { }
+
+        public override Task AfterPowerAmountChanged(PlayerChoiceContext choiceContext, PowerModel power, decimal amount, Creature? applier, CardModel? cardSource)
+        {
+            if (power is NoDrawPower && power.Owner.IsPlayer)
+            {
+                var cards = power.Owner.Player?.Piles?.Where(pile => pile.Type != PileType.Deck).SelectMany(pile => pile.Cards);
+
+                foreach (var card in cards ?? [])
+                {
+                    if (card is CalculatedGamble || card is Outbreak || card is NoxiousFumes)
+                    {
+                        var nCard = NCard.FindOnTable(card);
+                        var reload = AccessTools.Method(typeof(NCard), "Reload");
+                        reload?.Invoke(nCard, []);
+                        // CardCmd.Preview(card);
+                    }
+                }
+            }
+            return Task.CompletedTask;
+        }
+    }
 
     public const float AlignmentRotationDegrees = -15f;
     // public const float AlignmentRotationDegrees = -6.28f;
