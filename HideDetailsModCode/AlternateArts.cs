@@ -20,6 +20,7 @@ public class AlternateArts
     private static readonly CardImg NoxiousFumesIfOutbreak = new("noxious_fumes_if_outbreak");
     private static readonly CardImg OutbreakIfNoxiousFumes = new("outbreak_if_noxious_fumes");
     private static readonly CardImg AbrasivePlus = new("abrasive_plus");
+    private static readonly CardImg KnowThyPlacePlus = new("regent/know_thy_place_plus");
     public class MindRotted
     {
         public static readonly CardImg Silent = new("token/mind_rot");
@@ -52,12 +53,10 @@ public class AlternateArts
             var AnyCardInDeckWithPoison =
                 CardInDeck(me, Card => Card.DynamicVars.ContainsKey("PoisonPower"));
 
-
             var HasPoisonRelic = me.Relics.Any(Relic =>
                 Relic is not SneckoSkull && Relic.DynamicVars.ContainsKey("PoisonPower"));
 
             var HasPoison = AnyCardInDeckWithPoison || HasPoisonRelic;
-
             return !HasPoison ? PoisonlessAccelerant : null;
         }
         ),
@@ -98,6 +97,7 @@ public class AlternateArts
             };
         }
         ),
+        [typeof(KnowThyPlace)] = ([KnowThyPlacePlus], card => card.IsUpgraded ? KnowThyPlacePlus : null),
     };
 
     static bool CardInDeck<T>(Player owner) where T : CardModel => CardInDeck(owner, card => card is T);
@@ -111,8 +111,12 @@ public class AlternateArts
         public string PortraitPath { get; } = $"res://images/atlases/card_atlas.sprites/{path}.tres";
         public string PortraitPngPath { get; } = $"res://artist_assets/{path}.png";
         // public string PortraitPngPath { get; } = ImageHelperExtensions.GetModImagePath($"{path}.png");
+        public CardImg Upgraded()
+        {
+            if (path.EndsWith("_plus")) return this;
+            return new(path + "_plus");
+        }
     }
-
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(CardModel), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
