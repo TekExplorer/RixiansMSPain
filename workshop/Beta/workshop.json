@@ -1,7 +1,7 @@
 ﻿{
   "title": "Rixian's MSPain (Beta)",
   "description": "This is the tester's version of the mod. Go see the public one!",
-  "changeNote": "Unaligned Non-Alignment cards after Alignment aligned",
+  "changeNote": "Calculated Gamble+, CG No Draw, and CG No Draw+",
   "visibility": "unlisted",
   "tags": [],
   "dependencies": [3737335127]

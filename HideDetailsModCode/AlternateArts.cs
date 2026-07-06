@@ -25,6 +25,7 @@ public class AlternateArts
     // TODO: handle special credits
     // TODO: Also, upgraded credits
     private static readonly CardImg MonologueIfLunarBlast = new("monologue_if_lunar_blast", "textures404");
+    private static readonly CardImg CalculatedGambleNoDraw = new("calculated_gamble_no_draw");
 
     public class MindRotted
     {
@@ -113,6 +114,18 @@ public class AlternateArts
         }
         ),
         // [typeof(KnowThyPlace)] = ([KnowThyPlacePlus], card => card.IsUpgraded ? KnowThyPlacePlus : null),
+        [typeof(CalculatedGamble)] = ([CalculatedGambleNoDraw], card =>
+        {
+            if (card.IsCanonical) return null;
+            var me = GetOwner(card);
+            if (me == null) return null;
+
+            var HasFiddle = me.Relics.Any(relic => relic is Fiddle);
+            var HasNoDrawPower = me.HasPower<NoDrawPower>();
+
+            return (HasFiddle || HasNoDrawPower) ? CalculatedGambleNoDraw : null;
+        }
+        ),
     };
 
     public const float AlignmentRotationDegrees = -15f;
@@ -193,6 +206,12 @@ public class AlternateArts
     static bool CardInDeck(Player owner, Func<CardModel, bool> predicate) =>
         owner.Piles.Any(pile => pile.Cards.Any(predicate));
 
+
+    [HarmonyPatch]
+    class AnimatedCard
+    {
+        // static BaseLib.Utils.AddedNode<NCard, Control> thing;
+    }
 
     public class CardImg(string path, string? credit = null)
     {
