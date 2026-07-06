@@ -1,4 +1,5 @@
 using BaseLib.Extensions;
+using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -19,8 +20,7 @@ public class AlternateArts
     private static readonly CardImg PoisonlessAccelerant = new("poisonless_accelerant");
     private static readonly CardImg NoxiousFumesIfOutbreak = new("noxious_fumes_if_outbreak");
     private static readonly CardImg OutbreakIfNoxiousFumes = new("outbreak_if_noxious_fumes");
-    private static readonly CardImg AbrasivePlus = new("abrasive_plus");
-    private static readonly CardImg KnowThyPlacePlus = new("regent/know_thy_place_plus");
+
     public class MindRotted
     {
         public static readonly CardImg Silent = new("token/mind_rot");
@@ -28,11 +28,11 @@ public class AlternateArts
         public static readonly CardImg Necrobinder = new("token/mind_rot");
         public static readonly CardImg Defect = new("token/mind_rot");
         public static readonly CardImg Ironclad = new("token/mind_rot");
-        public static readonly List<CardImg?> All = [Silent, Regent, Necrobinder, Defect, Ironclad];
+        public static readonly List<CardImg> All = [Silent, Regent, Necrobinder, Defect, Ironclad];
     }
 
 
-    public static Dictionary<Type, (List<CardImg?> cardImgs, Func<CardModel, CardImg?> factory)> Cards { get; } = new()
+    public static Dictionary<Type, (List<CardImg> cardImgs, Func<CardModel, CardImg?> factory)> Cards { get; } = new()
     {
         [typeof(Shiv)] = ([Shiv2], _ => MyModConfig.UseBetaShivArt ? Shiv2 : null),
         [typeof(Predator)] = ([PredatorGoldAxe], card =>
@@ -82,7 +82,6 @@ public class AlternateArts
             return (DeckHasNoxiousFumes || HasNoxiousFumesPower) ? OutbreakIfNoxiousFumes : null;
         }
         ),
-        [typeof(Abrasive)] = ([AbrasivePlus], card => card.IsUpgraded ? AbrasivePlus : null),
         [typeof(MindRot)] = (MindRotted.All, card =>
         {
             if (card.IsCanonical) return null;
@@ -97,7 +96,7 @@ public class AlternateArts
             };
         }
         ),
-        [typeof(KnowThyPlace)] = ([KnowThyPlacePlus], card => card.IsUpgraded ? KnowThyPlacePlus : null),
+        // [typeof(KnowThyPlace)] = ([KnowThyPlacePlus], card => card.IsUpgraded ? KnowThyPlacePlus : null),
     };
 
     static bool CardInDeck<T>(Player owner) where T : CardModel => CardInDeck(owner, card => card is T);
@@ -108,6 +107,9 @@ public class AlternateArts
 
     public class CardImg(string path)
     {
+        public CardImg(CardModel card) : this($"{card.Pool.Title.ToLowerInvariant()}/{card.Id.Entry.ToLowerInvariant()}") { }
+        public static CardImg Upgraded(CardModel card) => new CardImg(card).Upgraded();
+
         public string PortraitPath { get; } = $"res://images/atlases/card_atlas.sprites/{path}.tres";
         public string PortraitPngPath { get; } = $"res://artist_assets/{path}.png";
         // public string PortraitPngPath { get; } = ImageHelperExtensions.GetModImagePath($"{path}.png");
@@ -116,6 +118,8 @@ public class AlternateArts
             if (path.EndsWith("_plus")) return this;
             return new(path + "_plus");
         }
+
+        public bool Exists() => ResourceLoader.Exists(PortraitPath);
     }
 
     [HarmonyPostfix]
@@ -130,7 +134,22 @@ public class AlternateArts
             {
                 var img = found.factory(__instance);
                 if (img == null) return;
-                __result = [.. __result, img.PortraitPath];
+                List<string> result = [.. __result];
+
+                result.AddRange(found.cardImgs.Select(img => img.PortraitPath));
+
+                result.AddRange(
+                    found.cardImgs
+                        .ConvertAll(img => img.Upgraded())
+                        .Where(upgraded => upgraded.Exists())
+                        .Select(upgraded => upgraded.PortraitPath)
+                );
+
+                var upgraded = CardImg.Upgraded(__instance);
+                if (upgraded.Exists()) result.Add(upgraded.PortraitPath);
+
+                __result = result;
+
             }
         }
         catch (Exception e)
@@ -147,11 +166,15 @@ public class AlternateArts
         if (__instance == null) return;
         try
         {
+            var upgraded = CardImg.Upgraded(__instance);
+            if (__instance.IsUpgraded && upgraded.Exists()) __result = upgraded.PortraitPath;
+
             if (Cards.TryGetValue(__instance.GetType(), out var found))
             {
-                var res = found.factory(__instance);
-                if (res == null) return;
-                __result = res.PortraitPath;
+                var img = found.factory(__instance);
+                if (img == null) return;
+                if (__instance.IsUpgraded && img.Upgraded().Exists()) img = img.Upgraded();
+                __result = img.PortraitPath;
             }
         }
         catch (Exception e)
@@ -169,10 +192,14 @@ public class AlternateArts
         if (__instance == null) return;
         try
         {
+            var upgraded = CardImg.Upgraded(__instance);
+            if (__instance.IsUpgraded && upgraded.Exists()) __result = upgraded.PortraitPngPath;
+
             if (Cards.TryGetValue(__instance.GetType(), out var found))
             {
                 var img = found.factory(__instance);
                 if (img == null) return;
+                if (__instance.IsUpgraded && img.Upgraded().Exists()) img = img.Upgraded();
                 __result = img.PortraitPngPath;
             }
         }
