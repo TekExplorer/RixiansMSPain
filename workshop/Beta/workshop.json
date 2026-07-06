@@ -1,7 +1,7 @@
 ﻿{
   "title": "Rixian's MSPain (Beta)",
   "description": "This is the tester's version of the mod. Go see the public one!",
-  "changeNote": "Made the beta version easy to tell in the mod list\nFixed some credits\nAttempted to add more discord id to display name mappings\nMade Infinite Blades more infinite",
+  "changeNote": "Added the Outbreak half of the Outbreak-Noxious synergy\nMade Infinite Blades more infinite",
   "visibility": "unlisted",
   "tags": [],
   "dependencies": [3737335127]

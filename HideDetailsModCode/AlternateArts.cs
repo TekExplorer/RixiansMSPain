@@ -16,7 +16,8 @@ public class AlternateArts
     private static readonly CardImg PredatorGoldAxe = new("predator_gold_axe");
     private static readonly CardImg Shiv2 = new("shiv_2");
     private static readonly CardImg PoisonlessAccelerant = new("poisonless_accelerant");
-    private static readonly CardImg NoxiousFumesIfOutbreak = new("noxious_fumes_outbreak");
+    private static readonly CardImg NoxiousFumesIfOutbreak = new("noxious_fumes_if_outbreak");
+    private static readonly CardImg OutbreakIfNoxiousFumes = new("outbreak_if_noxious_fumes");
     private static readonly CardImg AbrasivePlus = new("abrasive_plus");
 
     public static Dictionary<Type, (List<CardImg?> cardImgs, Func<CardModel, CardImg?> factory)> Cards { get; } = new()
@@ -30,7 +31,7 @@ public class AlternateArts
                     if (CardInDeck<GoldAxe>(me)) return PredatorGoldAxe;
                     return null;
                 }
-            ),
+        ),
         [typeof(Accelerant)] = ([PoisonlessAccelerant], card =>
         {
             if (card.IsCanonical) return null;
@@ -47,7 +48,8 @@ public class AlternateArts
             var HasPoison = AnyCardInDeckWithPoison || HasPoisonRelic;
 
             return !HasPoison ? PoisonlessAccelerant : null;
-        }),
+        }
+        ),
         [typeof(NoxiousFumes)] = ([NoxiousFumesIfOutbreak], card =>
                 {
                     if (card.IsCanonical) return null;
@@ -55,12 +57,21 @@ public class AlternateArts
                     if (me == null) return null;
 
                     var DeckHasOutbreak = CardInDeck<Outbreak>(me);
-
                     var HasOutbreakPower = me.HasPower<OutbreakPower>();
-
                     return (DeckHasOutbreak || HasOutbreakPower) ? NoxiousFumesIfOutbreak : null;
                 }
-            ),
+        ),
+        [typeof(Outbreak)] = ([OutbreakIfNoxiousFumes], card =>
+    {
+        if (card.IsCanonical) return null;
+        var me = GetOwner(card);
+        if (me == null) return null;
+
+        var DeckHasNoxiousFumes = CardInDeck<NoxiousFumes>(me);
+        var HasNoxiousFumesPower = me.HasPower<NoxiousFumesPower>();
+        return (DeckHasNoxiousFumes || HasNoxiousFumesPower) ? OutbreakIfNoxiousFumes : null;
+    }
+        ),
         [typeof(Abrasive)] = ([AbrasivePlus], card => card.IsUpgraded ? AbrasivePlus : null),
     };
 
