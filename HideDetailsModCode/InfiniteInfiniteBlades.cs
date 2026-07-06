@@ -76,8 +76,8 @@ public class InfiniteInfiniteBlades
 
             // Draw both lines pointing straight up relative to the card's position/rotation
             Vector2 localStart = Vector2.Zero;
-            Vector2 localEnd1 = localStart + ((Vector2.Up + new Vector2(tilt1, 0)) * MyModConfig.InfiniteBladesLength);
-            Vector2 localEnd2 = localStart + ((Vector2.Up + new Vector2(tilt2, 0)) * MyModConfig.InfiniteBladesLength);
+            Vector2 localEnd1 = localStart + ((Vector2.Up + new Vector2(tilt1, 0)) * MyModConfig.InfiniteBladesLength2);
+            Vector2 localEnd2 = localStart + ((Vector2.Up + new Vector2(tilt2, 0)) * MyModConfig.InfiniteBladesLength2);
 
             leftBlade.Points = [localStart, localEnd1];
             rightBlade.Points = [localStart, localEnd2];

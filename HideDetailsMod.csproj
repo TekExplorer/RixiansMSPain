@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Godot.NET.Sdk/4.5.1" InitialTargets="CheckDependencyPaths">
-    <Import Project=".\Sts2PathDiscovery.props"/>
+    <Import Project=".\Sts2PathDiscovery.props" />
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>true</ImplicitUsings>
-        <Nullable>enable</Nullable> <!--Makes code analysis regarding null values stricter.-->
+        <Nullable>enable</Nullable> <!--Makes
+        code analysis regarding null values stricter.-->
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
         <PathMap>$(AppOutputBase)=.\</PathMap>
@@ -27,67 +28,77 @@
         </Reference>
     </ItemGroup>
 
-    <ItemGroup Condition="False"> <!--Allows access to originally private/protected members but may (unlikely to) cause errors.-->
-        <Publicize Include="sts2" IncludeVirtualMembers="false" IncludeCompilerGeneratedMembers="false"/>
+    <ItemGroup Condition="False"> <!--Allows
+        access to originally private/protected members but may (unlikely to) cause errors.-->
+        <Publicize Include="sts2" IncludeVirtualMembers="false"
+            IncludeCompilerGeneratedMembers="false" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="*" PrivateAssets="All"/>
-        <PackageReference Include="Krafs.Publicizer" Version="2.3.0" PrivateAssets="All"/>
-        <PackageReference Include="Alchyr.Sts2.ModAnalyzers" Version="*"/>
-        <!-- Generates a .pck file when building if only using simple assets. May not work on all setups. Uncomment to test. -->
-        <!-- <PackageReference Include="BSchneppe.StS2.PckPacker" Version="0.1.1" PrivateAssets="All" /> -->
-        <AdditionalFiles Include="HideDetailsMod/localization/**/*.json"/> <!-- Used by analyzer -->
+        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="*" PrivateAssets="All" />
+        <PackageReference Include="Krafs.Publicizer" Version="2.3.0" PrivateAssets="All" />
+        <PackageReference Include="Alchyr.Sts2.ModAnalyzers" Version="*" />
+        <!-- Generates a .pck file when building if only using simple assets. May not work on all
+        setups. Uncomment to test. -->
+        <!-- <PackageReference Include="BSchneppe.StS2.PckPacker" Version="0.1.1"
+        PrivateAssets="All" /> -->
+        <AdditionalFiles Include="HideDetailsMod/localization/**/*.json" /> <!-- Used by analyzer -->
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="HideDetailsMod/**"/>
-        <Compile Remove="materials/**"/>
-        <Compile Remove="shaders/**"/>
-        <Compile Remove="images/**"/>
-        <EmbeddedResource Remove="HideDetailsMod/**"/>
-        <EmbeddedResource Remove="materials/**"/>
-        <EmbeddedResource Remove="shaders/**"/>
-        <EmbeddedResource Remove="images/**"/>
+        <Compile Remove="HideDetailsMod/**" />
+        <Compile Remove="materials/**" />
+        <Compile Remove="shaders/**" />
+        <Compile Remove="images/**" />
+        <EmbeddedResource Remove="HideDetailsMod/**" />
+        <EmbeddedResource Remove="materials/**" />
+        <EmbeddedResource Remove="shaders/**" />
+        <EmbeddedResource Remove="images/**" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Condition="Exists('Directory.Build.props')" Include="Directory.Build.props"/>
-        <None Include=".gitignore"/>
-        <None Include="HideDetailsMod.json"/>
-        <None Include="project.godot"/>
-        <None Include="HideDetailsMod/**"/>
+        <None Condition="Exists('Directory.Build.props')" Include="Directory.Build.props" />
+        <None Include=".gitignore" />
+        <None Include="HideDetailsMod.json" />
+        <None Include="project.godot" />
+        <None Include="HideDetailsMod/**" />
     </ItemGroup>
 
     <Target Name="CheckDependencyPaths">
         <Error
-                Text=" Slay the Spire 2 data not found at path '$(Sts2DataDir)'"
-                Condition="'$(Sts2DataDir)' == '' or !Exists('$(Sts2DataDir)')"/>
+            Text=" Slay the Spire 2 data not found at path '$(Sts2DataDir)'"
+            Condition="'$(Sts2DataDir)' == '' or !Exists('$(Sts2DataDir)')" />
     </Target>
 
     <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent">
-        <Message Text="Copying .dll .pdb and .json to mods folder." Importance="high"/>
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
-        <Copy SourceFiles="$(AssemblyName).json" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
-        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
+        <Message Text="Copying .dll .pdb and .json to mods folder." Importance="high" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
+        <Copy SourceFiles="$(AssemblyName).json"
+            DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb"
+            DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
     </Target>
 
-    <Target Name="CopyQuickPck" AfterTargets="PackPck" Condition="Exists('$(PckPackerOutputPath)') And '$(PckPackerSkipped)' != 'true'">
-        <Message Text="Copying quick .pck to mods folder." Importance="high"/>
+    <Target Name="CopyQuickPck" AfterTargets="PackPck"
+        Condition="Exists('$(PckPackerOutputPath)') And '$(PckPackerSkipped)' != 'true'">
+        <Message Text="Copying quick .pck to mods folder." Importance="high" />
         <Copy SourceFiles="$(PckPackerOutputPath)"
-              DestinationFolder="$(ModsPath)/$(MSBuildProjectName)"/>
+            DestinationFolder="$(ModsPath)/$(MSBuildProjectName)" />
     </Target>
 
     <Target Name="NeedGodotForPublish" BeforeTargets="Publish">
-        <Error Text=" Godot path must be set up before publishing; Godot not found at path '$(GodotPath)'. Check Directory.Build.props file."
-               Condition="'$(GodotPath)' == '' or !Exists('$(GodotPath)')"/>
+        <Error
+            Text=" Godot path must be set up before publishing; Godot not found at path '$(GodotPath)'. Check Directory.Build.props file."
+            Condition="'$(GodotPath)' == '' or !Exists('$(GodotPath)')" />
     </Target>
 
-    <Target Name="GodotPublish" AfterTargets="Publish" Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'">
-        <Message Text="Exporting Godot .pck to mods folder" Importance="high"/>
-        <Exec Command="&quot;$(GodotPath)&quot; --headless --export-pack &quot;BasicExport&quot; &quot;$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck&quot;"
-              EnvironmentVariables="IsInnerGodotExport=true;MSBUILDDISABLENODEREUSE=1"
-              ContinueOnError="WarnAndContinue"/>
+    <Target Name="GodotPublish" AfterTargets="Publish"
+        Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'">
+        <Message Text="Exporting Godot .pck to mods folder" Importance="high" />
+        <Exec
+            Command="&quot;$(GodotPath)&quot; --headless --export-pack &quot;BasicExport&quot; &quot;$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck&quot;"
+            EnvironmentVariables="IsInnerGodotExport=true;MSBUILDDISABLENODEREUSE=1"
+            ContinueOnError="WarnAndContinue" />
     </Target>
 
     <!-- Workshop -->
@@ -95,18 +106,22 @@
         <WorkshopChannel Condition="'$(WorkshopChannel)' == ''">Production</WorkshopChannel>
         <WorkshopRoot>$(MSBuildProjectDirectory)\workshop\$(WorkshopChannel)</WorkshopRoot>
         <WorkshopContentRoot>$(WorkshopRoot)\content</WorkshopContentRoot>
+        <WorkshopJsonSource Condition="'$(WorkshopChannel)' == 'Beta'">HideDetailsMod.beta.json</WorkshopJsonSource>
+        <WorkshopJsonSource Condition="'$(WorkshopChannel)' != 'Beta'">HideDetailsMod.json</WorkshopJsonSource>
     </PropertyGroup>
 
     <Target Name="CopyToWorkshopContent" AfterTargets="PostBuildEvent">
-        <Message Text="Copying .dll .pdb and .json to $(WorkshopChannel)/content." Importance="high"/>
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(WorkshopContentRoot)"/>
-        <Copy SourceFiles="$(AssemblyName).json" DestinationFolder="$(WorkshopContentRoot)"/>
-        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(WorkshopContentRoot)"/>
+        <Message Text="Copying .dll .pdb and $(WorkshopJsonSource) to $(WorkshopChannel)/content."
+            Importance="high" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(WorkshopContentRoot)" />
+        <Copy SourceFiles="$(WorkshopJsonSource)"
+            DestinationFiles="$(WorkshopContentRoot)\$(AssemblyName).json" />
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(WorkshopContentRoot)" />
     </Target>
 
     <Target Name="CopyPckToWorkshopContent" AfterTargets="GodotPublish">
-        <Copy SourceFiles="$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck" 
-              DestinationFolder="$(WorkshopContentRoot)" 
-              Condition="Exists('$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck')"/>
+        <Copy SourceFiles="$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck"
+            DestinationFolder="$(WorkshopContentRoot)"
+            Condition="Exists('$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck')" />
     </Target>
 </Project>

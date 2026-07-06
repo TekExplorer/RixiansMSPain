@@ -11,7 +11,8 @@ internal class MyModConfig : SimpleModConfig
     [ConfigHideInUI]
     public static bool UseCustomArt { get; set; } = true;
 
-    [ConfigSlider(0, 2000, 10)] public static float InfiniteBladesLength { get; set; } = 2000;
+    // Renamed to InfiniteBladesLength2 to reset configs
+    [ConfigSlider(0, 5000, 10)] public static float InfiniteBladesLength2 { get; set; } = 3000;
 
     public static bool UseBetaShivArt { get; set; } = false;
 

@@ -1,0 +1,12 @@
+{
+  "id": "HideDetailsMod",
+  "name": "Rixian's MSPain (Beta)",
+  "author": "TekExplorer & Rixian",
+  "description": "A Redrawn cards project",
+  "version": "v0.1.9",
+  "has_pck": true,
+  "has_dll": true,
+  "dependencies": [{ "id": "BaseLib" }],
+  "min_game_version": "0.107.0",
+  "affects_gameplay": false
+}
