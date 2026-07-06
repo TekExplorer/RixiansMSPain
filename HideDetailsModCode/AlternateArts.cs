@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
+using MegaCrit.Sts2.Core.Models.Characters;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 
@@ -19,6 +20,16 @@ public class AlternateArts
     private static readonly CardImg NoxiousFumesIfOutbreak = new("noxious_fumes_if_outbreak");
     private static readonly CardImg OutbreakIfNoxiousFumes = new("outbreak_if_noxious_fumes");
     private static readonly CardImg AbrasivePlus = new("abrasive_plus");
+    public class MindRotted
+    {
+        public static readonly CardImg Silent = new("token/mind_rot");
+        public static readonly CardImg Regent = new("token/mind_rot_regent");
+        public static readonly CardImg Necrobinder = new("token/mind_rot");
+        public static readonly CardImg Defect = new("token/mind_rot");
+        public static readonly CardImg Ironclad = new("token/mind_rot");
+        public static readonly List<CardImg?> All = [Silent, Regent, Necrobinder, Defect, Ironclad];
+    }
+
 
     public static Dictionary<Type, (List<CardImg?> cardImgs, Func<CardModel, CardImg?> factory)> Cards { get; } = new()
     {
@@ -73,6 +84,20 @@ public class AlternateArts
         }
         ),
         [typeof(Abrasive)] = ([AbrasivePlus], card => card.IsUpgraded ? AbrasivePlus : null),
+        [typeof(MindRot)] = (MindRotted.All, card =>
+        {
+            if (card.IsCanonical) return null;
+            return GetOwner(card)?.Character switch
+            {
+                Ironclad => MindRotted.Ironclad,
+                Silent => MindRotted.Silent,
+                Regent => MindRotted.Regent,
+                Necrobinder => MindRotted.Necrobinder,
+                Defect => MindRotted.Defect,
+                _ => null,
+            };
+        }
+        ),
     };
 
     static bool CardInDeck<T>(Player owner) where T : CardModel => CardInDeck(owner, card => card is T);
@@ -83,8 +108,7 @@ public class AlternateArts
 
     public class CardImg(string path)
     {
-        public string PortraitPath { get; } = ImageHelper.GetImagePath($"atlases/card_atlas.sprites/{path}.tres");
-
+        public string PortraitPath { get; } = $"res://images/atlases/card_atlas.sprites/{path}.tres";
         public string PortraitPngPath { get; } = $"res://artist_assets/{path}.png";
         // public string PortraitPngPath { get; } = ImageHelperExtensions.GetModImagePath($"{path}.png");
     }
