@@ -132,6 +132,15 @@ public class AlternateArts
         __instance.RotationDegrees -= AlignmentRotationDegrees;
     }
 
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(NCard), "Model", MethodType.Setter)]
+    public static void FixTiltWhenNotAlignment(NCard __instance, CardModel? value, CardModel? ____model)
+    {
+        if (!GodotObject.IsInstanceValid(__instance)) return;
+        if (value == ____model) return;
+        if (____model is Alignment && value is not Alignment) __instance.RotationDegrees = 0;
+        // if (____model is not Alignment && value is Alignment) __instance.RotationDegrees -= AlignmentRotationDegrees;
+    }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(NCard), "_Ready")]
