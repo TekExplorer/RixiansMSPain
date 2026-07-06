@@ -20,6 +20,7 @@ public class AlternateArts
     private static readonly CardImg PoisonlessAccelerant = new("poisonless_accelerant");
     private static readonly CardImg NoxiousFumesIfOutbreak = new("noxious_fumes_if_outbreak");
     private static readonly CardImg OutbreakIfNoxiousFumes = new("outbreak_if_noxious_fumes");
+    private static readonly CardImg MonologueIfLunarBlast = new("monologue_if_lunar_blast");
 
     public class MindRotted
     {
@@ -94,6 +95,17 @@ public class AlternateArts
                 Defect => MindRotted.Defect,
                 _ => null,
             };
+        }
+        ),
+        [typeof(Monologue)] = ([MonologueIfLunarBlast], card =>
+        {
+
+            if (card.IsCanonical) return null;
+            var me = GetOwner(card);
+            if (me == null) return null;
+
+            if (CardInDeck<LunarBlast>(me)) return MonologueIfLunarBlast;
+            return null;
         }
         ),
         // [typeof(KnowThyPlace)] = ([KnowThyPlacePlus], card => card.IsUpgraded ? KnowThyPlacePlus : null),
