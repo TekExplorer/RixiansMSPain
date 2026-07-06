@@ -62,7 +62,7 @@ internal class HideDetails
                 if (author.Exists())
                 {
                     LocString Replace(LocString str) =>
-                        LocString.GetIfExists("artists", ".discord.id." + str.GetRawText()) ?? str;
+                        LocString.GetIfExists("usernames", str.GetRawText()) ?? str;
 
                     var desc = new LocString("artists", ".description");
                     desc.Add("Artist", Replace(author));
