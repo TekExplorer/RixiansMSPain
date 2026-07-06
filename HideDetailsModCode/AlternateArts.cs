@@ -124,30 +124,57 @@ public class AlternateArts
     public static void TiltAlignmentReload(NCard __instance)
     {
         if (!GodotObject.IsInstanceValid(__instance)) return;
-        if (__instance.Model is Alignment) __instance.RotationDegrees -= AlignmentRotationDegrees;
+        if (__instance.Model is not Alignment)
+        {
+            // __instance.RotationDegrees = 0;
+            return;
+        }
+        __instance.RotationDegrees -= AlignmentRotationDegrees;
     }
+
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(NCard), "_Ready")]
+    [HarmonyPatch(typeof(NCard), "Reload")]
     public static void MakeGlowGlowier(NCard __instance, ref GpuParticles2D ____sparkles, ref NCardRareGlow? ____rareGlow, ref NCardUncommonGlow? ____uncommonGlow)
     {
         if (!GodotObject.IsInstanceValid(__instance)) return;
-        if (__instance.Model is not Glow) return;
+        if (!GodotObject.IsInstanceValid(__instance.Body)) return;
+        if (!GodotObject.IsInstanceValid(____sparkles)) return;
+
+        if (__instance.Model is not Glow)
+        {
+            __instance.KillRarityGlow();
+            __instance.RemoveChildSafely(____rareGlow);
+            ____rareGlow?.QueueFree();
+            ____rareGlow = null;
+            __instance.RemoveChildSafely(____uncommonGlow);
+            ____uncommonGlow?.QueueFree();
+            ____uncommonGlow = null;
+            return;
+        }
         var card = __instance;
 
         ____sparkles.Visible = true;
-        ____rareGlow = NCardRareGlow.Create();
-        if (____rareGlow != null)
+
+        if (____rareGlow == null)
         {
-            card.Body.AddChildSafely(____rareGlow);
-            card.Body.MoveChildSafely(____rareGlow, 1);
+            var glow = ____rareGlow = NCardRareGlow.Create();
+            if (GodotObject.IsInstanceValid(glow))
+            {
+                card.Body.AddChildSafely(glow);
+                card.Body.MoveChildSafely(glow, 1);
+            }
         }
 
-        ____uncommonGlow = NCardUncommonGlow.Create();
-        if (____uncommonGlow != null)
+        if (____uncommonGlow == null)
         {
-            card.Body.AddChildSafely(____uncommonGlow);
-            card.Body.MoveChildSafely(____uncommonGlow, 1);
+            var glow = ____uncommonGlow = NCardUncommonGlow.Create();
+            if (GodotObject.IsInstanceValid(glow))
+            {
+                card.Body.AddChildSafely(glow);
+                card.Body.MoveChildSafely(glow, 1);
+            }
         }
 
         card.CardHighlight.Modulate = NCardHighlight.gold;
