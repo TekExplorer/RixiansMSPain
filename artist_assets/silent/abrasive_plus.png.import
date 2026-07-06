@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://5bbf7jkvg3ho"
-path="res://.godot/imported/abrasive_plus.png-8a78f67314de1f2c1d0f5181452d56be.ctex"
+uid="uid://rtxugp37lyr4"
+path="res://.godot/imported/abrasive_plus.png-b3c6ec40d79a22c3c3ec7f4c40c71aff.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/abrasive_plus.png"
-dest_files=["res://.godot/imported/abrasive_plus.png-8a78f67314de1f2c1d0f5181452d56be.ctex"]
+source_file="res://artist_assets/silent/abrasive_plus.png"
+dest_files=["res://.godot/imported/abrasive_plus.png-b3c6ec40d79a22c3c3ec7f4c40c71aff.ctex"]
 
 [params]
 
