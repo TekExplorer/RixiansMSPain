@@ -38,12 +38,7 @@ internal class HideDetails
         if (MyModConfig.HideTooltips) __result = [];
     }
 
-    internal static string CreditsKeyFor(CardModel card)
-    {
-        var pool = card.Pool.Title.ToLowerInvariant();
-        var name = card.Id.Entry.ToLowerInvariant();
-        return $"{pool}.{name}"; // "silent.predator"
-    }
+
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(CardModel), "HoverTips", MethodType.Getter)]
@@ -54,32 +49,8 @@ internal class HideDetails
         try
         {
             List<IHoverTip> tips = [];
-            // tips.AddItem(new HoverTip(new LocString("credits", ".title")));
-            if (MyModConfig.ShowCreditsTooltip)
-            {
-                var author = new LocString("artists", CreditsKeyFor(__instance));
-                // var uploader = new LocString("artists", CreditsKeyFor(__instance) + ".uploader");
-                if (author.Exists())
-                {
-                    LocString Replace(LocString str) =>
-                        LocString.GetIfExists("usernames", str.GetRawText()) ?? str;
 
-                    var desc = new LocString("artists", ".description");
-                    desc.Add("Artist", Replace(author));
-
-                    tips.Add(new HoverTip(desc) { IsDebuff = true });
-                    //
-
-                    var overlayAuthor = new LocString("artists", CreditsKeyFor(__instance) + ".overlay");
-
-                    if (overlayAuthor.Exists())
-                    {
-                        var overlayDesc = new LocString("artists", ".description.overlay");
-                        overlayDesc.Add("Artist", Replace(overlayAuthor));
-                        tips.Add(new HoverTip(overlayDesc) { IsDebuff = true });
-                    }
-                }
-            }
+            if (MyModConfig.ShowCreditsTooltip) tips.AddRange(Credits.Tooltips(__instance));
 
             if (!MyModConfig.HideTooltips) tips.AddRange(__result);
             __result = tips;
@@ -89,22 +60,22 @@ internal class HideDetails
             MainFile.Logger.Error($"HoverTips Error: {e}");
         }
     }
-// static string GetCardName(CardModel card, string variant = "")
-// {
-//     if (!variant.Equals("")) variant = "_" + variant;
-//     return $"{card.Id.Entry.ToLowerInvariant()}{variant}";
-// }
-// static string GetAltImage(CardModel card, string variant = "")
-// {
-//     var img = $"atlases/alt_card_arts/{card.Pool.Title.ToLowerInvariant()}/{GetCardName(card, variant)}.tres";
-//     return ImageHelper.GetImagePath(img);
-// }
+    // static string GetCardName(CardModel card, string variant = "")
+    // {
+    //     if (!variant.Equals("")) variant = "_" + variant;
+    //     return $"{card.Id.Entry.ToLowerInvariant()}{variant}";
+    // }
+    // static string GetAltImage(CardModel card, string variant = "")
+    // {
+    //     var img = $"atlases/alt_card_arts/{card.Pool.Title.ToLowerInvariant()}/{GetCardName(card, variant)}.tres";
+    //     return ImageHelper.GetImagePath(img);
+    // }
 
-// static bool FileExists(string filePath)
-// {
-// ResourceLoader.Exists
-//     return File.Exists(filePath);
-// }
+    // static bool FileExists(string filePath)
+    // {
+    // ResourceLoader.Exists
+    //     return File.Exists(filePath);
+    // }
     [HarmonyPrefix]
     [HarmonyPatch(typeof(NCard), "ActivateRewardScreenGlow")]
     private static bool RemoveRewardCardRarityGlow()
@@ -113,7 +84,7 @@ internal class HideDetails
         return true;
     }
 
-// TODO: make it a class and include hiding the description background
+    // TODO: make it a class and include hiding the description background
     [HarmonyPostfix]
     [HarmonyPatch(typeof(NCard), "Reload")]
     private static void HideDescription(MegaLabel? ____descriptionLabel)

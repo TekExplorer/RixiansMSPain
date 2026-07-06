@@ -3,12 +3,12 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Players;
-using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Characters;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
+using MegaCrit.Sts2.Core.Nodes.Cards;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
@@ -20,7 +20,9 @@ public class AlternateArts
     private static readonly CardImg PoisonlessAccelerant = new("poisonless_accelerant");
     private static readonly CardImg NoxiousFumesIfOutbreak = new("noxious_fumes_if_outbreak");
     private static readonly CardImg OutbreakIfNoxiousFumes = new("outbreak_if_noxious_fumes");
-    private static readonly CardImg MonologueIfLunarBlast = new("monologue_if_lunar_blast");
+    // TODO: handle special credits
+    // TODO: Also, upgraded credits
+    private static readonly CardImg MonologueIfLunarBlast = new("monologue_if_lunar_blast", "textures404");
 
     public class MindRotted
     {
@@ -111,13 +113,25 @@ public class AlternateArts
         // [typeof(KnowThyPlace)] = ([KnowThyPlacePlus], card => card.IsUpgraded ? KnowThyPlacePlus : null),
     };
 
+    public const float AlignmentRotationDegrees = -15f;
+    // public const float AlignmentRotationDegrees = -6.28f;
+
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(NCard), "Reload")]
+    public static void TiltAlignmentReload(NCard __instance)
+    {
+        if (!GodotObject.IsInstanceValid(__instance)) return;
+        if (__instance.Model is Alignment) __instance.RotationDegrees -= AlignmentRotationDegrees;
+    }
+
     static bool CardInDeck<T>(Player owner) where T : CardModel => CardInDeck(owner, card => card is T);
 
     static bool CardInDeck(Player owner, Func<CardModel, bool> predicate) =>
         owner.Piles.Any(pile => pile.Cards.Any(predicate));
 
 
-    public class CardImg(string path)
+    public class CardImg(string path, string? credit = null)
     {
         public CardImg(CardModel card) : this($"{card.Pool.Title.ToLowerInvariant()}/{card.Id.Entry.ToLowerInvariant()}") { }
         public static CardImg Upgraded(CardModel card) => new CardImg(card).Upgraded();

@@ -1,5 +1,6 @@
 {
   ".description": "Art by [gold]@{Artist}[/gold]",
+  ".description.alt": "Alt Art by [gold]@{Artist}[/gold]",
   ".description.overlay": "Overlay by [gold]@{Artist}[/gold]",
   "colorless.alchemize": "ashlynrose",
   "colorless.anointed": "zenith_smk",
@@ -138,6 +139,7 @@
   "regent.meteor_shower": "d4vidthegoli4th",
   "regent.monarchs_gaze": "herobrineghoul",
   "regent.monologue": "pheatz",
+  "regent.monologue_if_lunar_blast": "textures404",
   "regent.neutron_aegis": "kemdari",
   "regent.orbit": "jinxedwitch",
   "regent.pale_blue_dot": "alexplain_later",
