@@ -182,91 +182,91 @@ public class AlternateArts
     [HarmonyPatch]
     public class ArtPatch
     {
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(CardModel), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
-    static void AllPortraitPaths(CardModel? __instance, ref IEnumerable<string>? __result)
-    {
-        if (__instance == null || __result == null) return;
-        if (!MyModConfig.UseCustomArt) return;
-        try
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(CardModel), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
+        static void AllPortraitPaths(CardModel? __instance, ref IEnumerable<string>? __result)
         {
-            if (Cards.TryGetValue(__instance.GetType(), out var found))
+            if (__instance == null || __result == null) return;
+            if (!MyModConfig.UseCustomArt) return;
+            try
             {
-                var img = found.factory(__instance);
-                if (img == null) return;
-                List<string> result = [.. __result];
+                if (Cards.TryGetValue(__instance.GetType(), out var found))
+                {
+                    var img = found.factory(__instance);
+                    if (img == null) return;
+                    List<string> result = [.. __result];
 
-                result.AddRange(found.cardImgs.Select(img => img.PortraitPath));
+                    result.AddRange(found.cardImgs.Select(img => img.PortraitPath));
 
-                result.AddRange(
-                    found.cardImgs
-                        .ConvertAll(img => img.Upgraded())
-                        .Where(upgraded => upgraded.Exists())
-                        .Select(upgraded => upgraded.PortraitPath)
-                );
+                    result.AddRange(
+                        found.cardImgs
+                            .ConvertAll(img => img.Upgraded())
+                            .Where(upgraded => upgraded.Exists())
+                            .Select(upgraded => upgraded.PortraitPath)
+                    );
 
+                    var upgraded = CardImg.Upgraded(__instance);
+                    if (upgraded.Exists()) result.Add(upgraded.PortraitPath);
+
+                    __result = result;
+
+                }
+            }
+            catch (Exception e)
+            {
+                MainFile.Logger.Error($"Error in AllPortraitPaths: {e}");
+            }
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(CardModel), nameof(CardModel.PortraitPath), MethodType.Getter)]
+        static void PortraitPath(CardModel? __instance, ref string __result)
+        {
+            if (!MyModConfig.UseCustomArt) return;
+            if (__instance == null) return;
+            try
+            {
                 var upgraded = CardImg.Upgraded(__instance);
-                if (upgraded.Exists()) result.Add(upgraded.PortraitPath);
+                if (__instance.IsUpgraded && upgraded.Exists()) __result = upgraded.PortraitPath;
 
-                __result = result;
-
+                if (Cards.TryGetValue(__instance.GetType(), out var found))
+                {
+                    var img = found.factory(__instance);
+                    if (img == null) return;
+                    if (__instance.IsUpgraded && img.Upgraded().Exists()) img = img.Upgraded();
+                    __result = img.PortraitPath;
+                }
             }
-        }
-        catch (Exception e)
-        {
-            MainFile.Logger.Error($"Error in AllPortraitPaths: {e}");
-        }
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(CardModel), nameof(CardModel.PortraitPath), MethodType.Getter)]
-    static void PortraitPath(CardModel? __instance, ref string __result)
-    {
-        if (!MyModConfig.UseCustomArt) return;
-        if (__instance == null) return;
-        try
-        {
-            var upgraded = CardImg.Upgraded(__instance);
-            if (__instance.IsUpgraded && upgraded.Exists()) __result = upgraded.PortraitPath;
-
-            if (Cards.TryGetValue(__instance.GetType(), out var found))
+            catch (Exception e)
             {
-                var img = found.factory(__instance);
-                if (img == null) return;
-                if (__instance.IsUpgraded && img.Upgraded().Exists()) img = img.Upgraded();
-                __result = img.PortraitPath;
+                MainFile.Logger.Error($"Error in PortraitPath: {e}");
             }
         }
-        catch (Exception e)
-        {
-            MainFile.Logger.Error($"Error in PortraitPath: {e}");
-        }
-    }
 
-    // PortraitPngPath
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(CardModel), "PortraitPngPath", MethodType.Getter)]
-    static void PortraitPngPath(CardModel? __instance, ref string __result)
-    {
-        if (!MyModConfig.UseCustomArt) return;
-        if (__instance == null) return;
-        try
+        // PortraitPngPath
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(CardModel), "PortraitPngPath", MethodType.Getter)]
+        static void PortraitPngPath(CardModel? __instance, ref string __result)
         {
-            var upgraded = CardImg.Upgraded(__instance);
-            if (__instance.IsUpgraded && upgraded.Exists()) __result = upgraded.PortraitPngPath;
-
-            if (Cards.TryGetValue(__instance.GetType(), out var found))
+            if (!MyModConfig.UseCustomArt) return;
+            if (__instance == null) return;
+            try
             {
-                var img = found.factory(__instance);
-                if (img == null) return;
-                if (__instance.IsUpgraded && img.Upgraded().Exists()) img = img.Upgraded();
-                __result = img.PortraitPngPath;
+                var upgraded = CardImg.Upgraded(__instance);
+                if (__instance.IsUpgraded && upgraded.Exists()) __result = upgraded.PortraitPngPath;
+
+                if (Cards.TryGetValue(__instance.GetType(), out var found))
+                {
+                    var img = found.factory(__instance);
+                    if (img == null) return;
+                    if (__instance.IsUpgraded && img.Upgraded().Exists()) img = img.Upgraded();
+                    __result = img.PortraitPngPath;
+                }
+            }
+            catch (Exception e)
+            {
+                MainFile.Logger.Error($"Error in PortraitPngPath: {e}");
             }
         }
-        catch (Exception e)
-        {
-            MainFile.Logger.Error($"Error in PortraitPngPath: {e}");
-        }
-    }
     }
 }
