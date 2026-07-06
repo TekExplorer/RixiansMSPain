@@ -24,13 +24,13 @@ public class AlternateArts
     {
         [typeof(Shiv)] = ([Shiv2], _ => MyModConfig.UseBetaShivArt ? Shiv2 : null),
         [typeof(Predator)] = ([PredatorGoldAxe], card =>
-                {
-                    if (card.IsCanonical) return null;
-                    var me = GetOwner(card);
-                    if (me == null) return null;
-                    if (CardInDeck<GoldAxe>(me)) return PredatorGoldAxe;
-                    return null;
-                }
+        {
+            if (card.IsCanonical) return null;
+            var me = GetOwner(card);
+            if (me == null) return null;
+            if (CardInDeck<GoldAxe>(me)) return PredatorGoldAxe;
+            return null;
+        }
         ),
         [typeof(Accelerant)] = ([PoisonlessAccelerant], card =>
         {
@@ -51,26 +51,26 @@ public class AlternateArts
         }
         ),
         [typeof(NoxiousFumes)] = ([NoxiousFumesIfOutbreak], card =>
-                {
-                    if (card.IsCanonical) return null;
-                    var me = GetOwner(card);
-                    if (me == null) return null;
+        {
+            if (card.IsCanonical) return null;
+            var me = GetOwner(card);
+            if (me == null) return null;
 
-                    var DeckHasOutbreak = CardInDeck<Outbreak>(me);
-                    var HasOutbreakPower = me.HasPower<OutbreakPower>();
-                    return (DeckHasOutbreak || HasOutbreakPower) ? NoxiousFumesIfOutbreak : null;
-                }
+            var DeckHasOutbreak = CardInDeck<Outbreak>(me);
+            var HasOutbreakPower = me.HasPower<OutbreakPower>();
+            return (DeckHasOutbreak || HasOutbreakPower) ? NoxiousFumesIfOutbreak : null;
+        }
         ),
         [typeof(Outbreak)] = ([OutbreakIfNoxiousFumes], card =>
-    {
-        if (card.IsCanonical) return null;
-        var me = GetOwner(card);
-        if (me == null) return null;
+        {
+            if (card.IsCanonical) return null;
+            var me = GetOwner(card);
+            if (me == null) return null;
 
-        var DeckHasNoxiousFumes = CardInDeck<NoxiousFumes>(me);
-        var HasNoxiousFumesPower = me.HasPower<NoxiousFumesPower>();
-        return (DeckHasNoxiousFumes || HasNoxiousFumesPower) ? OutbreakIfNoxiousFumes : null;
-    }
+            var DeckHasNoxiousFumes = CardInDeck<NoxiousFumes>(me);
+            var HasNoxiousFumesPower = me.HasPower<NoxiousFumesPower>();
+            return (DeckHasNoxiousFumes || HasNoxiousFumesPower) ? OutbreakIfNoxiousFumes : null;
+        }
         ),
         [typeof(Abrasive)] = ([AbrasivePlus], card => card.IsUpgraded ? AbrasivePlus : null),
     };
