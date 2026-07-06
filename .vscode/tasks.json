@@ -2,14 +2,13 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build HideDetailsMod",
+      "label": "Build HideDetailsMod (Production)",
       "type": "shell",
       "command": "dotnet",
       "args": [
         "build",
         "${workspaceFolder}/HideDetailsMod.csproj",
-        // "-c",
-        // "Debug"
+        "-p:WorkshopChannel=Production"
       ],
       "group": {
         "kind": "build",
@@ -18,16 +17,63 @@
       "problemMatcher": ["$msCompile"]
     },
     {
-      "label": "Publish HideDetailsMod",
+      "label": "Build HideDetailsMod (Beta)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/HideDetailsMod.csproj",
+        "-p:WorkshopChannel=Beta"
+      ],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "Publish HideDetailsMod (Production)",
       "type": "shell",
       "command": "dotnet",
       "args": [
         "publish",
         "${workspaceFolder}/HideDetailsMod.csproj",
         "-c",
-        "Release"
+        "Release",
+        "-p:WorkshopChannel=Production"
       ],
       "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "Publish HideDetailsMod (Beta)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/HideDetailsMod.csproj",
+        "-c",
+        "Release",
+        "-p:WorkshopChannel=Beta"
+      ],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "Upload HideDetailsMod (Production)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "call",
+        "${workspaceFolder}\\workshop\\upload_to_workshop.bat",
+        "Production"
+      ]
+    },
+    {
+      "label": "Upload HideDetailsMod (Beta)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "call",
+        "${workspaceFolder}\\workshop\\upload_to_workshop.bat",
+        "Beta"
+      ]
     }
   ]
 }

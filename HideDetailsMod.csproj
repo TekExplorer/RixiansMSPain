@@ -91,16 +91,22 @@
     </Target>
 
     <!-- Workshop -->
+    <PropertyGroup>
+        <WorkshopChannel Condition="'$(WorkshopChannel)' == ''">Production</WorkshopChannel>
+        <WorkshopRoot>$(MSBuildProjectDirectory)\workshop\$(WorkshopChannel)</WorkshopRoot>
+        <WorkshopContentRoot>$(WorkshopRoot)\content</WorkshopContentRoot>
+    </PropertyGroup>
+
     <Target Name="CopyToWorkshopContent" AfterTargets="PostBuildEvent">
-        <Message Text="Copying .dll .pdb and .json to workshop/content." Importance="high"/>
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildProjectDirectory)/workshop/content/"/>
-        <Copy SourceFiles="$(AssemblyName).json" DestinationFolder="$(MSBuildProjectDirectory)/workshop/content/"/>
-        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(MSBuildProjectDirectory)/workshop/content/"/>
+        <Message Text="Copying .dll .pdb and .json to $(WorkshopChannel)/content." Importance="high"/>
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(WorkshopContentRoot)"/>
+        <Copy SourceFiles="$(AssemblyName).json" DestinationFolder="$(WorkshopContentRoot)"/>
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(WorkshopContentRoot)"/>
     </Target>
 
     <Target Name="CopyPckToWorkshopContent" AfterTargets="GodotPublish">
         <Copy SourceFiles="$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck" 
-              DestinationFolder="$(MSBuildProjectDirectory)/workshop/content/" 
+              DestinationFolder="$(WorkshopContentRoot)" 
               Condition="Exists('$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck')"/>
     </Target>
 </Project>

@@ -1,17 +1,23 @@
+param(
+    [ValidateSet('Beta', 'Production')]
+    [string]$Channel = 'Production'
+)
+
 $ErrorActionPreference = 'Stop'
 
-# workshop\ is the root for the upload workspace.
-$workshopRoot = Split-Path -Parent $PSScriptRoot
+$workspaceRoot = Split-Path -Parent $PSScriptRoot
+$workshopRoot = Join-Path $workspaceRoot $Channel
 $runtimeInfo = [System.Runtime.InteropServices.RuntimeInformation]
 # Use the platform-specific uploader name on Windows vs. other systems.
 $uploaderName = if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) {
     'ModUploader.exe'
-} else {
+}
+else {
     'ModUploader'
 }
 
 # This is the uploader executable inside workshop\uploader.
-$uploaderPath = Join-Path $workshopRoot "uploader\$uploaderName"
+$uploaderPath = Join-Path $workspaceRoot "uploader\$uploaderName"
 # These are the files that must exist before upload starts.
 $contentRoot = Join-Path $workshopRoot 'content'
 $requiredContentFiles = @(
@@ -20,6 +26,10 @@ $requiredContentFiles = @(
     'HideDetailsMod.pdb'
     'HideDetailsMod.pck'
 )
+
+if (-not (Test-Path $workshopRoot)) {
+    throw "Workshop channel folder not found at '$workshopRoot'."
+}
 
 # Collect any missing required files so we can fail early.
 $missingFiles = foreach ($fileName in $requiredContentFiles) {
