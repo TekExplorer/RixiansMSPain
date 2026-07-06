@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cgb5ejbekgb42"
-path="res://.godot/imported/sucker_punch.png-5de51a2b6ad80a81fa34042dabc75c9d.ctex"
+uid="uid://bb127es68w47b"
+path="res://.godot/imported/sucker_punch.png-5d4d417e0e90757bd2fcad71c166513f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/silent/sucker_punch.png"
-dest_files=["res://.godot/imported/sucker_punch.png-5de51a2b6ad80a81fa34042dabc75c9d.ctex"]
+source_file="res://artist_assets/silent/beta/sucker_punch.png"
+dest_files=["res://.godot/imported/sucker_punch.png-5d4d417e0e90757bd2fcad71c166513f.ctex"]
 
 [params]
 
