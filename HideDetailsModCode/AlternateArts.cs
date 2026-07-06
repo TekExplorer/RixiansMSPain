@@ -3,12 +3,14 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Characters;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
+using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
@@ -125,6 +127,31 @@ public class AlternateArts
         if (__instance.Model is Alignment) __instance.RotationDegrees -= AlignmentRotationDegrees;
     }
 
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(NCard), "_Ready")]
+    public static void MakeGlowGlowier(NCard __instance, ref GpuParticles2D ____sparkles, ref NCardRareGlow? ____rareGlow, ref NCardUncommonGlow? ____uncommonGlow)
+    {
+        if (!GodotObject.IsInstanceValid(__instance)) return;
+        if (__instance.Model is not Glow) return;
+        var card = __instance;
+
+        ____sparkles.Visible = true;
+        ____rareGlow = NCardRareGlow.Create();
+        if (____rareGlow != null)
+        {
+            card.Body.AddChildSafely(____rareGlow);
+            card.Body.MoveChildSafely(____rareGlow, 1);
+        }
+
+        ____uncommonGlow = NCardUncommonGlow.Create();
+        if (____uncommonGlow != null)
+        {
+            card.Body.AddChildSafely(____uncommonGlow);
+            card.Body.MoveChildSafely(____uncommonGlow, 1);
+        }
+
+        card.CardHighlight.Modulate = NCardHighlight.gold;
+    }
     static bool CardInDeck<T>(Player owner) where T : CardModel => CardInDeck(owner, card => card is T);
 
     static bool CardInDeck(Player owner, Func<CardModel, bool> predicate) =>
