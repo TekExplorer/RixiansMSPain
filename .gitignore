@@ -11,3 +11,4 @@ packages/
 *.user
 Directory.Build.props
 .vscode/settings.json
+mod-uploader.log

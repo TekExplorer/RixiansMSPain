@@ -57,6 +57,9 @@
       "label": "Upload HideDetailsMod (Production)",
       "type": "shell",
       "command": "cmd",
+      "options": {
+        "cwd": "${workspaceFolder}/workshop"
+      },
       "args": [
         "/c",
         "call",
@@ -68,6 +71,9 @@
       "label": "Upload HideDetailsMod (Beta)",
       "type": "shell",
       "command": "cmd",
+      "options": {
+        "cwd": "${workspaceFolder}/workshop"
+      },
       "args": [
         "/c",
         "call",
