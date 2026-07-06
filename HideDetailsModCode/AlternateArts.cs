@@ -151,6 +151,37 @@ public class AlternateArts
         public bool Exists() => ResourceLoader.Exists(PortraitPath);
     }
 
+
+
+    public static Player? GetOwner(CardModel? card)
+    {
+        if (card == null) return null;
+        if (card.IsCanonical) return null;
+        Player? player = null;
+        try
+        {
+            player ??= card.Owner;
+        }
+        catch (Exception e)
+        {
+            MainFile.Logger.Warn($"card.Owner errored with: {e}");
+        }
+
+        try
+        {
+            player ??= LocalContext.GetMe(card.RunState);
+        }
+        catch (Exception e)
+        {
+            MainFile.Logger.Warn($"LocalContext.GetMe(card.RunState) errored with: {e}");
+        }
+
+        return player;
+    }
+
+    [HarmonyPatch]
+    public class ArtPatch
+    {
     [HarmonyPostfix]
     [HarmonyPatch(typeof(CardModel), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
     static void AllPortraitPaths(CardModel? __instance, ref IEnumerable<string>? __result)
@@ -237,30 +268,5 @@ public class AlternateArts
             MainFile.Logger.Error($"Error in PortraitPngPath: {e}");
         }
     }
-
-    public static Player? GetOwner(CardModel? card)
-    {
-        if (card == null) return null;
-        if (card.IsCanonical) return null;
-        Player? player = null;
-        try
-        {
-            player ??= card.Owner;
-        }
-        catch (Exception e)
-        {
-            MainFile.Logger.Warn($"card.Owner errored with: {e}");
-        }
-
-        try
-        {
-            player ??= LocalContext.GetMe(card.RunState);
-        }
-        catch (Exception e)
-        {
-            MainFile.Logger.Warn($"LocalContext.GetMe(card.RunState) errored with: {e}");
-        }
-
-        return player;
     }
 }
