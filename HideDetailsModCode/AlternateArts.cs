@@ -2,6 +2,7 @@ using BaseLib.Abstracts;
 using BaseLib.Extensions;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -30,6 +31,8 @@ public partial class AlternateArts
     // TODO: Also, upgraded credits
     private static readonly CardImg MonologueIfLunarBlast = new("monologue_if_lunar_blast", "textures404");
     private static readonly CardImg CalculatedGambleNoDraw = new("calculated_gamble_no_draw");
+    private static readonly CardImg SpoilsOfBattleIfFallingStarPlayed = new("regent/spoils_of_battle_if_falling_star_played");
+
     // Parry
     // Shows if in deck
     // Or when previewed/examined (or hover, if possible)
@@ -144,6 +147,15 @@ public partial class AlternateArts
             return PerryWho;
         }
         ),
+        [typeof(SpoilsOfBattle)] = ([SpoilsOfBattleIfFallingStarPlayed], card =>
+        {
+            if (card.IsCanonical) return null;
+            var me = GetOwner(card);
+            if (me == null) return null;
+            var PlayedFallingStarThisCombat = CombatManager.Instance.History.CardPlaysFinished.Any(entry => entry.Actor == me.Creature && entry.CardPlay.Card is FallingStar);
+            return PlayedFallingStarThisCombat ? SpoilsOfBattleIfFallingStarPlayed : null;
+        }
+        ),
     };
     static bool CardIsBeingInspected(CardModel card)
     {
@@ -153,28 +165,53 @@ public partial class AlternateArts
     }
 
     // TODO: optimize
-    class UpdateOnPower : CustomSingletonModel
+    class UpdateCards : CustomSingletonModel
     {
-        public UpdateOnPower() : base(HookType.Combat) { }
+        public UpdateCards() : base(HookType.Combat) { }
 
         public override Task AfterPowerAmountChanged(PlayerChoiceContext choiceContext, PowerModel power, decimal amount, Creature? applier, CardModel? cardSource)
         {
             if (power is NoDrawPower && power.Owner.IsPlayer)
             {
-                var cards = power.Owner.Player?.Piles?.Where(pile => pile.Type != PileType.Deck).SelectMany(pile => pile.Cards);
+                var cards = power.Owner.Player?.Piles?.Where(pile => pile.Type != PileType.Deck).SelectMany(pile => pile.Cards) ?? [];
 
-                foreach (var card in cards ?? [])
+                foreach (var card in cards)
                 {
                     if (card is CalculatedGamble || card is Outbreak || card is NoxiousFumes)
                     {
-                        var nCard = NCard.FindOnTable(card);
-                        var reload = AccessTools.Method(typeof(NCard), "Reload");
-                        reload?.Invoke(nCard, []);
-                        // CardCmd.Preview(card);
+                        ReloadCard(card);
                     }
                 }
             }
             return Task.CompletedTask;
+        }
+        public override Task AfterCardPlayed(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+        {
+            if (cardPlay.Card is FallingStar)
+            {
+                var owner = GetOwner(cardPlay.Card);
+                var cards = owner?.Piles?.Where(pile => pile.Type != PileType.Deck).SelectMany(pile => pile.Cards) ?? [];
+                foreach (var card in cards)
+                {
+                    if (card is SpoilsOfBattle)
+                    {
+                        ReloadCard(card);
+                    }
+                }
+            }
+            return Task.CompletedTask;
+        }
+        public static void ReloadCard(CardModel card)
+        {
+            var nCard = NCard.FindOnTable(card);
+            ReloadCard(nCard);
+
+        }
+        public static void ReloadCard(NCard? nCard)
+        {
+            if (nCard == null) return;
+            var reload = AccessTools.Method(typeof(NCard), "Reload");
+            reload?.Invoke(nCard, []);
         }
     }
 

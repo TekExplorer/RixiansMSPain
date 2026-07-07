@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdjlv0tehh65l"
-path="res://.godot/imported/spoils_of_battle.jpg-07aee757daac2a056e6fa7e8e26bf617.ctex"
+uid="uid://dx2vphie3pumr"
+path="res://.godot/imported/spoils_of_battle.png-24d386165406a85a0b4a45e402a28fd4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/regent/spoils_of_battle.jpg"
-dest_files=["res://.godot/imported/spoils_of_battle.jpg-07aee757daac2a056e6fa7e8e26bf617.ctex"]
+source_file="res://artist_assets/regent/spoils_of_battle.png"
+dest_files=["res://.godot/imported/spoils_of_battle.png-24d386165406a85a0b4a45e402a28fd4.ctex"]
 
 [params]
 
