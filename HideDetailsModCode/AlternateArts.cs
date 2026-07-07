@@ -20,7 +20,7 @@ using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
 namespace HideDetailsMod.HideDetailsModCode;
 
 [HarmonyPatch]
-public partial class AlternateArts
+public class AlternateArts
 {
     private static readonly CardImg PredatorGoldAxe = new("predator_gold_axe");
     private static readonly CardImg Shiv2 = new("shiv_2");
@@ -159,13 +159,15 @@ public partial class AlternateArts
     };
     static bool CardIsBeingInspected(CardModel card)
     {
-        var nCard = NCard.FindOnTable(card);
+        if (InspectCardPatch.CardBeingInspected[card]) return true;
+
+        NCard? nCard = NCard.FindOnTable(card);
         if (nCard == null) return false;
-        return InspectCardPatch.CardBeingInspected[nCard];
+        return InspectCardPatch.NCardBeingInspected[nCard];
     }
 
     // TODO: optimize
-    class UpdateCards : CustomSingletonModel
+    public class UpdateCards : CustomSingletonModel
     {
         public UpdateCards() : base(HookType.Combat) { }
 
