@@ -2,7 +2,6 @@ using BaseLib.Abstracts;
 using BaseLib.Extensions;
 using Godot;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -20,7 +19,7 @@ using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
 namespace HideDetailsMod.HideDetailsModCode;
 
 [HarmonyPatch]
-public class AlternateArts
+public partial class AlternateArts
 {
     private static readonly CardImg PredatorGoldAxe = new("predator_gold_axe");
     private static readonly CardImg Shiv2 = new("shiv_2");
@@ -31,6 +30,11 @@ public class AlternateArts
     // TODO: Also, upgraded credits
     private static readonly CardImg MonologueIfLunarBlast = new("monologue_if_lunar_blast", "textures404");
     private static readonly CardImg CalculatedGambleNoDraw = new("calculated_gamble_no_draw");
+    // Parry
+    // Shows if in deck
+    // Or when previewed/examined (or hover, if possible)
+    // May need to have its file moved :p
+    private static readonly CardImg PerryWho = new("parry_alt");
 
     public class MindRotted
     {
@@ -131,7 +135,22 @@ public class AlternateArts
             return (HasFiddle || HasNoDrawPower) ? CalculatedGambleNoDraw : null;
         }
         ),
+        [typeof(Parry)] = ([PerryWho], card =>
+        {
+            if (card.IsCanonical) return null;
+            if (card.Pile != null) return null; // regular perry version
+                                                // pile is null, and not canonical. probably a shop or something
+            if (CardIsBeingInspected(card)) return null;
+            return PerryWho;
+        }
+        ),
     };
+    static bool CardIsBeingInspected(CardModel card)
+    {
+        var nCard = NCard.FindOnTable(card);
+        if (nCard == null) return false;
+        return InspectCardPatch.CardBeingInspected[nCard];
+    }
 
     // TODO: optimize
     class UpdateOnPower : CustomSingletonModel
