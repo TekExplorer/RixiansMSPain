@@ -92,13 +92,12 @@ public class MakeFullArt
             ____ancientBorder.Texture = referenceCard.AncientBorder;
 
             // Title
-            ____ancientBanner.Visible = !MyModConfig.HideTitle;
             ____ancientBanner.Material = referenceCard.BannerMaterial;
 
             if (model.Rarity == CardRarity.Ancient)
-                ____ancientBanner.Visible = !MyModConfig.HideTitle;
+                ____ancientBanner.Visible = !MyModConfig.HideTitleBanner;
             else
-                ____banner.Visible = !MyModConfig.HideTitle;
+                ____banner.Visible = !MyModConfig.HideTitleBanner;
 
             // Description
             ____ancientTextBg.Texture = referenceCard.AncientTextBg;

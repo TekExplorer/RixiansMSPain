@@ -253,18 +253,27 @@ public class AlternateArts
         if (!GodotObject.IsInstanceValid(__instance.Body)) return;
         if (!GodotObject.IsInstanceValid(____sparkles)) return;
 
-        if (__instance.Model is not Glow)
+        static void RemoveRarityGlow(ref NCardRareGlow? ____rareGlow, ref NCardUncommonGlow? ____uncommonGlow, NCard card)
         {
-            __instance.KillRarityGlow();
-            __instance.RemoveChildSafely(____rareGlow);
+            card.KillRarityGlow();
+
+            card.RemoveChildSafely(____rareGlow);
             ____rareGlow?.QueueFree();
             ____rareGlow = null;
-            __instance.RemoveChildSafely(____uncommonGlow);
+
+            card.RemoveChildSafely(____uncommonGlow);
             ____uncommonGlow?.QueueFree();
             ____uncommonGlow = null;
+        }
+
+        var card = __instance;
+
+        if (card.Model is not Glow)
+        {
+            ____sparkles.Visible = false;
+            RemoveRarityGlow(ref ____rareGlow, ref ____uncommonGlow, card);
             return;
         }
-        var card = __instance;
 
         ____sparkles.Visible = true;
 

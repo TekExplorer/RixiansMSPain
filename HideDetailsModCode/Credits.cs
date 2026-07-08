@@ -47,7 +47,6 @@ class Credits
     internal static LocString Replace(LocString str) => LocString.GetIfExists("usernames", str.GetRawText()) ?? str;
     internal static string CreditsKeyFor(CardModel card)
     {
-        return DefaultCreditsKeyFor(card);
         var pool = PoolOf(card);
         // TODO: Find a better way to do this. read from AlternateArts somehow?
         var name = card.PortraitPath.GetBaseName().GetFile();

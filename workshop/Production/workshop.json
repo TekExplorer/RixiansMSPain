@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Update Skewer, Reflect, and The Bomb with signed versions of their art",
-  "tags": ["Art Pack", "Full Art", "Art", "Rixian", "TekExplorer"],
+  "changeNote": "Fix some credits\nFix a bug with Glow's Sparkles showing on future non-Glow card previews\nMade the title banner a separate setting so it doesn't block the top of the art.",
+  "tags": ["Cosmetics", "Art Pack", "Full Art", "Art", "Rixian", "TekExplorer"],
   "dependencies": [3737335127]
 }
