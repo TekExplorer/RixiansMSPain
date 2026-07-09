@@ -19,13 +19,15 @@ internal class MyModConfig : SimpleModConfig
     [ConfigSection("Card UI (Cheating)")]
     public static bool HideTitle { get; set; } = true;
     public static bool HideTitleBanner { get; set; } = true;
+    public static bool MakeEverythingAncient { get; set; } = false;
+    public static bool HideCardRewardRarityGlow { get; set; } = true;
     public static bool HideDescription { get; set; } = true;
     public static bool HideEnergy { get; set; } = true;
     public static bool HideStars { get; set; } = true;
     public static bool HideType { get; set; } = true;
-    public static bool HideCardRewardRarityGlow { get; set; } = true;
     public static bool HideTooltips { get; set; } = true;
 
     [ConfigSection("Exclusions (Cheating)")]
     public static bool ExcludeFranticEscape { get; set; } = false;
+
 }

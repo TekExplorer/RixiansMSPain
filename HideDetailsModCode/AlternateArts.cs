@@ -27,9 +27,7 @@ public class AlternateArts
     private static readonly CardImg PoisonlessAccelerant = new("poisonless_accelerant");
     private static readonly CardImg NoxiousFumesIfOutbreak = new("noxious_fumes_if_outbreak");
     private static readonly CardImg OutbreakIfNoxiousFumes = new("outbreak_if_noxious_fumes");
-    // TODO: handle special credits
-    // TODO: Also, upgraded credits
-    private static readonly CardImg MonologueIfLunarBlast = new("monologue_if_lunar_blast", "textures404");
+    private static readonly CardImg MonologueIfLunarBlast = new("monologue_if_lunar_blast");
     private static readonly CardImg CalculatedGambleNoDraw = new("calculated_gamble_no_draw");
     private static readonly CardImg SpoilsOfBattleIfFallingStarPlayed = new("regent/spoils_of_battle_if_falling_star_played");
 
@@ -173,10 +171,10 @@ public class AlternateArts
 
         public override Task AfterPowerAmountChanged(PlayerChoiceContext choiceContext, PowerModel power, decimal amount, Creature? applier, CardModel? cardSource)
         {
-            if (power is NoDrawPower && power.Owner.IsPlayer)
+            if ((power is NoDrawPower || power is OutbreakPower || power is NoxiousFumesPower) && power.Owner.IsPlayer)
             {
-                var cards = power.Owner.Player?.Piles?.Where(pile => pile.Type != PileType.Deck).SelectMany(pile => pile.Cards) ?? [];
-
+                var owner = GetOwner(power);
+                var cards = CardsOf(owner, IncludeDeck: false);
                 foreach (var card in cards)
                 {
                     if (card is CalculatedGamble || card is Outbreak || card is NoxiousFumes)
@@ -192,7 +190,8 @@ public class AlternateArts
             if (cardPlay.Card is FallingStar)
             {
                 var owner = GetOwner(cardPlay.Card);
-                var cards = owner?.Piles?.Where(pile => pile.Type != PileType.Deck).SelectMany(pile => pile.Cards) ?? [];
+                var cards = CardsOf(owner, IncludeDeck: false);
+
                 foreach (var card in cards)
                 {
                     if (card is SpoilsOfBattle)
@@ -203,18 +202,18 @@ public class AlternateArts
             }
             return Task.CompletedTask;
         }
-        public static void ReloadCard(CardModel card)
-        {
-            var nCard = NCard.FindOnTable(card);
-            ReloadCard(nCard);
+    }
+    public static void ReloadCard(CardModel card)
+    {
+        var nCard = NCard.FindOnTable(card);
+        ReloadCard(nCard);
 
-        }
-        public static void ReloadCard(NCard? nCard)
-        {
-            if (nCard == null) return;
-            var reload = AccessTools.Method(typeof(NCard), "Reload");
-            reload?.Invoke(nCard, []);
-        }
+    }
+    public static void ReloadCard(NCard? nCard)
+    {
+        if (nCard == null) return;
+        var reload = AccessTools.Method(typeof(NCard), "Reload");
+        reload?.Invoke(nCard, []);
     }
 
     public const float AlignmentRotationDegrees = -15f;
@@ -299,10 +298,10 @@ public class AlternateArts
 
         card.CardHighlight.Modulate = NCardHighlight.gold;
     }
-    static bool CardInDeck<T>(Player owner) where T : CardModel => CardInDeck(owner, card => card is T);
+    static bool CardInDeck<T>(Player? owner) where T : CardModel => CardInDeck(owner, card => card is T);
 
-    static bool CardInDeck(Player owner, Func<CardModel, bool> predicate) =>
-        owner.Piles.Any(pile => pile.Cards.Any(predicate));
+    static bool CardInDeck(Player? owner, Func<CardModel, bool> predicate) =>
+        owner?.Piles.Any(pile => pile.Cards.Any(predicate)) ?? false;
 
 
     [HarmonyPatch]
@@ -311,7 +310,7 @@ public class AlternateArts
         // static BaseLib.Utils.AddedNode<NCard, Control> thing;
     }
 
-    public class CardImg(string path, string? credit = null)
+    public class CardImg(string path)
     {
         public CardImg(CardModel card) : this($"{card.Pool.Title.ToLowerInvariant()}/{card.Id.Entry.ToLowerInvariant()}") { }
         public static CardImg Upgraded(CardModel card) => new CardImg(card).Upgraded();
@@ -331,7 +330,48 @@ public class AlternateArts
         public bool Exists() => ResourceLoader.Exists(PortraitPath);
     }
 
+    public static readonly CardImg2[] alts = [
+        new(typeof(Shiv), "shiv2", card => MyModConfig.UseBetaShivArt),
+        new(typeof(Predator), "predator_gold_axe", card => CardInDeck<GoldAxe>(GetOwner(card))),
+        new(typeof(Outbreak), "outbreak_if_noxious_fumes", card => {
+            var me = GetOwner(card);
+            if (me == null) return false;
+            return CardInDeck<NoxiousFumes>(me) || me.HasPower<NoxiousFumesPower>();
+        }, WhenPowerApplied: (context, power, amount) => {
+            if (power is not NoxiousFumesPower) return;
+            CardsOf(GetOwner(power), IncludeDeck: false).Where(card => card is Outbreak).Do(ReloadCard);
+        }),
+        new(typeof(NoxiousFumes), "noxious_fumes_if_outbreak", card => {
+            var me = GetOwner(card);
+            if (me == null) return false;
+            return CardInDeck<Outbreak>(me) || me.HasPower<OutbreakPower>();
+        }, WhenPowerApplied: (context, power, amount) => {
+            if (power is not OutbreakPower) return;
+            CardsOf(GetOwner(power), IncludeDeck: false).Where(card => card is NoxiousFumes).Do(ReloadCard);
+        }),
+        new(typeof(Monologue), "monologue_if_lunar_blast", card => CardInDeck<LunarBlast>(GetOwner(card))),
+        // new(typeof(MindRot)),
+    ];
+    public record CardImg2(Type CardType, string Path, Func<CardModel, bool> Condition,
+        Action<PlayerChoiceContext, CardPlay>? WhenCardPlayed = null,
+        Action<PlayerChoiceContext, PowerModel, decimal>? WhenPowerApplied = null
+    )
+    {
+        public string PortraitPath => $"res://images/atlases/card_atlas.sprites/{Path}.tres";
+        private string _PortraitJpgPath => $"res://artist_assets/{Path}.jpg";
+        private string _PortraitPngPath => $"res://artist_assets/{Path}.png";
+        public string PortraitPngPath => ResourceLoader.Exists(_PortraitJpgPath) ? _PortraitJpgPath : _PortraitPngPath;
+        public bool IsUpgraded => Path.EndsWith("_plus");
+        // public string PortraitPngPath { get; } = ImageHelperExtensions.GetModImagePath($"{path}.png");
+        public CardImg2 Upgraded() => IsUpgraded ? this : this with { Path = Path + "_plus" };
+        public bool Exists() => ResourceLoader.Exists(PortraitPath);
+    }
 
+    public static IEnumerable<CardModel> CardsOf(Player? player, bool IncludeDeck = true) => player?.Piles?
+            .Where(pile => IncludeDeck || pile.Type != PileType.Deck)
+            .SelectMany(pile => pile.Cards) ?? [];
+
+    public static Player? GetOwner(PowerModel? power) => power?.Owner?.Player;
 
     public static Player? GetOwner(CardModel? card)
     {

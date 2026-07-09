@@ -69,7 +69,6 @@ public class MakeFullArt
 
             ____portrait.Visible = false;
             ____portraitBorder.Visible = false;
-            ____banner.Visible = false;
 
             CardModel referenceCard = model.Type switch
             {
@@ -94,10 +93,22 @@ public class MakeFullArt
             // Title
             ____ancientBanner.Material = referenceCard.BannerMaterial;
 
-            if (model.Rarity == CardRarity.Ancient)
+            // reset first
+            ____banner.Visible = false;
+            ____ancientBanner.Visible = false;
+
+            const float BannerTransparency = .7f;
+
+            if (model.Rarity == CardRarity.Ancient || MyModConfig.MakeEverythingAncient)
+            {
                 ____ancientBanner.Visible = !MyModConfig.HideTitleBanner;
+                ____ancientBanner.Modulate = ____ancientBanner.Modulate with { A = BannerTransparency };
+            }
             else
+            {
                 ____banner.Visible = !MyModConfig.HideTitleBanner;
+                ____banner.Modulate = ____banner.Modulate with { A = BannerTransparency };
+            }
 
             // Description
             ____ancientTextBg.Texture = referenceCard.AncientTextBg;
