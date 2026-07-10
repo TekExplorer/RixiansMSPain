@@ -1,5 +1,5 @@
-using BaseLib.Abstracts;
 using BaseLib.Extensions;
+using BaseLib.Utils;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
@@ -15,8 +15,6 @@ using MegaCrit.Sts2.Core.Models.Characters;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
-using MegaCrit.Sts2.Core.Nodes.Combat;
-using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
 
 namespace HideDetailsMod.HideDetailsModCode;
@@ -33,24 +31,52 @@ public class AlternateArts
         return InspectCardPatch.NCardBeingInspected[nCard];
     }
 
-    public class AltArtListener : CustomSingletonModel
+    public static void CardNeedsReload(CardModel card) => AltArtListenerPatch.NCardNeedsUpdateEvent[card]?.Invoke();
+    [HarmonyPatch]
+    public class AltArtListenerPatch
     {
-        public AltArtListener() : base(HookType.Combat) { }
-        public override Task AfterPowerAmountChanged(PlayerChoiceContext choiceContext, PowerModel power, decimal amount, Creature? applier, CardModel? cardSource)
+        internal static SpireField<CardModel, Action?> NCardNeedsUpdateEvent { get; } = new(() => () => { });
+        internal static NotNullSpireField<NCard, Action> NCardReload { get; } = new((nCard) => () => Util.ReloadCard(nCard));
+
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(NCard), "SubscribeToModel")]
+        public static void NCardSubscribeToModel(NCard __instance, CardModel? model)
         {
-            Arts.Do(alt => alt.WhenPowerApplied?.Invoke(choiceContext, power, amount));
-            return Task.CompletedTask;
-        }
-        public override Task AfterCardPlayed(PlayerChoiceContext choiceContext, CardPlay cardPlay)
-        {
-            Arts.Do(alt => alt.WhenCardPlayed?.Invoke(choiceContext, cardPlay));
-            return Task.CompletedTask;
+            if (model != null && __instance.IsInsideTree())
+            {
+                NCardNeedsUpdateEvent[model] += NCardReload[__instance];
+            }
         }
 
-        public override Task AfterCardGeneratedForCombat(CardModel card, Player? creator)
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(NCard), "UnsubscribeFromModel")]
+        public static void NCardUnsubscribeFromModel(NCard __instance, CardModel? model)
         {
-            Arts.Do(alt => alt.WhenCardGenerated?.Invoke(card));
-            return Task.CompletedTask;
+            if (model != null)
+            {
+                NCardNeedsUpdateEvent[model] -= NCardReload[__instance];
+            }
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterPowerAmountChanged))]
+        public static void AfterPowerAmountChanged(AbstractModel __instance, PlayerChoiceContext choiceContext, PowerModel power, decimal amount, Creature? applier, CardModel? cardSource)
+        {
+            Arts.Do(alt => alt.WhenPowerApplied?.Invoke(__instance, choiceContext, power, amount));
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterCardPlayed))]
+        public static void AfterCardPlayed(AbstractModel __instance, PlayerChoiceContext choiceContext, CardPlay cardPlay)
+        {
+            Arts.Do(alt => alt.WhenCardPlayed?.Invoke(__instance, choiceContext, cardPlay));
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterCardGeneratedForCombat))]
+        public static void AfterCardGeneratedForCombat(AbstractModel __instance, CardModel card, Player? creator)
+        {
+            Arts.Do(alt => alt.WhenCardGenerated?.Invoke(__instance, card));
         }
     }
 
@@ -229,11 +255,11 @@ public class AlternateArts
             if (me == null) return null;
             return Util.HasCard<NoxiousFumes>(me) || me.HasPower<NoxiousFumesPower>();
         }){
-            WhenPowerApplied = (_, power, _) => {
-                if (power is NoxiousFumesPower) Util.ReloadCombatCards<Outbreak>(Util.GetOwner(power));
+            WhenPowerApplied = (model, _, power, _) => {
+                if (model is Outbreak outbreak && power is NoxiousFumesPower) CardNeedsReload(outbreak);
             },
-            WhenCardGenerated = card => {
-                if (card is NoxiousFumes) Util.ReloadCombatCards<Outbreak>(Util.GetOwner(card));
+            WhenCardGenerated = (model, card) => {
+                if (model is Outbreak outbreak && card is NoxiousFumes) CardNeedsReload(outbreak);
             }
         },
         new(typeof(NoxiousFumes), "noxious_fumes_if_outbreak", card => {
@@ -242,12 +268,11 @@ public class AlternateArts
             if (me == null) return null;
             return Util.HasCard<Outbreak>(me) || me.HasPower<OutbreakPower>();
         }) {
-            WhenPowerApplied = (_, power, _) => {
-                if (power is OutbreakPower) Util.ReloadCombatCards<NoxiousFumes>(Util.GetOwner(power));
-
+            WhenPowerApplied = (model, _, power, _) => {
+                if (model is NoxiousFumes noxiousFumes && power is OutbreakPower)  CardNeedsReload(noxiousFumes);
             },
-            WhenCardGenerated = card => {
-                if (card is Outbreak) Util.ReloadCombatCards<NoxiousFumes>(Util.GetOwner(card));
+            WhenCardGenerated = (model, card) => {
+                if (model is NoxiousFumes noxiousFumes && card is Outbreak) CardNeedsReload(noxiousFumes);
             }
         },
         new(typeof(Accelerant), "poisonless_accelerant", card => {
@@ -275,8 +300,8 @@ public class AlternateArts
 
             return HasFiddle || HasNoDrawPower;
         }) {
-            WhenPowerApplied = (_, power, _) => {
-                if (power is NoDrawPower) Util.ReloadCombatCards<CalculatedGamble>(Util.GetOwner(power));
+            WhenPowerApplied = (model, _, power, _) => {
+                if (model is CalculatedGamble calculatedGamble && power is NoDrawPower) CardNeedsReload(calculatedGamble);
             }
         },
         new(typeof(Monologue), "monologue_if_lunar_blast", card => Util.HasCard<LunarBlast>(Util.GetOwner(card))),
@@ -297,8 +322,8 @@ public class AlternateArts
             var PlayedFallingStarThisCombat = CombatManager.Instance.History.CardPlaysFinished.Any(entry => entry.Actor == me.Creature && entry.CardPlay.Card is FallingStar);
             return PlayedFallingStarThisCombat;
         }) {
-            WhenCardPlayed = (_, cardPlay) => {
-                if (cardPlay.Card is FallingStar) Util.CombatCardsOf(Util.GetOwner(cardPlay.Card)).Where(card => card is SpoilsOfBattle).Do(Util.ReloadCard);
+            WhenCardPlayed = (model, _, cardPlay) => {
+                if (model is SpoilsOfBattle spoilsOfBattle && cardPlay.Card is FallingStar) CardNeedsReload(spoilsOfBattle);
             }
         },
         new(typeof(Parry), "parry_alt", card => {
@@ -321,10 +346,10 @@ public class AlternateArts
         internal IEnumerable<CardImg> AllUpgraded => AllPathsAsImg.Select(Path => Path.Upgraded()).Where(Img => Img.Exists());
         public IEnumerable<CardImg> All => [.. AllNormal, .. AllUpgraded];
 
-        public Action<CardModel>? WhenCardGenerated { get; set; } = null;
         public Action<NCard, InspectionState>? WhenCardInspected { get; set; } = null;
-        public Action<PlayerChoiceContext, CardPlay>? WhenCardPlayed { get; set; } = null;
-        public Action<PlayerChoiceContext, PowerModel, decimal>? WhenPowerApplied { get; set; } = null;
+        public Action<AbstractModel, CardModel>? WhenCardGenerated { get; set; } = null;
+        public Action<AbstractModel, PlayerChoiceContext, CardPlay>? WhenCardPlayed { get; set; } = null;
+        public Action<AbstractModel, PlayerChoiceContext, PowerModel, decimal>? WhenPowerApplied { get; set; } = null;
 
 
 
@@ -343,17 +368,15 @@ public class AlternateArts
     }
 
 
+    static IEnumerable<CardImgFactory> GetAltsFor(CardModel card)
+    {
+        var found = Arts.Where(alt => alt.IsFor(card));
+        MainFile.Logger.Debug($"Found {found.Count()} alts for {card.Id}");
+        return found;
+    }
     [HarmonyPatch]
     public class ArtPatch
     {
-        static IEnumerable<CardImgFactory> GetAltsFor(CardModel card)
-        {
-            var found = Arts.Where(alt => alt.IsFor(card));
-            MainFile.Logger.Debug($"Found {found.Count()} alts for {card.Id}");
-            return found;
-        }
-
-
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CardModel), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
         public static void AllPortraitPaths(CardModel? __instance, ref IEnumerable<string>? __result)

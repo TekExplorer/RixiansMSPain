@@ -6,8 +6,6 @@ using MegaCrit.Sts2.Core.Nodes.Screens;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
-
-
 [HarmonyPatch]
 public static class InspectCardPatch
 {
@@ -28,7 +26,7 @@ public static class InspectCardPatch
         }
     }
 
-    static void InvokeForAlts(NCard nCard, AlternateArts.InspectionState state) => AlternateArts.Arts.Do(alt => alt.WhenInspected?.Invoke(nCard, state));
+    static void InvokeForAlts(NCard nCard, AlternateArts.InspectionState state) => AlternateArts.Arts.Do(alt => alt.WhenCardInspected?.Invoke(nCard, state));
 
 
     [HarmonyPatch(typeof(NInspectCardScreen), nameof(NInspectCardScreen.Close))]
