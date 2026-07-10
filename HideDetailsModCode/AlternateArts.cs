@@ -15,6 +15,8 @@ using MegaCrit.Sts2.Core.Models.Characters;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
+using MegaCrit.Sts2.Core.Nodes.Combat;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
 
 namespace HideDetailsMod.HideDetailsModCode;
@@ -22,139 +24,6 @@ namespace HideDetailsMod.HideDetailsModCode;
 [HarmonyPatch]
 public class AlternateArts
 {
-    private static readonly CardImg PredatorGoldAxe = new("predator_gold_axe");
-    private static readonly CardImg Shiv2 = new("shiv_2");
-    private static readonly CardImg PoisonlessAccelerant = new("poisonless_accelerant");
-    private static readonly CardImg NoxiousFumesIfOutbreak = new("noxious_fumes_if_outbreak");
-    private static readonly CardImg OutbreakIfNoxiousFumes = new("outbreak_if_noxious_fumes");
-    private static readonly CardImg MonologueIfLunarBlast = new("monologue_if_lunar_blast");
-    private static readonly CardImg CalculatedGambleNoDraw = new("calculated_gamble_no_draw");
-    private static readonly CardImg SpoilsOfBattleIfFallingStarPlayed = new("regent/spoils_of_battle_if_falling_star_played");
-
-    // Parry
-    // Shows if in deck
-    // Or when previewed/examined (or hover, if possible)
-    // May need to have its file moved :p
-    private static readonly CardImg PerryWho = new("parry_alt");
-
-    public class MindRotted
-    {
-        public static readonly CardImg Silent = new("token/mind_rot");
-        public static readonly CardImg Regent = new("token/mind_rot_regent");
-        public static readonly CardImg Necrobinder = new("token/mind_rot");
-        public static readonly CardImg Defect = new("token/mind_rot");
-        public static readonly CardImg Ironclad = new("token/mind_rot");
-        public static readonly List<CardImg> All = [Silent, Regent, Necrobinder, Defect, Ironclad];
-    }
-
-
-    public static Dictionary<Type, (List<CardImg> cardImgs, Func<CardModel, CardImg?> factory)> Cards { get; } = new()
-    {
-        [typeof(Shiv)] = ([Shiv2], _ => MyModConfig.UseBetaShivArt ? Shiv2 : null),
-        [typeof(Predator)] = ([PredatorGoldAxe], card =>
-        {
-            if (card.IsCanonical) return null;
-            var me = GetOwner(card);
-            if (me == null) return null;
-            if (CardInDeck<GoldAxe>(me)) return PredatorGoldAxe;
-            return null;
-        }
-        ),
-        [typeof(Accelerant)] = ([PoisonlessAccelerant], card =>
-        {
-            if (card.IsCanonical) return null;
-            var me = GetOwner(card);
-            if (me == null) return null;
-
-            var AnyCardInDeckWithPoison =
-                CardInDeck(me, Card => Card.DynamicVars.ContainsKey("PoisonPower"));
-
-            var HasPoisonRelic = me.Relics.Any(Relic =>
-                Relic is not SneckoSkull && Relic.DynamicVars.ContainsKey("PoisonPower"));
-
-            var HasPoison = AnyCardInDeckWithPoison || HasPoisonRelic;
-            return !HasPoison ? PoisonlessAccelerant : null;
-        }
-        ),
-        [typeof(NoxiousFumes)] = ([NoxiousFumesIfOutbreak], card =>
-        {
-            if (card.IsCanonical) return null;
-            var me = GetOwner(card);
-            if (me == null) return null;
-
-            var DeckHasOutbreak = CardInDeck<Outbreak>(me);
-            var HasOutbreakPower = me.HasPower<OutbreakPower>();
-            return (DeckHasOutbreak || HasOutbreakPower) ? NoxiousFumesIfOutbreak : null;
-        }
-        ),
-        [typeof(Outbreak)] = ([OutbreakIfNoxiousFumes], card =>
-        {
-            if (card.IsCanonical) return null;
-            var me = GetOwner(card);
-            if (me == null) return null;
-
-            var DeckHasNoxiousFumes = CardInDeck<NoxiousFumes>(me);
-            var HasNoxiousFumesPower = me.HasPower<NoxiousFumesPower>();
-            return (DeckHasNoxiousFumes || HasNoxiousFumesPower) ? OutbreakIfNoxiousFumes : null;
-        }
-        ),
-        [typeof(MindRot)] = (MindRotted.All, card =>
-        {
-            if (card.IsCanonical) return null;
-            return GetOwner(card)?.Character switch
-            {
-                Ironclad => MindRotted.Ironclad,
-                Silent => MindRotted.Silent,
-                Regent => MindRotted.Regent,
-                Necrobinder => MindRotted.Necrobinder,
-                Defect => MindRotted.Defect,
-                _ => null,
-            };
-        }
-        ),
-        [typeof(Monologue)] = ([MonologueIfLunarBlast], card =>
-        {
-
-            if (card.IsCanonical) return null;
-            var me = GetOwner(card);
-            if (me == null) return null;
-
-            if (CardInDeck<LunarBlast>(me)) return MonologueIfLunarBlast;
-            return null;
-        }
-        ),
-        // [typeof(KnowThyPlace)] = ([KnowThyPlacePlus], card => card.IsUpgraded ? KnowThyPlacePlus : null),
-        [typeof(CalculatedGamble)] = ([CalculatedGambleNoDraw], card =>
-        {
-            if (card.IsCanonical) return null;
-            var me = GetOwner(card);
-            if (me == null) return null;
-
-            var HasFiddle = me.Relics.Any(relic => relic is Fiddle);
-            var HasNoDrawPower = me.HasPower<NoDrawPower>();
-
-            return (HasFiddle || HasNoDrawPower) ? CalculatedGambleNoDraw : null;
-        }
-        ),
-        [typeof(Parry)] = ([PerryWho], card =>
-        {
-            if (card.IsCanonical) return null;
-            if (card.Pile != null) return null; // regular perry version
-                                                // pile is null, and not canonical. probably a shop or something
-            if (CardIsBeingInspected(card)) return null;
-            return PerryWho;
-        }
-        ),
-        [typeof(SpoilsOfBattle)] = ([SpoilsOfBattleIfFallingStarPlayed], card =>
-        {
-            if (card.IsCanonical) return null;
-            var me = GetOwner(card);
-            if (me == null) return null;
-            var PlayedFallingStarThisCombat = CombatManager.Instance.History.CardPlaysFinished.Any(entry => entry.Actor == me.Creature && entry.CardPlay.Card is FallingStar);
-            return PlayedFallingStarThisCombat ? SpoilsOfBattleIfFallingStarPlayed : null;
-        }
-        ),
-    };
     static bool CardIsBeingInspected(CardModel card)
     {
         if (InspectCardPatch.CardBeingInspected[card]) return true;
@@ -164,83 +33,111 @@ public class AlternateArts
         return InspectCardPatch.NCardBeingInspected[nCard];
     }
 
-    // TODO: optimize
-    public class UpdateCards : CustomSingletonModel
+    public class AltArtListener : CustomSingletonModel
     {
-        public UpdateCards() : base(HookType.Combat) { }
-
+        public AltArtListener() : base(HookType.Combat) { }
         public override Task AfterPowerAmountChanged(PlayerChoiceContext choiceContext, PowerModel power, decimal amount, Creature? applier, CardModel? cardSource)
         {
-            if ((power is NoDrawPower || power is OutbreakPower || power is NoxiousFumesPower) && power.Owner.IsPlayer)
-            {
-                var owner = GetOwner(power);
-                var cards = CardsOf(owner, IncludeDeck: false);
-                foreach (var card in cards)
-                {
-                    if (card is CalculatedGamble || card is Outbreak || card is NoxiousFumes)
-                    {
-                        ReloadCard(card);
-                    }
-                }
-            }
+            Arts.Do(alt => alt.WhenPowerApplied?.Invoke(choiceContext, power, amount));
             return Task.CompletedTask;
         }
         public override Task AfterCardPlayed(PlayerChoiceContext choiceContext, CardPlay cardPlay)
         {
-            if (cardPlay.Card is FallingStar)
-            {
-                var owner = GetOwner(cardPlay.Card);
-                var cards = CardsOf(owner, IncludeDeck: false);
+            Arts.Do(alt => alt.WhenCardPlayed?.Invoke(choiceContext, cardPlay));
+            return Task.CompletedTask;
+        }
 
-                foreach (var card in cards)
-                {
-                    if (card is SpoilsOfBattle)
-                    {
-                        ReloadCard(card);
-                    }
-                }
-            }
+        public override Task AfterCardGeneratedForCombat(CardModel card, Player? creator)
+        {
+            Arts.Do(alt => alt.WhenCardGenerated?.Invoke(card));
             return Task.CompletedTask;
         }
     }
-    public static void ReloadCard(CardModel card)
+
+    public class Util
     {
-        var nCard = NCard.FindOnTable(card);
-        ReloadCard(nCard);
-
-    }
-    public static void ReloadCard(NCard? nCard)
-    {
-        if (nCard == null) return;
-        var reload = AccessTools.Method(typeof(NCard), "Reload");
-        reload?.Invoke(nCard, []);
-    }
-
-    public const float AlignmentRotationDegrees = -15f;
-    // public const float AlignmentRotationDegrees = -6.28f;
-
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(NCard), "Reload")]
-    public static void TiltAlignmentReload(NCard __instance)
-    {
-        if (!GodotObject.IsInstanceValid(__instance)) return;
-        if (__instance.Model is not Alignment)
+        public static void ReloadCombatCards<T>(Player? owner) where T : CardModel
         {
-            // __instance.RotationDegrees = 0;
-            return;
+            ReloadCombatCards(owner, card => card is T);
         }
-        __instance.RotationDegrees -= AlignmentRotationDegrees;
+        public static void ReloadCombatCards(Player? owner, Func<CardModel, bool> predicate)
+        {
+            CombatCardsOf(owner).Where(predicate).Do(ReloadCard);
+        }
+
+        public static void ReloadCard(CardModel card)
+        {
+            var nCard = NCard.FindOnTable(card);
+            ReloadCard(nCard);
+        }
+        public static void ReloadCard(NCard? nCard)
+        {
+            if (nCard == null) return;
+            AccessTools.Method(typeof(NCard), "Reload")?.Invoke(nCard, []);
+        }
+
+        public static bool HasCard<T>(Player? owner) where T : CardModel => HasCard(owner, card => card is T);
+
+        public static bool HasCard(Player? owner, Func<CardModel, bool> predicate) => CardsOf(owner).Any(predicate);
+
+        public static IEnumerable<CardModel> CombatCardsOf(Player? player) => CardsOf(player, IncludeDeck: false);
+
+        public static IEnumerable<CardModel> CardsOf(Player? player, bool IncludeDeck = true)
+        {
+            if (player == null) return [];
+            if (CombatManager.Instance.IsInProgress) return CardPile.GetCards(player, IncludeDeck ? AllPiles : AllPilesExceptDeck);
+            return IncludeDeck ? CardPile.GetCards(player, PileType.Deck) : [];
+        }
+
+        public static PileType[] AllPilesExceptDeck => [PileType.Draw, PileType.Hand, PileType.Discard, PileType.Exhaust, PileType.Play];
+        public static PileType[] AllPiles => [PileType.Deck, .. AllPilesExceptDeck];
+
+        public static Player? GetOwner(PowerModel? power) => power?.Owner?.Player;
+
+        public static Player? GetOwner(CardModel? card)
+        {
+            if (card == null) return null;
+            if (card.IsCanonical) return null;
+            Player? player = null;
+            try
+            { player ??= card.Owner; }
+            catch (Exception e)
+            { MainFile.Logger.Warn($"card.Owner errored with: {e}"); }
+
+            try
+            { player ??= LocalContext.GetMe(card.RunState); }
+            catch (Exception e)
+            { MainFile.Logger.Warn($"LocalContext.GetMe(card.RunState) errored with: {e}"); }
+
+            return player;
+        }
     }
 
-    [HarmonyPrefix]
-    [HarmonyPatch(typeof(NCard), "Model", MethodType.Setter)]
-    public static void FixTiltWhenNotAlignment(NCard __instance, CardModel? value, CardModel? ____model)
+
+    [HarmonyPatch]
+    public class TiltAlignment
     {
-        if (!GodotObject.IsInstanceValid(__instance)) return;
-        if (value == ____model) return;
-        if (____model is Alignment && value is not Alignment) __instance.RotationDegrees = 0;
-        // if (____model is not Alignment && value is Alignment) __instance.RotationDegrees -= AlignmentRotationDegrees;
+        public const float AlignmentRotationDegrees = -15f;
+        // public const float AlignmentRotationDegrees = -6.28f;
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(NCard), "Reload")]
+        public static void TiltAlignmentReload(NCard __instance)
+        {
+            if (!GodotObject.IsInstanceValid(__instance)) return;
+            if (__instance.Model is not Alignment) return;
+            __instance.RotationDegrees -= AlignmentRotationDegrees;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(NCard), "Model", MethodType.Setter)]
+        public static void FixTiltWhenNotAlignment(NCard __instance, CardModel? value, CardModel? ____model)
+        {
+            if (!GodotObject.IsInstanceValid(__instance)) return;
+            if (value == ____model) return;
+            if (____model is Alignment && value is not Alignment) __instance.RotationDegrees = 0;
+            // if (____model is not Alignment && value is Alignment) __instance.RotationDegrees -= AlignmentRotationDegrees;
+        }
     }
 
     [HarmonyPostfix]
@@ -271,10 +168,12 @@ public class AlternateArts
         {
             ____sparkles.Visible = false;
             RemoveRarityGlow(ref ____rareGlow, ref ____uncommonGlow, card);
+            card.CardHighlight.Modulate = NCardHighlight.playableColor;
             return;
         }
 
-        ____sparkles.Visible = true;
+        // Glow doesn't need to sparkle tbh.
+        ____sparkles.Visible = false;
 
         if (____rareGlow == null)
         {
@@ -298,10 +197,6 @@ public class AlternateArts
 
         card.CardHighlight.Modulate = NCardHighlight.gold;
     }
-    static bool CardInDeck<T>(Player? owner) where T : CardModel => CardInDeck(owner, card => card is T);
-
-    static bool CardInDeck(Player? owner, Func<CardModel, bool> predicate) =>
-        owner?.Piles.Any(pile => pile.Cards.Any(predicate)) ?? false;
 
 
     [HarmonyPatch]
@@ -310,127 +205,173 @@ public class AlternateArts
         // static BaseLib.Utils.AddedNode<NCard, Control> thing;
     }
 
-    public class CardImg(string path)
+    public record CardImg(string Path)
     {
         public CardImg(CardModel card) : this($"{card.Pool.Title.ToLowerInvariant()}/{card.Id.Entry.ToLowerInvariant()}") { }
         public static CardImg Upgraded(CardModel card) => new CardImg(card).Upgraded();
 
-        public string PortraitPath { get; } = $"res://images/atlases/card_atlas.sprites/{path}.tres";
-        private string _PortraitJpgPath { get; } = $"res://artist_assets/{path}.jpg";
-        private string _PortraitPngPath { get; } = $"res://artist_assets/{path}.png";
+        public string PortraitPath { get; } = $"res://images/atlases/card_atlas.sprites/{Path}.tres";
+        private string _PortraitJpgPath { get; } = $"res://artist_assets/{Path}.jpg";
+        private string _PortraitPngPath { get; } = $"res://artist_assets/{Path}.png";
         public string PortraitPngPath => ResourceLoader.Exists(_PortraitJpgPath) ? _PortraitJpgPath : _PortraitPngPath;
 
         // public string PortraitPngPath { get; } = ImageHelperExtensions.GetModImagePath($"{path}.png");
-        public CardImg Upgraded()
-        {
-            if (path.EndsWith("_plus")) return this;
-            return new(path + "_plus");
-        }
+        public CardImg Upgraded() => Path.EndsWith("_plus") ? this : new(Path + "_plus");
 
         public bool Exists() => ResourceLoader.Exists(PortraitPath);
     }
-
-    public static readonly CardImg2[] alts = [
-        new(typeof(Shiv), "shiv2", card => MyModConfig.UseBetaShivArt),
-        new(typeof(Predator), "predator_gold_axe", card => CardInDeck<GoldAxe>(GetOwner(card))),
+    public static readonly CardImgFactory[] Arts = [
+        new(typeof(Shiv), "shiv2", _ => MyModConfig.UseBetaShivArt),
+        new(typeof(Predator), "predator_gold_axe", card => Util.HasCard<GoldAxe>(Util.GetOwner(card))),
         new(typeof(Outbreak), "outbreak_if_noxious_fumes", card => {
-            var me = GetOwner(card);
-            if (me == null) return false;
-            return CardInDeck<NoxiousFumes>(me) || me.HasPower<NoxiousFumesPower>();
-        }, WhenPowerApplied: (context, power, amount) => {
-            if (power is not NoxiousFumesPower) return;
-            CardsOf(GetOwner(power), IncludeDeck: false).Where(card => card is Outbreak).Do(ReloadCard);
-        }),
+            MainFile.Logger.Info($"[Alt Art] [Outbreak] Checking for NoxiousFumes");
+            var me = Util.GetOwner(card);
+            if (me == null) return null;
+            return Util.HasCard<NoxiousFumes>(me) || me.HasPower<NoxiousFumesPower>();
+        }){
+            WhenPowerApplied = (_, power, _) => {
+                if (power is NoxiousFumesPower) Util.ReloadCombatCards<Outbreak>(Util.GetOwner(power));
+            },
+            WhenCardGenerated = card => {
+                if (card is NoxiousFumes) Util.ReloadCombatCards<Outbreak>(Util.GetOwner(card));
+            }
+        },
         new(typeof(NoxiousFumes), "noxious_fumes_if_outbreak", card => {
-            var me = GetOwner(card);
-            if (me == null) return false;
-            return CardInDeck<Outbreak>(me) || me.HasPower<OutbreakPower>();
-        }, WhenPowerApplied: (context, power, amount) => {
-            if (power is not OutbreakPower) return;
-            CardsOf(GetOwner(power), IncludeDeck: false).Where(card => card is NoxiousFumes).Do(ReloadCard);
+            MainFile.Logger.Info($"[Alt Art] [NoxiousFumes] Checking for Outbreak");
+            var me = Util.GetOwner(card);
+            if (me == null) return null;
+            return Util.HasCard<Outbreak>(me) || me.HasPower<OutbreakPower>();
+        }) {
+            WhenPowerApplied = (_, power, _) => {
+                if (power is OutbreakPower) Util.ReloadCombatCards<NoxiousFumes>(Util.GetOwner(power));
+
+            },
+            WhenCardGenerated = card => {
+                if (card is Outbreak) Util.ReloadCombatCards<NoxiousFumes>(Util.GetOwner(card));
+            }
+        },
+        new(typeof(Accelerant), "poisonless_accelerant", card => {
+            var me = Util.GetOwner(card);
+            if (me == null) return null;
+
+            var AnyCardInDeckWithPoison =
+                Util.HasCard(me, Card => Card.DynamicVars.ContainsKey("PoisonPower"));
+
+            var HasPoisonRelic = me.Relics.Any(Relic =>
+                Relic is not SneckoSkull && Relic.DynamicVars.ContainsKey("PoisonPower"));
+
+            var HasPoison = AnyCardInDeckWithPoison || HasPoisonRelic;
+            return !HasPoison;
+        }
+        // TODO: React to other poison sources such as multiplayer
+        // TODO: possibly in-flight powers as well
+        ),
+        new(typeof(CalculatedGamble), "calculated_gamble_no_draw", card => {
+            var me = Util.GetOwner(card);
+            if (me == null) return null;
+
+            var HasFiddle = me.Relics.Any(relic => relic is Fiddle);
+            var HasNoDrawPower = me.HasPower<NoDrawPower>();
+
+            return HasFiddle || HasNoDrawPower;
+        }) {
+            WhenPowerApplied = (_, power, _) => {
+                if (power is NoDrawPower) Util.ReloadCombatCards<CalculatedGamble>(Util.GetOwner(power));
+            }
+        },
+        new(typeof(Monologue), "monologue_if_lunar_blast", card => Util.HasCard<LunarBlast>(Util.GetOwner(card))),
+        new(typeof(MindRot), ["token/mind_rot", "token/mind_rot_regent"], card => {
+            return Util.GetOwner(card)?.Character switch
+            {
+                // Currently only the regent version has been added
+                Regent => "token/mind_rot_regent",
+                // Null returns "token/mind_rot" which is the defect version
+                Defect => "token/mind_rot",
+                _ => null,
+            };
         }),
-        new(typeof(Monologue), "monologue_if_lunar_blast", card => CardInDeck<LunarBlast>(GetOwner(card))),
-        // new(typeof(MindRot)),
+        new(typeof(SpoilsOfBattle), "regent/spoils_of_battle_if_falling_star_played", card => {
+            if (card.IsCanonical) return null;
+            var me = Util.GetOwner(card);
+            if (me == null) return null;
+            var PlayedFallingStarThisCombat = CombatManager.Instance.History.CardPlaysFinished.Any(entry => entry.Actor == me.Creature && entry.CardPlay.Card is FallingStar);
+            return PlayedFallingStarThisCombat;
+        }) {
+            WhenCardPlayed = (_, cardPlay) => {
+                if (cardPlay.Card is FallingStar) Util.CombatCardsOf(Util.GetOwner(cardPlay.Card)).Where(card => card is SpoilsOfBattle).Do(Util.ReloadCard);
+            }
+        },
+        new(typeof(Parry), "parry_alt", card => {
+            if (card.IsCanonical) return null;
+            if (card.Pile != null) return null; // regular perry version
+            // pile is null, and not canonical. probably a shop or something
+            if (CardIsBeingInspected(card)) return null;
+            return true;
+        }) { WhenCardInspected = (nCard, _) => { if (nCard.Model is Parry) Util.ReloadCard(nCard); }}
     ];
-    public record CardImg2(Type CardType, string Path, Func<CardModel, bool> Condition,
-        Action<PlayerChoiceContext, CardPlay>? WhenCardPlayed = null,
-        Action<PlayerChoiceContext, PowerModel, decimal>? WhenPowerApplied = null
-    )
+    public enum InspectionState { Opening, Closing, Updating }
+
+    public record CardImgFactory(Type CardType, string[] AllPaths, Func<CardModel, string?> Condition)
     {
-        public string PortraitPath => $"res://images/atlases/card_atlas.sprites/{Path}.tres";
-        private string _PortraitJpgPath => $"res://artist_assets/{Path}.jpg";
-        private string _PortraitPngPath => $"res://artist_assets/{Path}.png";
-        public string PortraitPngPath => ResourceLoader.Exists(_PortraitJpgPath) ? _PortraitJpgPath : _PortraitPngPath;
-        public bool IsUpgraded => Path.EndsWith("_plus");
-        // public string PortraitPngPath { get; } = ImageHelperExtensions.GetModImagePath($"{path}.png");
-        public CardImg2 Upgraded() => IsUpgraded ? this : this with { Path = Path + "_plus" };
-        public bool Exists() => ResourceLoader.Exists(PortraitPath);
+        public CardImgFactory(Type CardType, string Path, Func<CardModel, bool?> Condition)
+            : this(CardType, [Path], card => Condition(card) ?? false ? Path : null) { }
+
+        internal IEnumerable<CardImg> AllPathsAsImg => AllPaths.Select(Path => new CardImg(Path));
+        internal IEnumerable<CardImg> AllNormal => AllPathsAsImg.Where(Img => Img.Exists());
+        internal IEnumerable<CardImg> AllUpgraded => AllPathsAsImg.Select(Path => Path.Upgraded()).Where(Img => Img.Exists());
+        public IEnumerable<CardImg> All => [.. AllNormal, .. AllUpgraded];
+
+        public Action<CardModel>? WhenCardGenerated { get; set; } = null;
+        public Action<NCard, InspectionState>? WhenCardInspected { get; set; } = null;
+        public Action<PlayerChoiceContext, CardPlay>? WhenCardPlayed { get; set; } = null;
+        public Action<PlayerChoiceContext, PowerModel, decimal>? WhenPowerApplied { get; set; } = null;
+
+
+
+        public bool IsFor(CardModel card) => CardType.IsInstanceOfType(card);
+        public CardImg? Get(CardModel card)
+        {
+            if (!IsFor(card))
+            {
+                MainFile.Logger.Error($"Attempted to Get an alt art img for {card.Id} without checking IsFor first");
+                return null;
+            }
+            var result = Condition(card);
+            if (result == null) return null;
+            return new(result);
+        }
     }
 
-    public static IEnumerable<CardModel> CardsOf(Player? player, bool IncludeDeck = true) => player?.Piles?
-            .Where(pile => IncludeDeck || pile.Type != PileType.Deck)
-            .SelectMany(pile => pile.Cards) ?? [];
-
-    public static Player? GetOwner(PowerModel? power) => power?.Owner?.Player;
-
-    public static Player? GetOwner(CardModel? card)
-    {
-        if (card == null) return null;
-        if (card.IsCanonical) return null;
-        Player? player = null;
-        try
-        {
-            player ??= card.Owner;
-        }
-        catch (Exception e)
-        {
-            MainFile.Logger.Warn($"card.Owner errored with: {e}");
-        }
-
-        try
-        {
-            player ??= LocalContext.GetMe(card.RunState);
-        }
-        catch (Exception e)
-        {
-            MainFile.Logger.Warn($"LocalContext.GetMe(card.RunState) errored with: {e}");
-        }
-
-        return player;
-    }
 
     [HarmonyPatch]
     public class ArtPatch
     {
+        static IEnumerable<CardImgFactory> GetAltsFor(CardModel card)
+        {
+            var found = Arts.Where(alt => alt.IsFor(card));
+            MainFile.Logger.Debug($"Found {found.Count()} alts for {card.Id}");
+            return found;
+        }
+
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CardModel), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
-        static void AllPortraitPaths(CardModel? __instance, ref IEnumerable<string>? __result)
+        public static void AllPortraitPaths(CardModel? __instance, ref IEnumerable<string>? __result)
         {
-            if (__instance == null || __result == null) return;
+            var card = __instance;
+            if (card == null || __result == null) return;
             if (!MyModConfig.UseCustomArt) return;
             try
             {
-                if (Cards.TryGetValue(__instance.GetType(), out var found))
-                {
-                    var img = found.factory(__instance);
-                    if (img == null) return;
-                    List<string> result = [.. __result];
+                List<string> result = [.. __result];
 
-                    result.AddRange(found.cardImgs.Select(img => img.PortraitPath));
+                var found = GetAltsFor(card);
 
-                    result.AddRange(
-                        found.cardImgs
-                            .ConvertAll(img => img.Upgraded())
-                            .Where(upgraded => upgraded.Exists())
-                            .Select(upgraded => upgraded.PortraitPath)
-                    );
+                result.AddRange(found.SelectMany(alt => alt.All).Select(Img => Img.PortraitPath));
 
-                    var upgraded = CardImg.Upgraded(__instance);
-                    if (upgraded.Exists()) result.Add(upgraded.PortraitPath);
-
-                    __result = result;
-
-                }
+                var upgraded = CardImg.Upgraded(card);
+                if (upgraded.Exists()) result.Add(upgraded.PortraitPath);
+                __result = result;
             }
             catch (Exception e)
             {
@@ -438,55 +379,50 @@ public class AlternateArts
             }
         }
 
+        static CardImg ImgFor(CardModel card)
+        {
+            var factories = GetAltsFor(card);
+            foreach (var factory in factories)
+            {
+                var img = factory.Get(card);
+                if (img == null) continue;
+                if (card.IsUpgraded && img.Upgraded().Exists()) img = img.Upgraded();
+                return img;
+            }
+            var Img = new CardImg(card);
+            if (card.IsUpgraded && Img.Upgraded().Exists()) Img = Img.Upgraded();
+            return Img;
+        }
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CardModel), nameof(CardModel.PortraitPath), MethodType.Getter)]
-        static void PortraitPath(CardModel? __instance, ref string __result)
+        public static void PortraitPath(CardModel? __instance, ref string __result)
         {
             if (!MyModConfig.UseCustomArt) return;
             if (__instance == null) return;
             try
             {
-                var upgraded = CardImg.Upgraded(__instance);
-                if (__instance.IsUpgraded && upgraded.Exists()) __result = upgraded.PortraitPath;
-
-                if (Cards.TryGetValue(__instance.GetType(), out var found))
-                {
-                    var img = found.factory(__instance);
-                    if (img == null) return;
-                    if (__instance.IsUpgraded && img.Upgraded().Exists()) img = img.Upgraded();
-                    __result = img.PortraitPath;
-                }
+                var Img = ImgFor(__instance);
+                if (Img != null) __result = Img.PortraitPath;
             }
             catch (Exception e)
-            {
-                MainFile.Logger.Error($"Error in PortraitPath: {e}");
-            }
+            { MainFile.Logger.Error($"Error in PortraitPath: {e}"); }
         }
 
         // PortraitPngPath
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CardModel), "PortraitPngPath", MethodType.Getter)]
-        static void PortraitPngPath(CardModel? __instance, ref string __result)
+        public static void PortraitPngPath(CardModel? __instance, ref string __result)
         {
             if (!MyModConfig.UseCustomArt) return;
             if (__instance == null) return;
             try
             {
-                var upgraded = CardImg.Upgraded(__instance);
-                if (__instance.IsUpgraded && upgraded.Exists()) __result = upgraded.PortraitPngPath;
-
-                if (Cards.TryGetValue(__instance.GetType(), out var found))
-                {
-                    var img = found.factory(__instance);
-                    if (img == null) return;
-                    if (__instance.IsUpgraded && img.Upgraded().Exists()) img = img.Upgraded();
-                    __result = img.PortraitPngPath;
-                }
+                var Img = ImgFor(__instance);
+                if (Img != null) __result = Img.PortraitPngPath;
             }
             catch (Exception e)
-            {
-                MainFile.Logger.Error($"Error in PortraitPngPath: {e}");
-            }
+            { MainFile.Logger.Error($"Error in PortraitPngPath: {e}"); }
         }
     }
 }

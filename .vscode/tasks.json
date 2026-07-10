@@ -2,46 +2,20 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build HideDetailsMod (Production)",
+      "label": "Build HideDetailsMod (Debug)",
       "type": "shell",
       "command": "dotnet",
       "args": [
         "build",
         "${workspaceFolder}/HideDetailsMod.csproj",
-        "-p:WorkshopChannel=Production"
+        "-c",
+        "Debug"
       ],
       "group": {
         "kind": "build",
         "isDefault": true
       },
       "problemMatcher": ["$msCompile"]
-    },
-    {
-      "label": "Publish HideDetailsMod (Production)",
-      "type": "shell",
-      "command": "dotnet",
-      "args": [
-        "publish",
-        "${workspaceFolder}/HideDetailsMod.csproj",
-        "-c",
-        "Release",
-        "-p:WorkshopChannel=Production"
-      ],
-      "problemMatcher": ["$msCompile"]
-    },
-    {
-      "label": "Upload HideDetailsMod (Production)",
-      "type": "shell",
-      "command": "cmd",
-      "options": {
-        "cwd": "${workspaceFolder}/workshop"
-      },
-      "args": [
-        "/c",
-        "call",
-        "${workspaceFolder}\\workshop\\upload_to_workshop.bat",
-        "Production"
-      ]
     },
     {
       "label": "Build HideDetailsMod (Beta)",
@@ -77,8 +51,46 @@
       "args": [
         "/c",
         "call",
-        "${workspaceFolder}\\workshop\\upload_to_workshop.bat",
+        "${workspaceFolder}/workshop/upload_to_workshop.bat",
         "Beta"
+      ]
+    },
+    {
+      "label": "Build HideDetailsMod (Production)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/HideDetailsMod.csproj",
+        "-p:WorkshopChannel=Production"
+      ],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "Publish HideDetailsMod (Production)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/HideDetailsMod.csproj",
+        "-c",
+        "Release",
+        "-p:WorkshopChannel=Production"
+      ],
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "Upload HideDetailsMod (Production)",
+      "type": "shell",
+      "command": "cmd",
+      "options": {
+        "cwd": "${workspaceFolder}/workshop"
+      },
+      "args": [
+        "/c",
+        "call",
+        "${workspaceFolder}/workshop/upload_to_workshop.bat",
+        "Production"
       ]
     }
   ]

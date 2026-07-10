@@ -2,16 +2,15 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Build HideDetailsMod",
-      "type": "node-terminal",
+      "name": "Launch Slay the Spire 2 (Debug)",
+      "type": "coreclr",
       "request": "launch",
-      "command": "dotnet build \"${workspaceFolder}/HideDetailsMod.csproj\" -c Debug"
-    },
-    {
-      "name": "Publish HideDetailsMod",
-      "type": "node-terminal",
-      "request": "launch",
-      "command": "dotnet publish \"${workspaceFolder}/HideDetailsMod.csproj\" -c Release"
+      "cwd": "C:/Program Files (x86)/Steam/steamapps/common/Slay the Spire 2",
+      "program": "C:/Program Files (x86)/Steam/steamapps/common/Slay the Spire 2/SlayTheSpire2.exe",
+      "args": ["--verbose"],
+      "stopAtEntry": false,
+      "preLaunchTask": "Build HideDetailsMod (Debug)",
+      "console": "internalConsole"
     }
   ]
 }

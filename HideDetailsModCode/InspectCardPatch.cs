@@ -23,10 +23,13 @@ public static class InspectCardPatch
             NCardBeingInspected[____card] = true;
             var model = ____card.Model;
             if (model != null) CardBeingInspected[model] = true;
-            MainFile.Logger.Info($"Opened Inspector for {____card?.Model?.Id}");
-            AlternateArts.UpdateCards.ReloadCard(____card);
+            MainFile.Logger.Debug($"Opened Inspector for {____card.Model?.Id}");
+            InvokeForAlts(____card, AlternateArts.InspectionState.Opening);
         }
     }
+
+    static void InvokeForAlts(NCard nCard, AlternateArts.InspectionState state) => AlternateArts.Arts.Do(alt => alt.WhenInspected?.Invoke(nCard, state));
+
 
     [HarmonyPatch(typeof(NInspectCardScreen), nameof(NInspectCardScreen.Close))]
     public static class InspectCardPatchClose
@@ -36,8 +39,8 @@ public static class InspectCardPatch
             NCardBeingInspected[____card] = false;
             var model = ____card.Model;
             if (model != null) CardBeingInspected[model] = false;
-            MainFile.Logger.Info($"Closed Inspector for {____card?.Model?.Id}");
-            AlternateArts.UpdateCards.ReloadCard(____card);
+            MainFile.Logger.Debug($"Closed Inspector for {____card.Model?.Id}");
+            InvokeForAlts(____card, AlternateArts.InspectionState.Closing);
         }
     }
     [HarmonyPatch(typeof(NInspectCardScreen), "UpdateCardDisplay")]
@@ -48,8 +51,8 @@ public static class InspectCardPatch
             NCardBeingInspected[____card] = true;
             var model = ____card.Model;
             if (model != null) CardBeingInspected[model] = true;
-            MainFile.Logger.Info($"Updated Inspector for {____card?.Model?.Id}");
-            AlternateArts.UpdateCards.ReloadCard(____card);
+            MainFile.Logger.Debug($"Updated Inspector for {____card.Model?.Id}");
+            InvokeForAlts(____card, AlternateArts.InspectionState.Updating);
         }
     }
 }
