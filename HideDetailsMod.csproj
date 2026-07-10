@@ -19,7 +19,8 @@
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <Optimize>true</Optimize>
-        <DebugType>none</DebugType>
+        <!-- TODO: see if i want this enabled or not. It removes the .pdb -->
+        <!-- <DebugType>none</DebugType> -->
         <PathMap>$(AppOutputBase)=.\</PathMap>
     </PropertyGroup>
 
