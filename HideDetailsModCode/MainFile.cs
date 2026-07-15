@@ -5,6 +5,9 @@ using LogType = MegaCrit.Sts2.Core.Logging.LogType;
 using MegaCrit.Sts2.Core.Modding;
 using Godot;
 using HarmonyLib;
+using BaseLib.Extensions;
+using System.Reflection;
+// using MegaCrit.Sts2.Core.Assets;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
@@ -14,11 +17,12 @@ public partial class MainFile : Node
 {
     public const string ModId = "HideDetailsMod"; //At the moment, this is used only for the Logger and harmony names.
 
-    public static Logger Logger { get; } =
-        new(ModId, LogType.Generic);
+    public static Logger Logger { get; } = new(ModId, LogType.Generic);
 
     public static void Initialize()
     {
+        var assembly = Assembly.GetExecutingAssembly();
+
         ModConfigRegistry.Register(ModId, new MyModConfig());
         CustomLocTableManager.Register("usernames");
         CustomLocTableManager.Register("artists");
@@ -27,20 +31,20 @@ public partial class MainFile : Node
 
         Harmony harmony = new(ModId);
 
-        harmony.PatchAll();
+        harmony.TryPatchAll(assembly);
     }
 
-    // public static void Setup()
+    // public static void LoadAll()
     // {
-    //     var altArts = AlternateArts.Cards.Values
-    //         .SelectMany(pair => pair.cardImgs)
-    //         .Where(img => img != null) // Optional: Filters out any null values
+    //     var altArts = AlternateArts.Arts
+    //         .SelectMany(factory => factory.AllPathsAsImg)
     //         .ToList();
 
     //     foreach (var art in altArts)
     //     {
     //         if (art == null) return;
-    //         PreloadManager.Cache.GetTexture2D(art.PortraitPath);
+    //         if (art.Exists()) PreloadManager.Cache.GetTexture2D(art.PortraitPath);
+    //         if (art.Upgraded().Exists()) PreloadManager.Cache.GetTexture2D(art.Upgraded().PortraitPath);
     //     }
     // }
 }
