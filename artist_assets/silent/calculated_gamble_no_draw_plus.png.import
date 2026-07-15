@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bofigxab3c1j1"
-path="res://.godot/imported/poisonless_accelerant.png-a6a41ff144e5cf8a1082768bedf5bd48.ctex"
+uid="uid://bhl6bf4e8pipp"
+path="res://.godot/imported/calculated_gamble_no_draw_plus.png-3fe3584047144459dab5e44f635bd4df.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/poisonless_accelerant.png"
-dest_files=["res://.godot/imported/poisonless_accelerant.png-a6a41ff144e5cf8a1082768bedf5bd48.ctex"]
+source_file="res://artist_assets/silent/calculated_gamble_no_draw_plus.png"
+dest_files=["res://.godot/imported/calculated_gamble_no_draw_plus.png-3fe3584047144459dab5e44f635bd4df.ctex"]
 
 [params]
 

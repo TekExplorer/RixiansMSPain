@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbxhu3nnjn2qp"
-path="res://.godot/imported/outbreak_if_noxious_fumes.png-0364f09fef518ef6d44c77ddc8ebc474.ctex"
+uid="uid://bm5u8j3ss2nc1"
+path="res://.godot/imported/predator_gold_axe.png-06ec14f138cf562e6c2c4ab55fb65be0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/outbreak_if_noxious_fumes.png"
-dest_files=["res://.godot/imported/outbreak_if_noxious_fumes.png-0364f09fef518ef6d44c77ddc8ebc474.ctex"]
+source_file="res://artist_assets/silent/predator_gold_axe.png"
+dest_files=["res://.godot/imported/predator_gold_axe.png-06ec14f138cf562e6c2c4ab55fb65be0.ctex"]
 
 [params]
 

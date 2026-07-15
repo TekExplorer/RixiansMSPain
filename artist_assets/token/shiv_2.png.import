@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d0k103umwtjqu"
-path="res://.godot/imported/parry_alt.png-e6a6598b4bbeaf47c81bfccbe55cfde0.ctex"
+uid="uid://dqwcx1ftmcnh"
+path="res://.godot/imported/shiv_2.png-91beece67e84ba72accc11743284fb02.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/parry_alt.png"
-dest_files=["res://.godot/imported/parry_alt.png-e6a6598b4bbeaf47c81bfccbe55cfde0.ctex"]
+source_file="res://artist_assets/token/shiv_2.png"
+dest_files=["res://.godot/imported/shiv_2.png-91beece67e84ba72accc11743284fb02.ctex"]
 
 [params]
 

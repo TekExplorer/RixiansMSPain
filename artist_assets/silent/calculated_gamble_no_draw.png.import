@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cbi778uewutkn"
-path="res://.godot/imported/noxious_fumes_if_outbreak.png-bb3b55189e133820e9aca94246423e9e.ctex"
+uid="uid://bdlfgs1i4ls55"
+path="res://.godot/imported/calculated_gamble_no_draw.png-034ccd047d1e58b922afdc388fe6b97a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/noxious_fumes_if_outbreak.png"
-dest_files=["res://.godot/imported/noxious_fumes_if_outbreak.png-bb3b55189e133820e9aca94246423e9e.ctex"]
+source_file="res://artist_assets/silent/calculated_gamble_no_draw.png"
+dest_files=["res://.godot/imported/calculated_gamble_no_draw.png-034ccd047d1e58b922afdc388fe6b97a.ctex"]
 
 [params]
 

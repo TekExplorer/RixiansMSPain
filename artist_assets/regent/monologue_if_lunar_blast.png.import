@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://kidbjyjnfimu"
-path="res://.godot/imported/shiv_2.png-1aa1e01082879370ae1f75a260cc17f8.ctex"
+uid="uid://dy4bjb4p7rqny"
+path="res://.godot/imported/monologue_if_lunar_blast.png-68c246204234927ccf4bb7dbceff5e5a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/shiv_2.png"
-dest_files=["res://.godot/imported/shiv_2.png-1aa1e01082879370ae1f75a260cc17f8.ctex"]
+source_file="res://artist_assets/regent/monologue_if_lunar_blast.png"
+dest_files=["res://.godot/imported/monologue_if_lunar_blast.png-68c246204234927ccf4bb7dbceff5e5a.ctex"]
 
 [params]
 

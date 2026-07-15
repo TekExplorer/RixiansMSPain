@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cl8f2eofquq7b"
-path="res://.godot/imported/calculated_gamble_no_draw.png-dc73eb956bea4749c3aba36c4418d30c.ctex"
+uid="uid://bia3plladdxo6"
+path="res://.godot/imported/parry_alt.png-77484c7eb027aabc1e9f6f9ce7c6d38b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/calculated_gamble_no_draw.png"
-dest_files=["res://.godot/imported/calculated_gamble_no_draw.png-dc73eb956bea4749c3aba36c4418d30c.ctex"]
+source_file="res://artist_assets/regent/parry_alt.png"
+dest_files=["res://.godot/imported/parry_alt.png-77484c7eb027aabc1e9f6f9ce7c6d38b.ctex"]
 
 [params]
 

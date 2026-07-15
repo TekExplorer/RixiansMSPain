@@ -248,9 +248,9 @@ public partial class AlternateArts
         public bool Exists() => ResourceLoader.Exists(PortraitPath);
     }
     public static readonly CardImgFactory[] Arts = [
-        new(typeof(Shiv), "shiv2", _ => MyModConfig.UseBetaShivArt),
-        new(typeof(Predator), "predator_gold_axe", card => Util.HasCard<GoldAxe>(Util.GetOwner(card))),
-        new(typeof(Outbreak), "outbreak_if_noxious_fumes", card => {
+        new(typeof(Shiv), "token/shiv_2", _ => MyModConfig.UseBetaShivArt),
+        new(typeof(Predator), "silent/predator_gold_axe", card => Util.HasCard<GoldAxe>(Util.GetOwner(card))),
+        new(typeof(Outbreak), "silent/outbreak_if_noxious_fumes", card => {
             MainFile.Logger.Info($"[Alt Art] [Outbreak] Checking for NoxiousFumes");
             var me = Util.GetOwner(card);
             if (me == null) return null;
@@ -263,7 +263,7 @@ public partial class AlternateArts
                 if (model is Outbreak outbreak && card is NoxiousFumes) CardNeedsReload(outbreak);
             }
         },
-        new(typeof(NoxiousFumes), "noxious_fumes_if_outbreak", card => {
+        new(typeof(NoxiousFumes), "silent/noxious_fumes_if_outbreak", card => {
             MainFile.Logger.Info($"[Alt Art] [NoxiousFumes] Checking for Outbreak");
             var me = Util.GetOwner(card);
             if (me == null) return null;
@@ -276,7 +276,7 @@ public partial class AlternateArts
                 if (model is NoxiousFumes noxiousFumes && card is Outbreak) CardNeedsReload(noxiousFumes);
             }
         },
-        new(typeof(Accelerant), "poisonless_accelerant", card => {
+        new(typeof(Accelerant), "silent/poisonless_accelerant", card => {
             var me = Util.GetOwner(card);
             if (me == null) return null;
 
@@ -292,7 +292,7 @@ public partial class AlternateArts
         // TODO: React to other poison sources such as multiplayer
         // TODO: possibly in-flight powers as well
         ),
-        new(typeof(CalculatedGamble), "calculated_gamble_no_draw", card => {
+        new(typeof(CalculatedGamble), "silent/calculated_gamble_no_draw", card => {
             var me = Util.GetOwner(card);
             if (me == null) return null;
 
@@ -305,7 +305,7 @@ public partial class AlternateArts
                 if (model is CalculatedGamble calculatedGamble && power is NoDrawPower) CardNeedsReload(calculatedGamble);
             }
         },
-        new(typeof(Monologue), "monologue_if_lunar_blast", card => Util.HasCard<LunarBlast>(Util.GetOwner(card))),
+        new(typeof(Monologue), "regent/monologue_if_lunar_blast", card => Util.HasCard<LunarBlast>(Util.GetOwner(card))),
         new(typeof(MindRot), ["token/mind_rot", "token/mind_rot_regent"], card => {
             return Util.GetOwner(card)?.Character switch
             {
@@ -327,7 +327,7 @@ public partial class AlternateArts
                 if (model is SpoilsOfBattle spoilsOfBattle && cardPlay.Card is FallingStar) CardNeedsReload(spoilsOfBattle);
             }
         },
-        new(typeof(Parry), "parry_alt", card => {
+        new(typeof(Parry), "regent/parry_alt", card => {
             if (card.IsCanonical) return null;
             if (card.Pile != null) return null; // regular perry version
             // pile is null, and not canonical. probably a shop or something
