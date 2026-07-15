@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using BaseLib.Extensions;
 using BaseLib.Utils;
 using Godot;
@@ -12,6 +13,7 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Characters;
+using MegaCrit.Sts2.Core.Models.Events;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
@@ -20,7 +22,7 @@ using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
 namespace HideDetailsMod.HideDetailsModCode;
 
 [HarmonyPatch]
-public class AlternateArts
+public partial class AlternateArts
 {
     static bool CardIsBeingInspected(CardModel card)
     {
@@ -331,43 +333,28 @@ public class AlternateArts
             // pile is null, and not canonical. probably a shop or something
             if (CardIsBeingInspected(card)) return null;
             return true;
-        }) { WhenCardInspected = (nCard, _) => { if (nCard.Model is Parry) Util.ReloadCard(nCard); }}
+        }) { WhenCardInspected = (nCard, _) => { if (nCard.Model is Parry) Util.ReloadCard(nCard); }},
+        new(typeof(MadScience), ["event/mad_science_curious", "event/mad_science_expertise", "event/mad_science_improvement"], _card => {
+            MadScience card = (MadScience)_card;
+            return card.TinkerTimeRider switch {
+                // TinkerTime.RiderEffect.None => throw new NotImplementedException(),
+                // TinkerTime.RiderEffect.Sapping => throw new NotImplementedException(),
+                // TinkerTime.RiderEffect.Violence => throw new NotImplementedException(),
+                // TinkerTime.RiderEffect.Choking => throw new NotImplementedException(),
+                // TinkerTime.RiderEffect.Energized => throw new NotImplementedException(),
+                // TinkerTime.RiderEffect.Wisdom => throw new NotImplementedException(),
+                // TinkerTime.RiderEffect.Chaos => throw new NotImplementedException(),
+                TinkerTime.RiderEffect.Expertise => "event/mad_science_expertise",
+                TinkerTime.RiderEffect.Curious => "event/mad_science_curious",
+                TinkerTime.RiderEffect.Improvement => "event/mad_science_improvement",
+                _ => null,
+            };
+        }),
     ];
     public enum InspectionState { Opening, Closing, Updating }
 
-    public record CardImgFactory(Type CardType, string[] AllPaths, Func<CardModel, string?> Condition)
-    {
-        public CardImgFactory(Type CardType, string Path, Func<CardModel, bool?> Condition)
-            : this(CardType, [Path], card => Condition(card) ?? false ? Path : null) { }
 
-        internal IEnumerable<CardImg> AllPathsAsImg => AllPaths.Select(Path => new CardImg(Path));
-        internal IEnumerable<CardImg> AllNormal => AllPathsAsImg.Where(Img => Img.Exists());
-        internal IEnumerable<CardImg> AllUpgraded => AllPathsAsImg.Select(Path => Path.Upgraded()).Where(Img => Img.Exists());
-        public IEnumerable<CardImg> All => [.. AllNormal, .. AllUpgraded];
-
-        public Action<NCard, InspectionState>? WhenCardInspected { get; set; } = null;
-        public Action<AbstractModel, CardModel>? WhenCardGenerated { get; set; } = null;
-        public Action<AbstractModel, PlayerChoiceContext, CardPlay>? WhenCardPlayed { get; set; } = null;
-        public Action<AbstractModel, PlayerChoiceContext, PowerModel, decimal>? WhenPowerApplied { get; set; } = null;
-
-
-
-        public bool IsFor(CardModel card) => CardType.IsInstanceOfType(card);
-        public CardImg? Get(CardModel card)
-        {
-            if (!IsFor(card))
-            {
-                MainFile.Logger.Error($"Attempted to Get an alt art img for {card.Id} without checking IsFor first");
-                return null;
-            }
-            var result = Condition(card);
-            if (result == null) return null;
-            return new(result);
-        }
-    }
-
-
-    static IEnumerable<CardImgFactory> GetAltsFor(CardModel card)
+    static IEnumerable<ICardImgFactory> GetAltsFor(CardModel card)
     {
         var found = Arts.Where(alt => alt.IsFor(card));
         MainFile.Logger.Debug($"Found {found.Count()} alts for {card.Id}");
