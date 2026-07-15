@@ -25,7 +25,6 @@ public class AlternateArts
     static bool CardIsBeingInspected(CardModel card)
     {
         if (InspectCardPatch.CardBeingInspected[card]) return true;
-
         NCard? nCard = NCard.FindOnTable(card);
         if (nCard == null) return false;
         return InspectCardPatch.NCardBeingInspected[nCard];
@@ -35,7 +34,7 @@ public class AlternateArts
     [HarmonyPatch]
     public class AltArtListenerPatch
     {
-        internal static SpireField<CardModel, Action?> NCardNeedsUpdateEvent { get; } = new(() => () => { });
+        internal static SpireField<CardModel, Action?> NCardNeedsUpdateEvent { get; } = new(() => null);
         internal static NotNullSpireField<NCard, Action> NCardReload { get; } = new((nCard) => () => Util.ReloadCard(nCard));
 
 
