@@ -325,9 +325,10 @@ public partial class AlternateArts
         }) {
             WhenPowerApplied = (theGambit, _, power, _) => { if (power is NoBlockPower) CardNeedsReload(theGambit); }
         },
-        new CardImgFactory2<SharedFate>("shared_fate_if_friendship", card => Util.HasCard<Friendship>(Util.GetOwner(card))),
-        new CardImgFactory2<Bodyguard>("bodyguard_if_protector", card => Util.HasCard<Protector>(Util.GetOwner(card))),
-        new CardImgFactory2<DeathsDoor>("deaths_door_if_applied_doom", card => card.WasDoomAppliedThisTurn),
+        new CardImgFactory2<SharedFate>("necrobinder/shared_fate_if_friendship", card => Util.HasCard<Friendship>(Util.GetOwner(card))),
+        new CardImgFactory2<Bodyguard>("necrobinder/bodyguard_if_protector", card => Util.HasCard<Protector>(Util.GetOwner(card))),
+        new CardImgFactory2<DeathsDoor>("necrobinder/deaths_door_if_applied_doom", card => card.WasDoomAppliedThisTurn),
+        new CardImgFactory2<Parse>("necrobinder/parse_if_poor_sleep", card => Util.HasCard<PoorSleep>(Util.GetOwner(card))),
     ];
 
     // public static readonly AddedNode<NCard, Control> Node = new(static (nCard) =>
