@@ -9,11 +9,7 @@ namespace BaseLib.Utils;
 
 public static class CardCyclePreview
 {
-    public static IHoverTip FromCards(
-        params CardModel[] cards)
-    {
-        return FromCards(cards.AsEnumerable());
-    }
+    public static IHoverTip FromCards(params CardModel[] cards) => FromCards(cards.AsEnumerable());
 
     public static IHoverTip FromCards(
         IEnumerable<CardModel> cards,

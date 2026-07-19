@@ -119,8 +119,7 @@ public static class NHoverTipSetCreateAndShowCardCyclePreviewPatch
 
         CardCyclePreviewPatchStorage.PendingCreates.Push(__state);
 
-        hoverTips = CardCyclePreviewPatchHelpers.ResolveAllForCycleSet(
-            originalTips);
+        hoverTips = CardCyclePreviewPatchHelpers.ResolveAllForCycleSet(originalTips);
     }
 
     private static void Postfix(
@@ -199,8 +198,7 @@ public static class NHoverTipSetProcessCardCyclePreviewPatch
 
             slot.LastVersion = version;
 
-            CardCyclePreviewPatchHelpers.UpdateCycleSlot(
-                slot);
+            CardCyclePreviewPatchHelpers.UpdateCycleSlot(slot);
 
             changed = true;
         }

@@ -62,9 +62,7 @@ public sealed class CardCyclePreviewHoverTip : IResolvingHoverTip
             card.FinalizeUpgradeInternal();
         }
 
-        return new ResolvedCardCycleHoverTip(
-            card,
-            this);
+        return new ResolvedCardCycleHoverTip(card, this);
     }
 
     private int CurrentIndex(int count)
