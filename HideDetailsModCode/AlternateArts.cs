@@ -338,6 +338,7 @@ public partial class AlternateArts
                 _ => null,
             };
         }),
+        ClashPatch.AltArt,
     ];
 
     // public static readonly AddedNode<NCard, Control> Node = new(static (nCard) =>
