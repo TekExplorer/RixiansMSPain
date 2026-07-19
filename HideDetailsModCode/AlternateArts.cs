@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using BaseLib.Extensions;
 using BaseLib.Utils;
 using Godot;
@@ -17,6 +16,7 @@ using MegaCrit.Sts2.Core.Models.Events;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
+using MegaCrit.Sts2.Core.Nodes.Cards.Holders;
 using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
 
 namespace HideDetailsMod.HideDetailsModCode;
@@ -37,47 +37,42 @@ public partial class AlternateArts
     public class AltArtListenerPatch
     {
         internal static SpireField<CardModel, Action?> NCardNeedsUpdateEvent { get; } = new(() => null);
-        internal static NotNullSpireField<NCard, Action> NCardReload { get; } = new((nCard) => () => Util.ReloadCard(nCard));
-
+        internal static NotNullSpireField<NCard, Action> NCardReload { get; } = new((nCard) => nCard.Reload);
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(NCard), "SubscribeToModel")]
+        [HarmonyPatch(typeof(NCard), nameof(NCard.SubscribeToModel))]
         public static void NCardSubscribeToModel(NCard __instance, CardModel? model)
         {
             if (model != null && __instance.IsInsideTree())
-            {
-                NCardNeedsUpdateEvent[model] += NCardReload[__instance];
-            }
+            { NCardNeedsUpdateEvent[model] += NCardReload[__instance]; }
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(NCard), "UnsubscribeFromModel")]
+        [HarmonyPatch(typeof(NCard), nameof(NCard.UnsubscribeFromModel))]
         public static void NCardUnsubscribeFromModel(NCard __instance, CardModel? model)
         {
             if (model != null)
-            {
-                NCardNeedsUpdateEvent[model] -= NCardReload[__instance];
-            }
+            { NCardNeedsUpdateEvent[model] -= NCardReload[__instance]; }
         }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterPowerAmountChanged))]
         public static void AfterPowerAmountChanged(AbstractModel __instance, PlayerChoiceContext choiceContext, PowerModel power, decimal amount, Creature? applier, CardModel? cardSource)
         {
-            Arts.Do(alt => alt.WhenPowerApplied?.Invoke(__instance, choiceContext, power, amount));
+            Arts.Do(alt => alt.OnPowerApplied(__instance, choiceContext, power, amount));
         }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterCardPlayed))]
         public static void AfterCardPlayed(AbstractModel __instance, PlayerChoiceContext choiceContext, CardPlay cardPlay)
         {
-            Arts.Do(alt => alt.WhenCardPlayed?.Invoke(__instance, choiceContext, cardPlay));
+            Arts.Do(alt => alt.OnCardPlayed(__instance, choiceContext, cardPlay));
         }
         [HarmonyPostfix]
         [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterCardGeneratedForCombat))]
         public static void AfterCardGeneratedForCombat(AbstractModel __instance, CardModel card, Player? creator)
         {
-            Arts.Do(alt => alt.WhenCardGenerated?.Invoke(__instance, card));
+            Arts.Do(alt => alt.OnCardGenerated(__instance, card));
         }
     }
 
@@ -97,14 +92,9 @@ public partial class AlternateArts
             var nCard = NCard.FindOnTable(card);
             ReloadCard(nCard);
         }
-        public static void ReloadCard(NCard? nCard)
-        {
-            if (nCard == null) return;
-            AccessTools.Method(typeof(NCard), "Reload")?.Invoke(nCard, []);
-        }
-
+        public static void ReloadCard(NCard? nCard) => nCard?.Reload();
+        public static void ReloadCard(NCardHolder? holder) => holder?.CardNode?.Reload();
         public static bool HasCard<T>(Player? owner) where T : CardModel => HasCard(owner, card => card is T);
-
         public static bool HasCard(Player? owner, Func<CardModel, bool> predicate) => CardsOf(owner).Any(predicate);
 
         public static IEnumerable<CardModel> CombatCardsOf(Player? player) => CardsOf(player, IncludeDeck: false);
@@ -168,8 +158,8 @@ public partial class AlternateArts
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(NCard), "_Ready")]
-    [HarmonyPatch(typeof(NCard), "Reload")]
+    [HarmonyPatch(typeof(NCard), nameof(NCard._Ready))]
+    [HarmonyPatch(typeof(NCard), nameof(NCard.Reload))]
     public static void MakeGlowGlowier(NCard __instance, ref GpuParticles2D ____sparkles, ref NCardRareGlow? ____rareGlow, ref NCardUncommonGlow? ____uncommonGlow)
     {
         if (!GodotObject.IsInstanceValid(__instance)) return;
@@ -225,58 +215,34 @@ public partial class AlternateArts
         card.CardHighlight.Modulate = NCardHighlight.gold;
     }
 
-
     [HarmonyPatch]
     class AnimatedCard
     {
         // static BaseLib.Utils.AddedNode<NCard, Control> thing;
     }
 
-    public record CardImg(string Path)
-    {
-        public CardImg(CardModel card) : this($"{card.Pool.Title.ToLowerInvariant()}/{card.Id.Entry.ToLowerInvariant()}") { }
-        public static CardImg Upgraded(CardModel card) => new CardImg(card).Upgraded();
-
-        public string PortraitPath { get; } = $"res://images/atlases/card_atlas.sprites/{Path}.tres";
-        private string _PortraitJpgPath { get; } = $"res://artist_assets/{Path}.jpg";
-        private string _PortraitPngPath { get; } = $"res://artist_assets/{Path}.png";
-        public string PortraitPngPath => ResourceLoader.Exists(_PortraitJpgPath) ? _PortraitJpgPath : _PortraitPngPath;
-
-        // public string PortraitPngPath { get; } = ImageHelperExtensions.GetModImagePath($"{path}.png");
-        public CardImg Upgraded() => Path.EndsWith("_plus") ? this : new(Path + "_plus");
-
-        public bool Exists() => ResourceLoader.Exists(PortraitPath);
-    }
-    public static readonly CardImgFactory[] Arts = [
-        new(typeof(Shiv), "token/shiv_2", _ => MyModConfig.UseBetaShivArt),
-        new(typeof(Predator), "silent/predator_gold_axe", card => Util.HasCard<GoldAxe>(Util.GetOwner(card))),
-        new(typeof(Outbreak), "silent/outbreak_if_noxious_fumes", card => {
+    public static readonly ICardImgFactory[] Arts = [
+        new CardImgFactory2<Shiv>("token/shiv_2", _ => MyModConfig.UseBetaShivArt),
+        new CardImgFactory2<Predator>("silent/predator_gold_axe", card => Util.HasCard<GoldAxe>(Util.GetOwner(card))),
+        new CardImgFactory2<Outbreak>("silent/outbreak_if_noxious_fumes", card => {
             MainFile.Logger.Info($"[Alt Art] [Outbreak] Checking for NoxiousFumes");
             var me = Util.GetOwner(card);
             if (me == null) return null;
             return Util.HasCard<NoxiousFumes>(me) || me.HasPower<NoxiousFumesPower>();
         }){
-            WhenPowerApplied = (model, _, power, _) => {
-                if (model is Outbreak outbreak && power is NoxiousFumesPower) CardNeedsReload(outbreak);
-            },
-            WhenCardGenerated = (model, card) => {
-                if (model is Outbreak outbreak && card is NoxiousFumes) CardNeedsReload(outbreak);
-            }
+            WhenPowerApplied = (outbreak, _, power, _) => { if (power is NoxiousFumesPower) CardNeedsReload(outbreak); },
+            WhenCardGenerated = (outbreak, card) => { if (card is NoxiousFumes) CardNeedsReload(outbreak); }
         },
-        new(typeof(NoxiousFumes), "silent/noxious_fumes_if_outbreak", card => {
+        new CardImgFactory2<NoxiousFumes>("silent/noxious_fumes_if_outbreak", card => {
             MainFile.Logger.Info($"[Alt Art] [NoxiousFumes] Checking for Outbreak");
             var me = Util.GetOwner(card);
             if (me == null) return null;
             return Util.HasCard<Outbreak>(me) || me.HasPower<OutbreakPower>();
         }) {
-            WhenPowerApplied = (model, _, power, _) => {
-                if (model is NoxiousFumes noxiousFumes && power is OutbreakPower)  CardNeedsReload(noxiousFumes);
-            },
-            WhenCardGenerated = (model, card) => {
-                if (model is NoxiousFumes noxiousFumes && card is Outbreak) CardNeedsReload(noxiousFumes);
-            }
+            WhenPowerApplied = (noxiousFumes, _, power, _) => { if (power is OutbreakPower) CardNeedsReload(noxiousFumes); },
+            WhenCardGenerated = (noxiousFumes, card) => { if (card is Outbreak) CardNeedsReload(noxiousFumes); }
         },
-        new(typeof(Accelerant), "silent/poisonless_accelerant", card => {
+        new CardImgFactory2<Accelerant>("silent/poisonless_accelerant", card => {
             var me = Util.GetOwner(card);
             if (me == null) return null;
 
@@ -292,7 +258,7 @@ public partial class AlternateArts
         // TODO: React to other poison sources such as multiplayer
         // TODO: possibly in-flight powers as well
         ),
-        new(typeof(CalculatedGamble), "silent/calculated_gamble_no_draw", card => {
+        new CardImgFactory2<CalculatedGamble>("silent/calculated_gamble_no_draw", card => {
             var me = Util.GetOwner(card);
             if (me == null) return null;
 
@@ -301,43 +267,57 @@ public partial class AlternateArts
 
             return HasFiddle || HasNoDrawPower;
         }) {
-            WhenPowerApplied = (model, _, power, _) => {
-                if (model is CalculatedGamble calculatedGamble && power is NoDrawPower) CardNeedsReload(calculatedGamble);
-            }
+            WhenPowerApplied = (calculatedGamble, _, power, _) => { if (power is NoDrawPower) CardNeedsReload(calculatedGamble); }
         },
-        new(typeof(Monologue), "regent/monologue_if_lunar_blast", card => Util.HasCard<LunarBlast>(Util.GetOwner(card))),
-        new(typeof(MindRot), ["token/mind_rot", "token/mind_rot_regent"], card => {
+        new CardImgFactory2<Monologue>("regent/monologue_if_lunar_blast", card => Util.HasCard<LunarBlast>(Util.GetOwner(card))),
+        new CardImgFactory2<MindRot>(["token/mind_rot", "token/mind_rot_regent"], card => {
             return Util.GetOwner(card)?.Character switch
             {
-                // Currently only the regent version has been added
+                Ironclad => "token/mind_rot", // TODO: ironclad mind rot
+                Silent => "token/mind_rot", // TODO: silent mind rot
                 Regent => "token/mind_rot_regent",
-                // Null returns "token/mind_rot" which is the defect version
+                Necrobinder => "token/mind_rot_necrobinder",
                 Defect => "token/mind_rot",
+                // Null returns "token/mind_rot" which is the defect version
                 _ => null,
             };
         }),
-        new(typeof(SpoilsOfBattle), "regent/spoils_of_battle_if_falling_star_played", card => {
+        new CardImgFactory2<SpoilsOfBattle>("regent/spoils_of_battle_if_falling_star_played", card => {
             if (card.IsCanonical) return null;
             var me = Util.GetOwner(card);
             if (me == null) return null;
             var PlayedFallingStarThisCombat = CombatManager.Instance.History.CardPlaysFinished.Any(entry => entry.Actor == me.Creature && entry.CardPlay.Card is FallingStar);
             return PlayedFallingStarThisCombat;
         }) {
-            WhenCardPlayed = (model, _, cardPlay) => {
-                if (model is SpoilsOfBattle spoilsOfBattle && cardPlay.Card is FallingStar) CardNeedsReload(spoilsOfBattle);
-            }
+            WhenCardPlayed = (spoilsOfBattle, _, cardPlay) => {if (cardPlay.Card is FallingStar) CardNeedsReload(spoilsOfBattle);}
         },
-        new(typeof(Parry), "regent/parry_alt", card => {
+        new CardImgFactory2<Parry>("regent/parry_alt", card => {
             if (card.IsCanonical) return null;
             if (card.Pile != null) return null; // regular perry version
             // pile is null, and not canonical. probably a shop or something
             if (CardIsBeingInspected(card)) return null;
             return true;
-        }) { WhenCardInspected = (nCard, _) => { if (nCard.Model is Parry) Util.ReloadCard(nCard); }},
-        new(typeof(MadScience), ["event/mad_science_curious", "event/mad_science_expertise", "event/mad_science_improvement"], _card => {
-            MadScience card = (MadScience)_card;
-            return card.TinkerTimeRider switch {
-                // TinkerTime.RiderEffect.None => throw new NotImplementedException(),
+        }) {
+            WhenCardInspected = (parry, nCard, _) => Util.ReloadCard(nCard)
+        },
+        new CardImgFactory2<MadScience>(["event/mad_science_curious", "event/mad_science_expertise", "event/mad_science_improvement"], card => {
+            var rider = card.TinkerTimeRider;
+            string[] powerOptions = ["event/mad_science_curious", "event/mad_science_expertise", "event/mad_science_improvement"];
+            var index = CurrentTemporalIndex(3);
+
+            if (rider == TinkerTime.RiderEffect.None && card.Type == CardType.Power) {
+                // TODO: should cycle through the 3 options
+                return powerOptions[index];
+            }
+
+            return rider switch {
+                TinkerTime.RiderEffect.None => card.Type switch {
+                    CardType.None => throw new NotImplementedException(),
+                    CardType.Attack => null, // only one art
+                    CardType.Skill => null, // only one art
+                    CardType.Power => powerOptions[index],
+                    _ => null, // what?
+                },
                 // TinkerTime.RiderEffect.Sapping => throw new NotImplementedException(),
                 // TinkerTime.RiderEffect.Violence => throw new NotImplementedException(),
                 // TinkerTime.RiderEffect.Choking => throw new NotImplementedException(),
@@ -351,9 +331,42 @@ public partial class AlternateArts
             };
         }),
     ];
+    public static readonly AddedNode<NCard, Control> Node = new(static (nCard) =>
+    {
+        // Use a simple Control container to hold both blades
+        Control container = new() { Visible = false };
+
+        void updateDelegate()
+        {
+            if (!GodotObject.IsInstanceValid(nCard) || !GodotObject.IsInstanceValid(container)) return;
+            if (nCard.Model is MadScience card && card.Type == CardType.Power && card.TinkerTimeRider == TinkerTime.RiderEffect.None)
+            {
+                nCard.Reload(); // TODO: optimize. Should make the reload() patch work on UpdateVisuals instead
+            }
+            // to something
+        }
+
+        container.TreeEntered += () =>
+        {
+            if (!GodotObject.IsInstanceValid(container)) return;
+            container.GetTree().ProcessFrame += updateDelegate;
+        };
+
+        container.TreeExiting += () =>
+        {
+            if (!GodotObject.IsInstanceValid(container)) return;
+            if (container.GetTree() != null)
+                container.GetTree().ProcessFrame -= updateDelegate;
+        };
+        return container;
+    });
+    static public int CurrentTemporalIndex(int count)
+    {
+        double secondsPerCard = Math.Max(0.1, TimeSpan.FromSeconds(0.85).TotalSeconds);
+        double elapsedSeconds = Time.GetTicksMsec() / 1000.0;
+        return (int)(Math.Floor(elapsedSeconds / secondsPerCard) % count);
+    }
     public enum InspectionState { Opening, Closing, Updating }
-
-
     static IEnumerable<ICardImgFactory> GetAltsFor(CardModel card)
     {
         var found = Arts.Where(alt => alt.IsFor(card));

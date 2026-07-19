@@ -26,8 +26,7 @@ public static class InspectCardPatch
         }
     }
 
-    static void InvokeForAlts(NCard nCard, AlternateArts.InspectionState state) => AlternateArts.Arts.Do(alt => alt.WhenCardInspected?.Invoke(nCard, state));
-
+    static void InvokeForAlts(NCard nCard, AlternateArts.InspectionState state) => AlternateArts.Arts.Do(alt => alt.OnCardInspected(nCard, state));
 
     [HarmonyPatch(typeof(NInspectCardScreen), nameof(NInspectCardScreen.Close))]
     public static class InspectCardPatchClose
@@ -41,7 +40,7 @@ public static class InspectCardPatch
             InvokeForAlts(____card, AlternateArts.InspectionState.Closing);
         }
     }
-    [HarmonyPatch(typeof(NInspectCardScreen), "UpdateCardDisplay")]
+    [HarmonyPatch(typeof(NInspectCardScreen), nameof(NInspectCardScreen.UpdateCardDisplay))]
     public static class InspectCardPatchUpdateCardDisplay
     {
         public static void Postfix(NCard ____card)
