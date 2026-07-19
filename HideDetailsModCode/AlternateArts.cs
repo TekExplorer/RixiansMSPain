@@ -329,6 +329,15 @@ public partial class AlternateArts
         new CardImgFactory2<Bodyguard>("necrobinder/bodyguard_if_protector", card => Util.HasCard<Protector>(Util.GetOwner(card))),
         new CardImgFactory2<DeathsDoor>("necrobinder/deaths_door_if_applied_doom", card => card.WasDoomAppliedThisTurn),
         new CardImgFactory2<Parse>("necrobinder/parse_if_poor_sleep", card => Util.HasCard<PoorSleep>(Util.GetOwner(card))),
+        new CardImgFactory2<Charge>(["regent/charge_1_draw", "regent/charge_0_draw"], card => {
+            var owner = Util.GetOwner(card);
+            if (owner == null) return null;
+            return PileType.Draw.GetPile(owner).Cards.ToArray() switch {
+                [] => "regent/charge_0_draw",
+                [not null] =>"regent/charge_1_draw",
+                _ => null,
+            };
+        }),
     ];
 
     // public static readonly AddedNode<NCard, Control> Node = new(static (nCard) =>
