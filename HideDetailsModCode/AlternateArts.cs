@@ -339,6 +339,8 @@ public partial class AlternateArts
             };
         }),
         ClashPatch.AltArt,
+        // todo: if Osty died this turn
+        new CardImgFactory2<Snap>("snap_if_osty_died", card => null)
     ];
 
     // public static readonly AddedNode<NCard, Control> Node = new(static (nCard) =>
