@@ -12,7 +12,6 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Characters;
-using MegaCrit.Sts2.Core.Models.Events;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
@@ -300,72 +299,44 @@ public partial class AlternateArts
         }) {
             WhenCardInspected = (parry, nCard, _) => Util.ReloadCard(nCard)
         },
-        new CardImgFactory2<MadScience>(["event/mad_science_curious", "event/mad_science_expertise", "event/mad_science_improvement"], card => {
-            var rider = card.TinkerTimeRider;
-            string[] powerOptions = ["event/mad_science_curious", "event/mad_science_expertise", "event/mad_science_improvement"];
-            var index = CurrentTemporalIndex(3);
-
-            if (rider == TinkerTime.RiderEffect.None && card.Type == CardType.Power) {
-                // TODO: should cycle through the 3 options
-                return powerOptions[index];
-            }
-
-            return rider switch {
-                TinkerTime.RiderEffect.None => card.Type switch {
-                    CardType.None => throw new NotImplementedException(),
-                    CardType.Attack => null, // only one art
-                    CardType.Skill => null, // only one art
-                    CardType.Power => powerOptions[index],
-                    _ => null, // what?
-                },
-                // TinkerTime.RiderEffect.Sapping => throw new NotImplementedException(),
-                // TinkerTime.RiderEffect.Violence => throw new NotImplementedException(),
-                // TinkerTime.RiderEffect.Choking => throw new NotImplementedException(),
-                // TinkerTime.RiderEffect.Energized => throw new NotImplementedException(),
-                // TinkerTime.RiderEffect.Wisdom => throw new NotImplementedException(),
-                // TinkerTime.RiderEffect.Chaos => throw new NotImplementedException(),
-                TinkerTime.RiderEffect.Expertise => "event/mad_science_expertise",
-                TinkerTime.RiderEffect.Curious => "event/mad_science_curious",
-                TinkerTime.RiderEffect.Improvement => "event/mad_science_improvement",
-                _ => null,
-            };
-        }),
+        TinkerTimePatch.AltArt,
     ];
-    public static readonly AddedNode<NCard, Control> Node = new(static (nCard) =>
-    {
-        // Use a simple Control container to hold both blades
-        Control container = new() { Visible = false };
 
-        void updateDelegate()
-        {
-            if (!GodotObject.IsInstanceValid(nCard) || !GodotObject.IsInstanceValid(container)) return;
-            if (nCard.Model is MadScience card && card.Type == CardType.Power && card.TinkerTimeRider == TinkerTime.RiderEffect.None)
-            {
-                nCard.Reload(); // TODO: optimize. Should make the reload() patch work on UpdateVisuals instead
-            }
-            // to something
-        }
+    // public static readonly AddedNode<NCard, Control> Node = new(static (nCard) =>
+    // {
+    //     // Use a simple Control container to hold both blades
+    //     Control container = new() { Visible = false };
 
-        container.TreeEntered += () =>
-        {
-            if (!GodotObject.IsInstanceValid(container)) return;
-            container.GetTree().ProcessFrame += updateDelegate;
-        };
+    //     void updateDelegate()
+    //     {
+    //         if (!GodotObject.IsInstanceValid(nCard) || !GodotObject.IsInstanceValid(container)) return;
+    //         if (nCard.Model is MadScience card && card.Type == CardType.Power && card.TinkerTimeRider == TinkerTime.RiderEffect.None)
+    //         {
+    //             nCard.Reload(); // TODO: optimize. Should make the reload() patch work on UpdateVisuals instead
+    //         }
+    //         // to something
+    //     }
 
-        container.TreeExiting += () =>
-        {
-            if (!GodotObject.IsInstanceValid(container)) return;
-            if (container.GetTree() != null)
-                container.GetTree().ProcessFrame -= updateDelegate;
-        };
-        return container;
-    });
-    static public int CurrentTemporalIndex(int count)
-    {
-        double secondsPerCard = Math.Max(0.1, TimeSpan.FromSeconds(0.85).TotalSeconds);
-        double elapsedSeconds = Time.GetTicksMsec() / 1000.0;
-        return (int)(Math.Floor(elapsedSeconds / secondsPerCard) % count);
-    }
+    //     container.TreeEntered += () =>
+    //     {
+    //         if (!GodotObject.IsInstanceValid(container)) return;
+    //         container.GetTree().ProcessFrame += updateDelegate;
+    //     };
+
+    //     container.TreeExiting += () =>
+    //     {
+    //         if (!GodotObject.IsInstanceValid(container)) return;
+    //         if (container.GetTree() != null)
+    //             container.GetTree().ProcessFrame -= updateDelegate;
+    //     };
+    //     return container;
+    // });
+    // static public int CurrentTemporalIndex(int count)
+    // {
+    //     double secondsPerCard = Math.Max(0.1, TimeSpan.FromSeconds(0.85).TotalSeconds);
+    //     double elapsedSeconds = Time.GetTicksMsec() / 1000.0;
+    //     return (int)(Math.Floor(elapsedSeconds / secondsPerCard) % count);
+    // }
     public enum InspectionState { Opening, Closing, Updating }
     static IEnumerable<ICardImgFactory> GetAltsFor(CardModel card)
     {
@@ -378,6 +349,7 @@ public partial class AlternateArts
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CardModel), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
+        [HarmonyPatch(typeof(MadScience), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
         public static void AllPortraitPaths(CardModel? __instance, ref IEnumerable<string>? __result)
         {
             var card = __instance;
@@ -418,6 +390,7 @@ public partial class AlternateArts
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CardModel), nameof(CardModel.PortraitPath), MethodType.Getter)]
+        [HarmonyPatch(typeof(MadScience), nameof(CardModel.PortraitPath), MethodType.Getter)]
         public static void PortraitPath(CardModel? __instance, ref string __result)
         {
             if (!MyModConfig.UseCustomArt) return;
@@ -434,6 +407,7 @@ public partial class AlternateArts
         // PortraitPngPath
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CardModel), "PortraitPngPath", MethodType.Getter)]
+        // [HarmonyPatch(typeof(MadScience), "PortraitPngPath", MethodType.Getter)] // doesn't exist lol
         public static void PortraitPngPath(CardModel? __instance, ref string __result)
         {
             if (!MyModConfig.UseCustomArt) return;
