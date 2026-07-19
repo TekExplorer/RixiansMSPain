@@ -117,21 +117,24 @@ public static class TinkerTimePatch
         if (cardType != CardType.Power) return null;
         var owner = tinkerTime.Owner;
         if (owner == null) return null;
-        MadScience madScienceExpertise = owner.RunState.CreateCard<MadScience>(owner);
-        madScienceExpertise.TinkerTimeType = cardType;
-        madScienceExpertise.TinkerTimeRider = TinkerTime.RiderEffect.None;
-        VisualRider[madScienceExpertise] = TinkerTime.RiderEffect.Expertise;
 
-        MadScience madScienceCurious = owner.RunState.CreateCard<MadScience>(owner);
-        madScienceCurious.TinkerTimeType = cardType;
-        madScienceCurious.TinkerTimeRider = TinkerTime.RiderEffect.None;
-        VisualRider[madScienceCurious] = TinkerTime.RiderEffect.Curious;
+        MadScience NewCard(TinkerTime.RiderEffect VisualRiderEffect)
+        {
+            MadScience madScience = owner.RunState.CreateCard<MadScience>(owner);
+            madScience.TinkerTimeType = cardType;
+            madScience.TinkerTimeRider = TinkerTime.RiderEffect.None;
+            VisualRider[madScience] = VisualRiderEffect;
+            return madScience;
+        }
 
-        MadScience madScienceImprovement = owner.RunState.CreateCard<MadScience>(owner);
-        madScienceImprovement.TinkerTimeType = cardType;
-        madScienceImprovement.TinkerTimeRider = TinkerTime.RiderEffect.None;
-        VisualRider[madScienceImprovement] = TinkerTime.RiderEffect.Improvement;
-
-        return CardCyclePreview.FromCards([madScienceExpertise, madScienceCurious, madScienceImprovement], new() { RemoveDuplicateTypes = false });
+        return CardCyclePreview.FromCards([
+            NewCard(TinkerTime.RiderEffect.Expertise),
+            NewCard(TinkerTime.RiderEffect.Curious),
+            NewCard(TinkerTime.RiderEffect.Improvement)
+        ], new()
+        {
+            RemoveDuplicateTypes = false,
+            // TimePerCard = TimeSpan.FromSeconds(0.85),
+        });
     }
 }
