@@ -300,6 +300,31 @@ public partial class AlternateArts
             WhenCardInspected = (parry, nCard, _) => Util.ReloadCard(nCard)
         },
         TinkerTimePatch.AltArt,
+        new CardImgFactory2<Dowsing>(new List<int>([1,2,3,4,5]).Select(num => $"quest/dowsing_{num}"), card => {
+            if (card.IsCanonical) return null;
+            var remaining = 5 - card.RoomsEntered;
+            return $"quest/dowsing_{Math.Clamp(remaining, 1,5)}";
+        }),
+        new CardImgFactory2<Melancholy>(new List<int>([0,1,2,3]).Select(num => $"necrobinder/melancholy_cost_{num}"), card => {
+            if (card.IsCanonical) return null;
+            var cost = card.EnergyCost.GetResolved(); // this includes all effects like borrowed time
+            return $"necrobinder/melancholy_cost_{Math.Clamp(cost, 0,3)}";
+        }),
+        new CardImgFactory2<TheGambit>("the_gambit_no_block", card => {
+            // if no block power, or block would be zero
+            // if (card.DynamicVars.Block.IntValue <= 0) return true;
+            // TODO: figure out which of these is the correct one.
+            if (card.DynamicVars.Block.PreviewValue <= 0) return true;
+            if (card.DynamicVars.Block.BaseValue <= 0) return true;
+            if (card.DynamicVars.Block.IntValue <= 0) return true;
+
+            var owner = Util.GetOwner(card);
+            if (owner == null)return null;
+            if (owner.HasPower<NoBlockPower>()) return true;
+            return null;
+        }) {
+            WhenPowerApplied = (theGambit, _, power, _) => { if (power is NoBlockPower) CardNeedsReload(theGambit); }
+        },
     ];
 
     // public static readonly AddedNode<NCard, Control> Node = new(static (nCard) =>
