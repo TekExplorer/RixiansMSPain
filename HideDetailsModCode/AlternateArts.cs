@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Characters;
+using MegaCrit.Sts2.Core.Models.Enchantments;
 using MegaCrit.Sts2.Core.Models.Monsters;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
@@ -151,7 +152,14 @@ public partial class AlternateArts
     }
 
     public static readonly ICardImgFactory[] Arts = [
-        new CardImgFactory2<Shiv>("token/shiv_2", _ => MyModConfig.UseBetaShivArt),
+        new CardImgFactory2<Shiv>(["token/shiv_2", "token/shiv_fanned", "token/shiv_fanned_inky"], card => {
+            if (Util.GetOwner(card)?.HasPower<FanOfKnivesPower>() ?? false) {
+                if (card.Enchantment is Inky) return "token/shiv_fanned_inky";
+                return "token/shiv_fanned";
+            }
+            if (MyModConfig.UseBetaShivArt) return "token/shiv_2";
+            return null;
+        }),
         new CardImgFactory2<Predator>("silent/predator_gold_axe", card => Util.HasCard<GoldAxe>(Util.GetOwner(card))),
         new CardImgFactory2<Outbreak>("silent/outbreak_if_noxious_fumes", card => {
             MainFile.Logger.Info($"[Alt Art] [Outbreak] Checking for NoxiousFumes");
