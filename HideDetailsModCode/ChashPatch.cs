@@ -16,4 +16,5 @@ class ClashPatch
     static internal MethodInfo IsPlayableMethod => AccessTools.PropertyGetter(typeof(Clash), "IsPlayable");
     // OnPlay: change vfx to grand finale!
     // Probably needs a Transpiler
+    // the initial petals are separate!
 }

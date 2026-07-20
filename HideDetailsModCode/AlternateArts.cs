@@ -5,13 +5,12 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Cards;
-using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
-using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Characters;
+using MegaCrit.Sts2.Core.Models.Monsters;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
@@ -32,48 +31,6 @@ public partial class AlternateArts
     }
 
     public static void CardNeedsReload(CardModel card) => AltArtListenerPatch.NCardNeedsUpdateEvent[card]?.Invoke();
-    [HarmonyPatch]
-    public class AltArtListenerPatch
-    {
-        internal static SpireField<CardModel, Action?> NCardNeedsUpdateEvent { get; } = new(() => null);
-        internal static NotNullSpireField<NCard, Action> NCardReload { get; } = new((nCard) => nCard.Reload);
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(NCard), nameof(NCard.SubscribeToModel))]
-        public static void NCardSubscribeToModel(NCard __instance, CardModel? model)
-        {
-            if (model != null && __instance.IsInsideTree())
-            { NCardNeedsUpdateEvent[model] += NCardReload[__instance]; }
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(NCard), nameof(NCard.UnsubscribeFromModel))]
-        public static void NCardUnsubscribeFromModel(NCard __instance, CardModel? model)
-        {
-            if (model != null)
-            { NCardNeedsUpdateEvent[model] -= NCardReload[__instance]; }
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterPowerAmountChanged))]
-        public static void AfterPowerAmountChanged(AbstractModel __instance, PlayerChoiceContext choiceContext, PowerModel power, decimal amount, Creature? applier, CardModel? cardSource)
-        {
-            Arts.Do(alt => alt.OnPowerApplied(__instance, choiceContext, power, amount));
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterCardPlayed))]
-        public static void AfterCardPlayed(AbstractModel __instance, PlayerChoiceContext choiceContext, CardPlay cardPlay)
-        {
-            Arts.Do(alt => alt.OnCardPlayed(__instance, choiceContext, cardPlay));
-        }
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterCardGeneratedForCombat))]
-        public static void AfterCardGeneratedForCombat(AbstractModel __instance, CardModel card, Player? creator)
-        {
-            Arts.Do(alt => alt.OnCardGenerated(__instance, card));
-        }
-    }
 
     public class Util
     {
@@ -126,33 +83,6 @@ public partial class AlternateArts
             { MainFile.Logger.Warn($"LocalContext.GetMe(card.RunState) errored with: {e}"); }
 
             return player;
-        }
-    }
-
-
-    [HarmonyPatch]
-    public class TiltAlignment
-    {
-        public const float AlignmentRotationDegrees = -15f;
-        // public const float AlignmentRotationDegrees = -6.28f;
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(NCard), "Reload")]
-        public static void TiltAlignmentReload(NCard __instance)
-        {
-            if (!GodotObject.IsInstanceValid(__instance)) return;
-            if (__instance.Model is not Alignment) return;
-            __instance.RotationDegrees -= AlignmentRotationDegrees;
-        }
-
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(NCard), "Model", MethodType.Setter)]
-        public static void FixTiltWhenNotAlignment(NCard __instance, CardModel? value, CardModel? ____model)
-        {
-            if (!GodotObject.IsInstanceValid(__instance)) return;
-            if (value == ____model) return;
-            if (____model is Alignment && value is not Alignment) __instance.RotationDegrees = 0;
-            // if (____model is not Alignment && value is Alignment) __instance.RotationDegrees -= AlignmentRotationDegrees;
         }
     }
 
@@ -339,9 +269,32 @@ public partial class AlternateArts
             };
         }),
         ClashPatch.AltArt,
-        // todo: if Osty died this turn
-        new CardImgFactory2<Snap>("snap_if_osty_died", card => null)
+        SnapAlt.SnapOstyDiedArt,
     ];
+    static class SnapAlt
+    {
+        static readonly SpireField<Snap, bool> SnapOstyDied = new(() => false);
+        // todo: if Osty died this turn
+        // TODO: this kinda sucks.
+        static public readonly ICardImgFactory SnapOstyDiedArt = new CardImgFactory2<Snap>("snap_if_osty_died", card => SnapOstyDied[card])
+        {
+            AfterDeath = (snap, _, creature, _) =>
+            {
+                if (creature.Monster is Osty osty && creature.PetOwner == Util.GetOwner(snap))
+                { SnapOstyDied[snap] = true; CardNeedsReload(snap); }
+            },
+            WhenTurnEnd = (snap, _, side, _) =>
+            {
+                if (side != CombatSide.Player) return;
+                SnapOstyDied[snap] = false; CardNeedsReload(snap);
+            },
+            WhenTurnStart = (snap, side, _, _) =>
+            {
+                if (side == CombatSide.Player) return;
+                SnapOstyDied[snap] = false; CardNeedsReload(snap);
+            },
+        };
+    }
 
     // public static readonly AddedNode<NCard, Control> Node = new(static (nCard) =>
     // {
@@ -384,82 +337,5 @@ public partial class AlternateArts
         var found = Arts.Where(alt => alt.IsFor(card));
         MainFile.Logger.Debug($"Found {found.Count()} alts for {card.Id}");
         return found;
-    }
-    [HarmonyPatch]
-    public class ArtPatch
-    {
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(CardModel), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
-        [HarmonyPatch(typeof(MadScience), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
-        public static void AllPortraitPaths(CardModel? __instance, ref IEnumerable<string>? __result)
-        {
-            var card = __instance;
-            if (card == null || __result == null) return;
-            if (!MyModConfig.UseCustomArt) return;
-            try
-            {
-                List<string> result = [.. __result];
-
-                var found = GetAltsFor(card);
-
-                result.AddRange(found.SelectMany(alt => alt.All).Select(Img => Img.PortraitPath));
-
-                var upgraded = CardImg.Upgraded(card);
-                if (upgraded.Exists()) result.Add(upgraded.PortraitPath);
-                __result = result;
-            }
-            catch (Exception e)
-            {
-                MainFile.Logger.Error($"Error in AllPortraitPaths: {e}");
-            }
-        }
-
-        static CardImg ImgFor(CardModel card)
-        {
-            var factories = GetAltsFor(card);
-            foreach (var factory in factories)
-            {
-                var img = factory.Get(card);
-                if (img == null) continue;
-                if (card.IsUpgraded && img.Upgraded().Exists()) img = img.Upgraded();
-                return img;
-            }
-            var Img = new CardImg(card);
-            if (card.IsUpgraded && Img.Upgraded().Exists()) Img = Img.Upgraded();
-            return Img;
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(CardModel), nameof(CardModel.PortraitPath), MethodType.Getter)]
-        [HarmonyPatch(typeof(MadScience), nameof(CardModel.PortraitPath), MethodType.Getter)]
-        public static void PortraitPath(CardModel? __instance, ref string __result)
-        {
-            if (!MyModConfig.UseCustomArt) return;
-            if (__instance == null) return;
-            try
-            {
-                var Img = ImgFor(__instance);
-                if (Img != null) __result = Img.PortraitPath;
-            }
-            catch (Exception e)
-            { MainFile.Logger.Error($"Error in PortraitPath: {e}"); }
-        }
-
-        // PortraitPngPath
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(CardModel), "PortraitPngPath", MethodType.Getter)]
-        // [HarmonyPatch(typeof(MadScience), "PortraitPngPath", MethodType.Getter)] // doesn't exist lol
-        public static void PortraitPngPath(CardModel? __instance, ref string __result)
-        {
-            if (!MyModConfig.UseCustomArt) return;
-            if (__instance == null) return;
-            try
-            {
-                var Img = ImgFor(__instance);
-                if (Img != null) __result = Img.PortraitPngPath;
-            }
-            catch (Exception e)
-            { MainFile.Logger.Error($"Error in PortraitPngPath: {e}"); }
-        }
     }
 }

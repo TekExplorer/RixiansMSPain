@@ -9,3 +9,5 @@
 // Logger.cs
 // NHoverTipCardContainer.cs
 // NTransformPreview.cs
+
+// TODO: move all alt arts into their own subdir/namespace/path so as to more easily organize the complex ones
