@@ -119,8 +119,8 @@
         <WorkshopChannel Condition="'$(WorkshopChannel)' == ''">Production</WorkshopChannel>
         <WorkshopRoot>$(MSBuildProjectDirectory)\workshop\$(WorkshopChannel)</WorkshopRoot>
         <WorkshopContentRoot>$(WorkshopRoot)\content</WorkshopContentRoot>
-        <WorkshopJsonSource Condition="'$(WorkshopChannel)' == 'Beta'">HideDetailsMod.beta.json</WorkshopJsonSource>
-        <WorkshopJsonSource Condition="'$(WorkshopChannel)' != 'Beta'">HideDetailsMod.json</WorkshopJsonSource>
+        <WorkshopJsonSource Condition="'$(WorkshopChannel)' == 'Canary'">HideDetailsMod.canary.json</WorkshopJsonSource>
+        <WorkshopJsonSource Condition="'$(WorkshopChannel)' != 'Canary'">HideDetailsMod.json</WorkshopJsonSource>
     </PropertyGroup>
 
     <Target Name="CopyToWorkshopContent" AfterTargets="PostBuildEvent">

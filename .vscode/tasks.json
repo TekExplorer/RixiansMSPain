@@ -18,18 +18,18 @@
       "problemMatcher": ["$msCompile"]
     },
     {
-      "label": "Build HideDetailsMod (Beta)",
+      "label": "Build HideDetailsMod (Canary)",
       "type": "shell",
       "command": "dotnet",
       "args": [
         "build",
         "${workspaceFolder}/HideDetailsMod.csproj",
-        "-p:WorkshopChannel=Beta"
+        "-p:WorkshopChannel=Canary"
       ],
       "problemMatcher": ["$msCompile"]
     },
     {
-      "label": "Publish HideDetailsMod (Beta)",
+      "label": "Publish HideDetailsMod (Canary)",
       "type": "shell",
       "command": "dotnet",
       "args": [
@@ -37,12 +37,12 @@
         "${workspaceFolder}/HideDetailsMod.csproj",
         "-c",
         "Release",
-        "-p:WorkshopChannel=Beta"
+        "-p:WorkshopChannel=Canary"
       ],
       "problemMatcher": ["$msCompile"]
     },
     {
-      "label": "Upload HideDetailsMod (Beta)",
+      "label": "Upload HideDetailsMod (Canary)",
       "type": "shell",
       "command": "cmd",
       "options": {
@@ -52,7 +52,7 @@
         "/c",
         "call",
         "${workspaceFolder}/workshop/upload_to_workshop.bat",
-        "Beta"
+        "Canary"
       ]
     },
     {

@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('Beta', 'Production')]
+    [ValidateSet('Canary', 'Production')]
     [string]$Channel = 'Production'
 )
 
