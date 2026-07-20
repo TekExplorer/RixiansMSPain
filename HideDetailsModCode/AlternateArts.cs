@@ -159,7 +159,9 @@ public partial class AlternateArts
             }
             if (MyModConfig.UseBetaShivArt) return "token/shiv_2";
             return null;
-        }),
+        }) {
+            WhenPowerApplied = (shiv, _, power, _) => { if (power is FanOfKnivesPower) CardNeedsReload(shiv); },
+        },
         new CardImgFactory2<Predator>("silent/predator_gold_axe", card => Util.HasCard<GoldAxe>(Util.GetOwner(card))),
         new CardImgFactory2<Outbreak>("silent/outbreak_if_noxious_fumes", card => {
             MainFile.Logger.Info($"[Alt Art] [Outbreak] Checking for NoxiousFumes");
