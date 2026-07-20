@@ -17,16 +17,36 @@ public partial class AlternateArts
         public CardImg(CardModel card) : this($"{card.Pool.Title.ToLowerInvariant()}/{card.Id.Entry.ToLowerInvariant()}") { }
         public static CardImg Upgraded(CardModel card) => new CardImg(card).Upgraded();
 
-        public string PortraitPath { get; } = $"res://images/atlases/card_atlas.sprites/{Path}.tres";
-        private string _PortraitJpgPath { get; } = $"res://artist_assets/{Path}.jpg";
-        private string _PortraitPngPath { get; } = $"res://artist_assets/{Path}.png";
-        public string PortraitPngPath => ResourceLoader.Exists(_PortraitJpgPath) ? _PortraitJpgPath : _PortraitPngPath;
+        public string PortraitPath => $"res://images/atlases/card_atlas.sprites/{Path}.tres";
+        internal string IPortraitJpgPath => $"res://artist_assets/{Path}.jpg";
+        internal string IPortraitPngPath => $"res://artist_assets/{Path}.png";
+        public string PortraitPngPath => ResourceLoader.Exists(IPortraitJpgPath) ? IPortraitJpgPath : IPortraitPngPath;
 
         // public string PortraitPngPath { get; } = ImageHelperExtensions.GetModImagePath($"{path}.png");
         public CardImg Upgraded() => Path.EndsWith("_plus") ? this : new(Path + "_plus");
 
         public bool Exists() => ResourceLoader.Exists(PortraitPath);
     }
+    abstract public class ICardImgFactory(IEnumerable<string> AllPaths)
+    {
+        public IEnumerable<string> AllPaths { get; } = AllPaths;
+        internal IEnumerable<CardImg> AllPathsAsImg => AllPaths.Select(Path => new CardImg(Path));
+        internal IEnumerable<CardImg> AllNormal => AllPathsAsImg.Where(Img => Img.Exists());
+        internal IEnumerable<CardImg> AllUpgraded => AllPathsAsImg.Select(Path => Path.Upgraded()).Where(Img => Img.Exists());
+        public IEnumerable<CardImg> All => [.. AllNormal, .. AllUpgraded];
+
+        abstract public bool IsFor(CardModel card);
+        abstract public CardImg? Get(CardModel card);
+
+        public abstract void OnCardInspected(NCard nCard, InspectionState state);
+        public abstract void OnCardGenerated(AbstractModel thisModel, CardModel generatedCard);
+        public abstract void OnCardPlayed(AbstractModel thisModel, PlayerChoiceContext choiceContext, CardPlay cardPlay);
+        public abstract void OnPowerApplied(AbstractModel thisModel, PlayerChoiceContext choiceContext, PowerModel power, decimal amount);
+        public abstract void OnDeath(AbstractModel thisModel, PlayerChoiceContext choiceContext, Creature creature, bool wasRemovalPrevented);
+        public abstract void OnTurnEnd(AbstractModel thisModel, PlayerChoiceContext choiceContext, CombatSide side, IEnumerable<Creature> participants);
+        public abstract void OnTurnStart(AbstractModel thisModel, CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState);
+    }
+
     public class CardImgFactory(Type CardType, IEnumerable<string> AllPaths, Func<CardModel, string?> Condition) : ICardImgFactory(AllPaths)
     {
         public CardImgFactory(Type CardType, string Path, Func<CardModel, bool?> Condition)
@@ -70,25 +90,6 @@ public partial class AlternateArts
         { WhenTurnStart?.Invoke(thisModel, side, participants, combatState); }
     }
 
-    abstract public class ICardImgFactory(IEnumerable<string> AllPaths)
-    {
-        public IEnumerable<string> AllPaths { get; } = AllPaths;
-        internal IEnumerable<CardImg> AllPathsAsImg => AllPaths.Select(Path => new CardImg(Path));
-        internal IEnumerable<CardImg> AllNormal => AllPathsAsImg.Where(Img => Img.Exists());
-        internal IEnumerable<CardImg> AllUpgraded => AllPathsAsImg.Select(Path => Path.Upgraded()).Where(Img => Img.Exists());
-        public IEnumerable<CardImg> All => [.. AllNormal, .. AllUpgraded];
-
-        abstract public bool IsFor(CardModel card);
-        abstract public CardImg? Get(CardModel card);
-
-        public abstract void OnCardInspected(NCard nCard, InspectionState state);
-        public abstract void OnCardGenerated(AbstractModel thisModel, CardModel generatedCard);
-        public abstract void OnCardPlayed(AbstractModel thisModel, PlayerChoiceContext choiceContext, CardPlay cardPlay);
-        public abstract void OnPowerApplied(AbstractModel thisModel, PlayerChoiceContext choiceContext, PowerModel power, decimal amount);
-        public abstract void OnDeath(AbstractModel thisModel, PlayerChoiceContext choiceContext, Creature creature, bool wasRemovalPrevented);
-        public abstract void OnTurnEnd(AbstractModel thisModel, PlayerChoiceContext choiceContext, CombatSide side, IEnumerable<Creature> participants);
-        public abstract void OnTurnStart(AbstractModel thisModel, CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState);
-    }
     public class CardImgFactory2<T>(IEnumerable<string> AllPaths, Func<T, string?> Condition) : ICardImgFactory(AllPaths) where T : CardModel
     {
         public CardImgFactory2(string Path, Func<T, bool?> Condition)
