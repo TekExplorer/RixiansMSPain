@@ -276,6 +276,19 @@ public partial class AlternateArts
         },
         ClashPatch.AltArt,
         SnapAlt.SnapOstyDiedArt,
+        new CardImgFactory2<Concoct>("silent/concoct_if_x", card => {
+            var owner = Util.GetOwner(card);
+            foreach (var player in card.CombatState?.Players ?? [])
+            {
+                if (player == owner) continue;
+                if (player.Relics.Any(r => r is ChemicalX)) return true;
+                var HasXCost = PileType.Hand.GetPile(player).Cards.Any(c => c.EnergyCost.CostsX);
+                if (HasXCost) return true;
+            }
+            return null;
+        }) {
+            WhenCardDrawn = (concoct, _, drawnCard, _) => {if (drawnCard.EnergyCost.CostsX) CardNeedsReload(concoct);}
+        },
     ];
     static class SnapAlt
     {
