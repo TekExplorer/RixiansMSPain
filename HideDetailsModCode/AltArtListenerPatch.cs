@@ -57,5 +57,10 @@ public partial class AlternateArts
         [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterSideTurnStart))]
         public static void AfterSideTurnStart(AbstractModel __instance, CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
         { Arts.Do(alt => alt.OnTurnStart(__instance, side, participants, combatState)); }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(AbstractModel), nameof(AbstractModel.AfterCardDrawn))]
+        public static void AfterCardDrawn(AbstractModel __instance, PlayerChoiceContext choiceContext, CardModel card, bool fromHandDraw)
+        { Arts.Do(alt => alt.OnCardDrawn(__instance, choiceContext, card, fromHandDraw)); }
     }
 }

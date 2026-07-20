@@ -267,7 +267,13 @@ public partial class AlternateArts
                 [not null] =>"regent/charge_1_draw",
                 _ => null,
             };
-        }),
+        }) {
+            WhenCardDrawn = (charge, _, _, _) => {
+                var owner = Util.GetOwner(charge);
+                if (owner == null) return;
+                if (PileType.Draw.GetPile(owner).Cards.Count < 2) CardNeedsReload(charge);
+            }
+        },
         ClashPatch.AltArt,
         SnapAlt.SnapOstyDiedArt,
     ];

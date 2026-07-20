@@ -45,6 +45,7 @@ public partial class AlternateArts
         public abstract void OnDeath(AbstractModel thisModel, PlayerChoiceContext choiceContext, Creature creature, bool wasRemovalPrevented);
         public abstract void OnTurnEnd(AbstractModel thisModel, PlayerChoiceContext choiceContext, CombatSide side, IEnumerable<Creature> participants);
         public abstract void OnTurnStart(AbstractModel thisModel, CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState);
+        public abstract void OnCardDrawn(AbstractModel thisModel, PlayerChoiceContext choiceContext, CardModel card, bool fromHandDraw);
     }
 
     public class CardImgFactory(Type CardType, IEnumerable<string> AllPaths, Func<CardModel, string?> Condition) : ICardImgFactory(AllPaths)
@@ -72,6 +73,7 @@ public partial class AlternateArts
         public Action<AbstractModel, PlayerChoiceContext, Creature, bool>? AfterDeath { get; set; }
         public Action<AbstractModel, PlayerChoiceContext, CombatSide, IEnumerable<Creature>>? WhenTurnEnd { get; set; }
         public Action<AbstractModel, CombatSide, IEnumerable<Creature>, ICombatState>? WhenTurnStart { get; set; }
+        public Action<AbstractModel, PlayerChoiceContext, CardModel, bool>? WhenCardDrawn { get; set; }
 
         public override void OnCardInspected(NCard nCard, InspectionState state)
         { WhenCardInspected?.Invoke(nCard, state); }
@@ -88,6 +90,10 @@ public partial class AlternateArts
         { WhenTurnEnd?.Invoke(thisModel, choiceContext, side, participants); }
         public override void OnTurnStart(AbstractModel thisModel, CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
         { WhenTurnStart?.Invoke(thisModel, side, participants, combatState); }
+
+        public override void OnCardDrawn(AbstractModel thisModel, PlayerChoiceContext choiceContext, CardModel card, bool fromHandDraw)
+        { WhenCardDrawn?.Invoke(thisModel, choiceContext, card, fromHandDraw); }
+
     }
 
     public class CardImgFactory2<T>(IEnumerable<string> AllPaths, Func<T, string?> Condition) : ICardImgFactory(AllPaths) where T : CardModel
@@ -107,13 +113,15 @@ public partial class AlternateArts
             if (result == null) return null;
             return new(result);
         }
-        public Action<T, NCard, InspectionState>? WhenCardInspected { get; set; } = null;
-        public Action<T, CardModel>? WhenCardGenerated { get; set; } = null;
-        public Action<T, PlayerChoiceContext, CardPlay>? WhenCardPlayed { get; set; } = null;
-        public Action<T, PlayerChoiceContext, PowerModel, decimal>? WhenPowerApplied { get; set; } = null;
+        public Action<T, NCard, InspectionState>? WhenCardInspected { get; set; }
+        public Action<T, CardModel>? WhenCardGenerated { get; set; }
+        public Action<T, PlayerChoiceContext, CardPlay>? WhenCardPlayed { get; set; }
+        public Action<T, PlayerChoiceContext, PowerModel, decimal>? WhenPowerApplied { get; set; }
         public Action<T, PlayerChoiceContext, Creature, bool>? AfterDeath { get; set; }
         public Action<T, PlayerChoiceContext, CombatSide, IEnumerable<Creature>>? WhenTurnEnd { get; set; }
         public Action<T, CombatSide, IEnumerable<Creature>, ICombatState>? WhenTurnStart { get; set; }
+        public Action<T, PlayerChoiceContext, CardModel, bool>? WhenCardDrawn { get; set; }
+
 
         public override void OnCardInspected(NCard nCard, InspectionState state)
         { if (nCard.Model is T self) WhenCardInspected?.Invoke(self, nCard, state); }
@@ -129,5 +137,7 @@ public partial class AlternateArts
         { if (thisModel is T self) WhenTurnEnd?.Invoke(self, choiceContext, side, participants); }
         public override void OnTurnStart(AbstractModel thisModel, CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
         { if (thisModel is T self) WhenTurnStart?.Invoke(self, side, participants, combatState); }
+        public override void OnCardDrawn(AbstractModel thisModel, PlayerChoiceContext choiceContext, CardModel card, bool fromHandDraw)
+        { if (thisModel is T self) WhenCardDrawn?.Invoke(self, choiceContext, card, fromHandDraw); }
     }
 }
