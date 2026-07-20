@@ -21,7 +21,7 @@ using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
 namespace HideDetailsMod.HideDetailsModCode;
 
 [HarmonyPatch]
-public partial class AlternateArts
+public class AlternateArts
 {
     static bool CardIsBeingInspected(CardModel card)
     {
@@ -151,9 +151,23 @@ public partial class AlternateArts
         // static BaseLib.Utils.AddedNode<NCard, Control> thing;
     }
 
+    static public void InitCheck()
+    {
+        foreach (var Art in Arts)
+        {
+            foreach (var img in Art.AllPathsAsImg)
+            {
+                if (!img.Exists())
+                {
+                    MainFile.Logger.Error($"Img {img.Path} does not exist!");
+                }
+            }
+        }
+    }
+
     public static readonly ICardImgFactory[] Arts = [
         new CardImgFactory2<Shiv>(["token/shiv_2", "token/shiv_fanned", "token/shiv_fanned_inky"], card => {
-            if (Util.GetOwner(card)?.HasPower<FanOfKnivesPower>() ?? false) {
+            if (card.HasFanOfKnives) {
                 if (card.Enchantment is Inky) return "token/shiv_fanned_inky";
                 return "token/shiv_fanned";
             }
@@ -161,10 +175,11 @@ public partial class AlternateArts
             return null;
         }) {
             WhenPowerApplied = (shiv, _, power, _) => { if (power is FanOfKnivesPower) CardNeedsReload(shiv); },
+            WhenCardEnchanted = (shiv, enchantment, _) => { if (enchantment is Inky) CardNeedsReload(shiv); }
         },
         new CardImgFactory2<Predator>("silent/predator_gold_axe", card => Util.HasCard<GoldAxe>(Util.GetOwner(card))),
         new CardImgFactory2<Outbreak>("silent/outbreak_if_noxious_fumes", card => {
-            MainFile.Logger.Info($"[Alt Art] [Outbreak] Checking for NoxiousFumes");
+            // MainFile.Logger.Debug($"[Alt Art] [Outbreak] Checking for NoxiousFumes");
             var me = Util.GetOwner(card);
             if (me == null) return null;
             return Util.HasCard<NoxiousFumes>(me) || me.HasPower<NoxiousFumesPower>();
@@ -173,7 +188,7 @@ public partial class AlternateArts
             WhenCardGenerated = (outbreak, card) => { if (card is NoxiousFumes) CardNeedsReload(outbreak); }
         },
         new CardImgFactory2<NoxiousFumes>("silent/noxious_fumes_if_outbreak", card => {
-            MainFile.Logger.Info($"[Alt Art] [NoxiousFumes] Checking for Outbreak");
+            // MainFile.Logger.Debug($"[Alt Art] [NoxiousFumes] Checking for Outbreak");
             var me = Util.GetOwner(card);
             if (me == null) return null;
             return Util.HasCard<Outbreak>(me) || me.HasPower<OutbreakPower>();
@@ -250,12 +265,10 @@ public partial class AlternateArts
             var cost = card.EnergyCost.GetResolved(); // this includes all effects like borrowed time
             return $"necrobinder/melancholy_cost_{Math.Clamp(cost, 0,3)}";
         }),
-        new CardImgFactory2<TheGambit>("the_gambit_no_block", card => {
+        new CardImgFactory2<TheGambit>("colorless/the_gambit_no_block", card => {
             // if no block power, or block would be zero
             // if (card.DynamicVars.Block.IntValue <= 0) return true;
             // TODO: figure out which of these is the correct one.
-            if (card.DynamicVars.Block.PreviewValue <= 0) return true;
-            if (card.DynamicVars.Block.BaseValue <= 0) return true;
             if (card.DynamicVars.Block.IntValue <= 0) return true;
 
             var owner = Util.GetOwner(card);
@@ -263,11 +276,18 @@ public partial class AlternateArts
             if (owner.HasPower<NoBlockPower>()) return true;
             return null;
         }) {
-            WhenPowerApplied = (theGambit, _, power, _) => { if (power is NoBlockPower) CardNeedsReload(theGambit); }
+            WhenPowerApplied = (theGambit, _, power, amount) => {
+                if (power is NoBlockPower) CardNeedsReload(theGambit);
+                if (power is DexterityPower && amount < 0) CardNeedsReload(theGambit);
+            }
         },
-        new CardImgFactory2<SharedFate>("necrobinder/shared_fate_if_friendship", card => Util.HasCard<Friendship>(Util.GetOwner(card))),
+        new CardImgFactory2<SharedFate>("necrobinder/shared_fate_if_friendship", card => Util.HasCard<Friendship>(Util.GetOwner(card))) {
+            WhenPowerApplied = (sharedFate, _, power, _) => { if (power is FriendshipPower) CardNeedsReload(sharedFate); }
+        },
         new CardImgFactory2<Bodyguard>("necrobinder/bodyguard_if_protector", card => Util.HasCard<Protector>(Util.GetOwner(card))),
-        new CardImgFactory2<DeathsDoor>("necrobinder/deaths_door_if_applied_doom", card => card.WasDoomAppliedThisTurn),
+        new CardImgFactory2<DeathsDoor>("necrobinder/deaths_door_if_applied_doom", card => card.WasDoomAppliedThisTurn) {
+            WhenPowerApplied = (deathsDoor, _, power, _) => { if (power is DoomPower) CardNeedsReload(deathsDoor); },
+        },
         new CardImgFactory2<Parse>("necrobinder/parse_if_poor_sleep", card => Util.HasCard<PoorSleep>(Util.GetOwner(card))),
         new CardImgFactory2<Charge>(["regent/charge_1_draw", "regent/charge_0_draw"], card => {
             var owner = Util.GetOwner(card);
@@ -305,7 +325,7 @@ public partial class AlternateArts
         static readonly SpireField<Snap, bool> SnapOstyDied = new(() => false);
         // todo: if Osty died this turn
         // TODO: this kinda sucks.
-        static public readonly ICardImgFactory SnapOstyDiedArt = new CardImgFactory2<Snap>("snap_if_osty_died", card => SnapOstyDied[card])
+        static public readonly ICardImgFactory SnapOstyDiedArt = new CardImgFactory2<Snap>("necrobinder/snap_if_osty_died", card => SnapOstyDied[card])
         {
             AfterDeath = (snap, _, creature, _) =>
             {
@@ -361,7 +381,7 @@ public partial class AlternateArts
     //     return (int)(Math.Floor(elapsedSeconds / secondsPerCard) % count);
     // }
     public enum InspectionState { Opening, Closing, Updating }
-    static IEnumerable<ICardImgFactory> GetAltsFor(CardModel card)
+    static public IEnumerable<ICardImgFactory> GetAltsFor(CardModel card)
     {
         var found = Arts.Where(alt => alt.IsFor(card));
         MainFile.Logger.Debug($"Found {found.Count()} alts for {card.Id}");

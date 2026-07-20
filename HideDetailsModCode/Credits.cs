@@ -1,3 +1,4 @@
+using BaseLib.Extensions;
 using Godot;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
@@ -5,24 +6,39 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
-class Credits
+static class Credits
 {
+    public static string WithoutUpgrade(this string self)
+    {
+        if (self.EndsWith("_plus")) return self[..self.LastIndexOf("_plus")];
+        return self;
+    }
+
     public static IEnumerable<IHoverTip> Tooltips(CardModel card)
     {
         List<IHoverTip> tips = [];
 
         // tips.AddItem(new HoverTip(new LocString("credits", ".title")));
+        var creditsKey = CreditsKeyFor(card);
 
-        var author = new LocString("artists", CreditsKeyFor(card));
+        var author = new LocString("artists", creditsKey);
+        if (!author.Exists())
+        {
+            creditsKey = creditsKey.WithoutUpgrade();
+            author = new LocString("artists", creditsKey);
+        }
 
         // TODO: BAD! FIX!
-        bool isAlt = CreditsKeyFor(card) != DefaultCreditsKeyFor(card);
+        bool isAlt = creditsKey.WithoutUpgrade() != DefaultCreditsKeyFor(card);
+        bool isUpgrade = creditsKey.EndsWith("_plus");
 
         // var uploader = new LocString("artists", CreditsKeyFor(card) + ".uploader");
         if (author.Exists())
         {
             var desc = new LocString("artists", ".description");
-            if (isAlt) desc = new LocString("artists", ".description.alt");
+            if (isAlt && isUpgrade) desc = new LocString("artists", ".description.alt.upgrade");
+            else if (isUpgrade) desc = new LocString("artists", ".description.upgrade");
+            else if (isAlt) desc = new LocString("artists", ".description.alt");
 
             desc.Add("Artist", Replace(author));
 
@@ -30,12 +46,30 @@ class Credits
             //
             tips.AddRange(OverlayCredits(card));
         }
+
+        {   // epitaph
+            // TODO: do this way better
+            var freddy = new LocString("artists", ".epitaph.freddy");
+            var epitaphTitle = new LocString("artists", ".epitaph.freddy.title");
+
+            var epitaph = new LocString("artists", creditsKey.WithoutUpgrade() + ".epitaph");
+            var epitaphUpgraded = new LocString("artists", creditsKey.WithoutUpgrade() + "_plus" + ".epitaph");
+            epitaph.Add("Freddy", freddy);
+            epitaphUpgraded.Add("Freddy", freddy);
+            if (isUpgrade && epitaphUpgraded.Exists()) tips.Add(new HoverTip(epitaphTitle, epitaphUpgraded));
+            else if (epitaph.Exists()) tips.Add(new HoverTip(epitaphTitle, epitaph));
+        }
+
         return tips;
     }
 
     static IEnumerable<IHoverTip> OverlayCredits(CardModel card)
     {
-        var overlayAuthor = new LocString("artists", CreditsKeyFor(card) + ".overlay");
+        var key = CreditsKeyFor(card);
+        var overlayAuthor = new LocString("artists", key.WithoutUpgrade() + ".overlay");
+
+        var overlayAuthorUpgraded = new LocString("artists", key.WithoutUpgrade() + "_plus" + ".overlay");
+        if (card.IsUpgraded && overlayAuthorUpgraded.Exists()) overlayAuthor = overlayAuthorUpgraded;
 
         if (overlayAuthor.Exists())
         {

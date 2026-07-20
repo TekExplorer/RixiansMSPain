@@ -32,6 +32,7 @@ public partial class MainFile : Node
         Harmony harmony = new(ModId);
 
         harmony.TryPatchAll(assembly);
+        AlternateArts.InitCheck();
     }
 
     // public static void LoadAll()
