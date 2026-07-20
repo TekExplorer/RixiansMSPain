@@ -11,12 +11,14 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Characters;
 using MegaCrit.Sts2.Core.Models.Enchantments;
+using MegaCrit.Sts2.Core.Models.Encounters;
 using MegaCrit.Sts2.Core.Models.Monsters;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Nodes.Cards.Holders;
 using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
@@ -290,9 +292,13 @@ public class AlternateArts
         },
         new CardImgFactory2<Parse>("necrobinder/parse_if_poor_sleep", card => Util.HasCard<PoorSleep>(Util.GetOwner(card))),
         new CardImgFactory2<Charge>(["regent/charge_1_draw", "regent/charge_0_draw"], card => {
+            if (!CombatManager.Instance.IsInProgress) return null;
+            if (card.IsCanonical) return null;
             var owner = Util.GetOwner(card);
             if (owner == null) return null;
-            return PileType.Draw.GetPile(owner).Cards.ToArray() switch {
+            var drawPile = CardPile.Get(PileType.Draw, owner);
+            if (drawPile == null) return null;
+            return drawPile.Cards.ToArray() switch {
                 [] => "regent/charge_0_draw",
                 [not null] =>"regent/charge_1_draw",
                 _ => null,
@@ -319,6 +325,12 @@ public class AlternateArts
         }) {
             WhenCardDrawn = (concoct, _, drawnCard, _) => {if (drawnCard.EnergyCost.CostsX) CardNeedsReload(concoct);}
         },
+        new CardImgFactory2<Demesne>("demesne_if_queen", card => {
+            var runState = RunManager.Instance.State;
+            if (runState == null) return null;
+            var ActHasQueen = runState.Act.AllBossEncounters.Any(boss => boss is QueenBoss);
+            return ActHasQueen && card.IsUpgraded;
+        }),
     ];
     static class SnapAlt
     {
