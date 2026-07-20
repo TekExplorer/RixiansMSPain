@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dbvp3hxkde6or"
-path="res://.godot/imported/soul.png-fbb69dc5e08b295aa6ab5d9de78555e1.ctex"
+uid="uid://bhks322pust75"
+path="res://.godot/imported/soul_really_big.png-caf10f59270230381bb129a40318bc47.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/token/soul.png"
-dest_files=["res://.godot/imported/soul.png-fbb69dc5e08b295aa6ab5d9de78555e1.ctex"]
+source_file="res://artist_assets/token/beta/soul_really_big.png"
+dest_files=["res://.godot/imported/soul_really_big.png-caf10f59270230381bb129a40318bc47.ctex"]
 
 [params]
 
