@@ -1,7 +1,7 @@
 ﻿{
   "title": "Rixian's MSPain (Canary)",
   "description": "This is the tester's version of the mod. Go see the public one!",
-  "changeNote": "Canary now has a unique mod image.\nAdded Defile exhaust pile icon.\nAdded Underworld",
+  "changeNote": "Canary now has a unique mod image.\nAdded Defile exhaust pile icon.\nAdded Underworld\nAdded Clash effect",
   "visibility": "unlisted",
   "tags": [],
   "dependencies": [3737335127]

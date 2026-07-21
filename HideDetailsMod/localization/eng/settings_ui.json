@@ -1,5 +1,5 @@
 {
-  "HIDEDETAILSMOD.mod_title": "Hide Details Mod",
+  "HIDEDETAILSMOD.mod_title": "Rixian's MSPain",
   "HIDEDETAILSMOD-HIDE_ENERGY.title": "Hide Energy",
   "HIDEDETAILSMOD-HIDE_STARS.title": "Hide Stars",
 
@@ -21,5 +21,12 @@
   "HIDEDETAILSMOD-USE_BETA_SHIV_ART.title": "Use Beta Shiv Art",
   "HIDEDETAILSMOD-USE_BETA_SHIV_ART.desc": "This switches the Shiv art to the one originally submitted prior to some complaints",
 
-  "HIDEDETAILSMOD-CREDITS.title": "Credits"
+  "HIDEDETAILSMOD-CREDITS.title": "Credits",
+
+  "HIDEDETAILSMOD-USE_CUSTOM_ART.title": "Use Custom Art (Experimental)",
+  "HIDEDETAILSMOD-INFINITE_BLADES_LENGTH2.title": "Infinite Blades Length",
+  "HIDEDETAILSMOD-CLASH_AS_GRAND_FINALE.title": "Clash uses Grand Finale effect",
+  "HIDEDETAILSMOD-CLASH_AS_GRAND_FINALE.desc": "This may be useful if playing Clash breaks multiplayer",
+  "HIDEDETAILSMOD-HIDE_TITLE_BANNER.title": "Hide Title Banner",
+  "HIDEDETAILSMOD-MAKE_EVERYTHING_ANCIENT.title": "Make Make Everything Ancient"
 }

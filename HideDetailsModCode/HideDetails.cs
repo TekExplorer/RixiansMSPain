@@ -12,7 +12,7 @@ namespace HideDetailsMod.HideDetailsModCode;
 internal class HideDetails
 {
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(NCard), "UpdateEnergyCostVisuals")]
+    [HarmonyPatch(typeof(NCard), nameof(NCard.UpdateEnergyCostVisuals))]
     private static void MakeEnergyInvisible(ref NCard __instance, ref TextureRect ____energyIcon)
     {
         if (!MyModConfig.HideEnergy) return;
@@ -22,7 +22,7 @@ internal class HideDetails
 
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(NCard), "UpdateStarCostVisuals")]
+    [HarmonyPatch(typeof(NCard), nameof(NCard.UpdateStarCostVisuals))]
     private static void MakeStarsInvisible(ref TextureRect ____starIcon)
     {
         if (!MyModConfig.HideStars) return;
@@ -85,14 +85,14 @@ internal class HideDetails
 
     // TODO: make it a class and include hiding the description background
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(NCard), "Reload")]
+    [HarmonyPatch(typeof(NCard), nameof(NCard.Reload))]
     private static void HideDescription(MegaLabel? ____descriptionLabel)
     {
         if (____descriptionLabel == null) return;
         ____descriptionLabel.Visible = !MyModConfig.HideDescription;
     }
 
-    [HarmonyPatch(typeof(CardModel), "Title", MethodType.Getter)]
+    [HarmonyPatch(typeof(CardModel), nameof(CardModel.Title), MethodType.Getter)]
     public class CardTitleIntercept
     {
         [HarmonyPostfix]

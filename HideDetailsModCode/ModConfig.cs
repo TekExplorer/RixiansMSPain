@@ -15,6 +15,7 @@ internal class MyModConfig : SimpleModConfig
     [ConfigSlider(0, 5000, 10)] public static float InfiniteBladesLength2 { get; set; } = 3000;
 
     public static bool UseBetaShivArt { get; set; } = false;
+    public static bool ClashAsGrandFinale { get; set; } = true;
 
     [ConfigSection("Card UI (Cheating)")]
     public static bool HideTitle { get; set; } = true;
@@ -29,5 +30,4 @@ internal class MyModConfig : SimpleModConfig
 
     [ConfigSection("Exclusions (Cheating)")]
     public static bool ExcludeFranticEscape { get; set; } = false;
-
 }
