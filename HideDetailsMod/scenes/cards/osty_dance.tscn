@@ -1,0 +1,98 @@
+[gd_scene load_steps=14 format=3 uid="uid://dr0s2wqpwcdbo"]
+
+[ext_resource type="Script" uid="uid://27xy4clrrrno" path="res://HideDetailsModCode/Scenes/OstyDanceAnimated.cs" id="1_6yca1"]
+[ext_resource type="Texture2D" uid="uid://bgjaumwrmwk0b" path="res://HideDetailsMod/images/cards/otsy_dance.spritesheet.png" id="2_6yca1"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e6xro"]
+atlas = ExtResource("2_6yca1")
+region = Rect2(0, 0, 606, 852)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i6lgr"]
+atlas = ExtResource("2_6yca1")
+region = Rect2(606, 0, 606, 852)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tpdwy"]
+atlas = ExtResource("2_6yca1")
+region = Rect2(1212, 0, 606, 852)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_emg47"]
+atlas = ExtResource("2_6yca1")
+region = Rect2(1818, 0, 606, 852)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u4s25"]
+atlas = ExtResource("2_6yca1")
+region = Rect2(2424, 0, 606, 852)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_la3qr"]
+atlas = ExtResource("2_6yca1")
+region = Rect2(0, 852, 606, 852)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g7car"]
+atlas = ExtResource("2_6yca1")
+region = Rect2(606, 852, 606, 852)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8wfoa"]
+atlas = ExtResource("2_6yca1")
+region = Rect2(1212, 852, 606, 852)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rfyyg"]
+atlas = ExtResource("2_6yca1")
+region = Rect2(1818, 852, 606, 852)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_75dii"]
+atlas = ExtResource("2_6yca1")
+region = Rect2(2424, 852, 606, 852)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5wuko"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e6xro")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i6lgr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tpdwy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_emg47")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u4s25")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_la3qr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g7car")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8wfoa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rfyyg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_75dii")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[node name="OstyDanceAnimated" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("1_6yca1")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_5wuko")
+frame_progress = 0
