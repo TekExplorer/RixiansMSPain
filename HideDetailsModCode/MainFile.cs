@@ -27,7 +27,7 @@ public partial class MainFile : Node
         CustomLocTableManager.Register("usernames");
         CustomLocTableManager.Register("artists");
         //If you want to use scripts defined in your mod for Godot scenes, uncomment the following line.
-        //Godot.Bridge.ScriptManagerBridge.LookupScriptsInAssembly(Assembly.GetExecutingAssembly());
+        Godot.Bridge.ScriptManagerBridge.LookupScriptsInAssembly(assembly);
 
         Harmony harmony = new(ModId);
 

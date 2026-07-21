@@ -65,7 +65,7 @@ public static class TinkerTimePatch
 
         // 2. Locate our type-safe replacement method info
         MethodInfo replacement = AccessTools.Method(typeof(TinkerTimePatch), nameof(TinkerTimeHoverTipProvider));
-
+        // var _ = new CodeMatcher();
         bool found = false;
         for (int i = 0; i < codes.Count; i++)
         {
@@ -82,9 +82,7 @@ public static class TinkerTimePatch
         }
 
         if (!found)
-        {
-            MainFile.Logger.Warn("Warning: Transpiler could not find TinkerTime.GetCardTypeHoverTip calls!");
-        }
+        { MainFile.Logger.Warn("Warning: Transpiler could not find TinkerTime.GetCardTypeHoverTip calls!"); }
 
         return codes.AsEnumerable();
     }

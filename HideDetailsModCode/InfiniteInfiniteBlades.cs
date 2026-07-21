@@ -6,7 +6,7 @@ using MegaCrit.Sts2.Core.Nodes.Cards;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
-public class InfiniteInfiniteBlades
+public static class InfiniteInfiniteBlades
 {
     public static readonly AddedNode<NCard, Control> Node = new(static (cardNode) =>
     {
@@ -82,21 +82,24 @@ public class InfiniteInfiniteBlades
             leftBlade.Points = [localStart, localEnd1];
             rightBlade.Points = [localStart, localEnd2];
         }
-
-        container.TreeEntered += () =>
-        {
-            if (!GodotObject.IsInstanceValid(container)) return;
-            container.GetTree().ProcessFrame += updateDelegate;
-        };
-
-        container.TreeExiting += () =>
-        {
-            if (GodotObject.IsInstanceValid(container) && container.GetTree() != null)
-            {
-                container.GetTree().ProcessFrame -= updateDelegate;
-            }
-        };
+        container.External_Process(updateDelegate);
 
         return container;
     });
+
+    // TODO: move to util
+    static public void External_Process(this Node node, Action updateDelegate)
+    {
+        node.TreeEntered += () =>
+            {
+                if (!GodotObject.IsInstanceValid(node)) return;
+                node.GetTree().ProcessFrame += updateDelegate;
+            };
+
+        node.TreeExiting += () =>
+            {
+                if (GodotObject.IsInstanceValid(node) && node.GetTree() != null)
+                { node.GetTree().ProcessFrame -= updateDelegate; }
+            };
+    }
 }

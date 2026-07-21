@@ -17,13 +17,14 @@ using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Nodes.Cards.Holders;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
 [HarmonyPatch]
-public class AlternateArts
+public partial class AlternateArts
 {
     static bool CardIsBeingInspected(CardModel card)
     {
@@ -325,7 +326,7 @@ public class AlternateArts
         }) {
             WhenCardDrawn = (concoct, _, drawnCard, _) => {if (drawnCard.EnergyCost.CostsX) CardNeedsReload(concoct);}
         },
-        new CardImgFactory2<Demesne>("demesne_if_queen", card => {
+        new CardImgFactory2<Demesne>("necrobinder/demesne_if_queen", card => {
             var runState = RunManager.Instance.State;
             if (runState == null) return null;
             var ActHasQueen = runState.Act.AllBossEncounters.Any(boss => boss is QueenBoss);
@@ -396,7 +397,7 @@ public class AlternateArts
     static public IEnumerable<ICardImgFactory> GetAltsFor(CardModel card)
     {
         var found = Arts.Where(alt => alt.IsFor(card));
-        MainFile.Logger.Debug($"Found {found.Count()} alts for {card.Id}");
+        // MainFile.Logger.Debug($"Found {found.Count()} alts for {card.Id}");
         return found;
     }
 }
