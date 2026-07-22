@@ -1,14 +1,23 @@
 {
+  "AMALGAMATOR.pages.INITIAL.options.COMBINE_DEFENDS.description": "Remove [blue]2[/blue] [gold]Defends[/gold]. Add [gold]{Card2}[/gold] to your [gold]Deck[/gold].",
+  "AMALGAMATOR.pages.INITIAL.options.COMBINE_STRIKES.description": "Remove [blue]2[/blue] [gold]Strikes[/gold]. Add [gold]{Card1}[/gold] to your [gold]Deck[/gold].",
+  "BUGSLAYER.pages.INITIAL.options.EXTERMINATION.description": "Add [gold]{Card1}[/gold] to your [gold]Deck[/gold].",
+  "BUGSLAYER.pages.INITIAL.options.SQUASH.description": "Add [gold]{Card2}[/gold] to your [gold]Deck[/gold].",
+  "BYRDONIS_NEST.pages.INITIAL.options.TAKE.description": "Add [gold]{Card}[/gold] to your [gold]Deck[/gold].",
+  "ENDLESS_CONVEYOR.pages.ALL.options.SEAPUNK_SALAD.description": "Pay [red]{Gold}[/red] [gold]Gold[/gold]. Add [gold]Feeding Frenzy[/gold] to your [gold]Deck[/gold]. Continue feasting!",
   "FIELD_OF_MAN_SIZED_HOLES.pages.INITIAL.options.RESIST.description": "Remove [blue]{Cards}[/blue] cards from your [gold]Deck[/gold]. Add [red]{ResistCurse}[/red] to your [gold]Deck[/gold].",
   "GRAVE_OF_THE_FORGOTTEN.pages.INITIAL.options.CONFRONT.description": "Add [red]{Curse}[/red] to your [gold]Deck[/gold]. [gold]Enchant[/gold] a card that [gold]Exhausts[/gold] with [purple]{Enchantment}[/purple].",
   "LOST_WISP.pages.INITIAL.options.CLAIM.description": "Add [red]{Curse}[/red] to your [gold]Deck[/gold]. Obtain the [gold]{Relic}[/gold].",
   "LUMINOUS_CHOIR.pages.INITIAL.options.REACH_INTO_THE_FLESH.description": "Remove [blue]2[/blue] cards from your [gold]Deck[/gold]. Add [red]Spore Mind[/red] to your [gold]Deck[/gold].",
   "PUNCH_OFF.pages.INITIAL.options.NAB.description": "Add [red]Injury[/red] to your [gold]Deck[/gold]. Obtain a random [gold]Relic[/gold].",
   "SPIRALING_WHIRLPOOL.pages.INITIAL.options.REACH_IN.description": "Obtain a random [gold]Relic[/gold]. Add [red]Writhe[/red] to your [gold]Deck[/gold].",
+  "SPIRIT_GRAFTER.pages.INITIAL.options.LET_IT_IN.description": "Heal [green]{LetItInHealAmount}[/green] HP. Add [gold]Metamorphosis[/gold] to your [gold]Deck[/gold].",
   "THIS_OR_THAT.pages.INITIAL.options.ORNATE.description": "Add [red]{Curse}[/red] to your [gold]Deck[/gold]. Obtain a random [gold]Relic[/gold].",
   "TRIAL.pages.MERCHANT.options.GUILTY.description": "Add [red]Regret[/red] to your [gold]Deck[/gold]. Obtain [blue]2[/blue] random [gold]Relics[/gold].",
   "TRIAL.pages.MERCHANT.options.INNOCENT.description": "Add [red]Shame[/red] to your [gold]Deck[/gold]. [gold]Upgrade[/gold] [blue]2[/blue] cards.",
   "TRIAL.pages.NOBLE.options.INNOCENT.description": "Add [red]Regret[/red] to your [gold]Deck[/gold]. Obtain [blue]300[/blue] [gold]Gold[/gold].",
   "TRIAL.pages.NONDESCRIPT.options.GUILTY.description": "Add [red]Doubt[/red] to your [gold]Deck[/gold]. Gain [blue]2[/blue] card rewards.",
-  "TRIAL.pages.NONDESCRIPT.options.INNOCENT.description": "Add [red]Doubt[/red] to your [gold]Deck[/gold]. [gold]Transform[/gold] [blue]2[/blue] cards."
+  "TRIAL.pages.NONDESCRIPT.options.INNOCENT.description": "Add [red]Doubt[/red] to your [gold]Deck[/gold]. [gold]Transform[/gold] [blue]2[/blue] cards.",
+  "WELLSPRING.pages.INITIAL.options.BATHE.description": "Remove [blue]1[/blue] card from your [gold]Deck[/gold]. Add [blue]{BatheCurses}[/blue] [red]Guilty[/red] to your [gold]Deck[/gold].",
+  "ZEN_WEAVER.pages.INITIAL.options.BREATHING_TECHNIQUES.description": "Pay [red]{BreathingTechniquesCost}[/red] [gold]Gold[/gold]. Add [blue]2[/blue] [gold]Enlightenment[/gold] to your [gold]Deck[/gold]."
 }
