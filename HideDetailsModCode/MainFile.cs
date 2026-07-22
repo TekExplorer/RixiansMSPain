@@ -7,7 +7,7 @@ using Godot;
 using HarmonyLib;
 using BaseLib.Extensions;
 using System.Reflection;
-// using MegaCrit.Sts2.Core.Assets;
+using MegaCrit.Sts2.Core.Assets;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
@@ -35,17 +35,18 @@ public partial class MainFile : Node
         AlternateArts.InitCheck();
     }
 
-    // public static void LoadAll()
-    // {
-    //     var altArts = AlternateArts.Arts
-    //         .SelectMany(factory => factory.AllPathsAsImg)
-    //         .ToList();
+    // TODO: call somewhere
+    public static void LoadAll()
+    {
+        var altArts = AlternateArts.Arts
+            .SelectMany(factory => factory.AllPathsAsImg)
+            .ToList();
 
-    //     foreach (var art in altArts)
-    //     {
-    //         if (art == null) return;
-    //         if (art.Exists()) PreloadManager.Cache.GetTexture2D(art.PortraitPath);
-    //         if (art.Upgraded().Exists()) PreloadManager.Cache.GetTexture2D(art.Upgraded().PortraitPath);
-    //     }
-    // }
+        foreach (var art in altArts)
+        {
+            if (art == null) return;
+            if (art.Exists()) PreloadManager.Cache.GetTexture2D(art.PortraitPath);
+            if (art.Upgraded().Exists()) PreloadManager.Cache.GetTexture2D(art.Upgraded().PortraitPath);
+        }
+    }
 }

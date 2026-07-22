@@ -1,0 +1,14 @@
+{
+  "FIELD_OF_MAN_SIZED_HOLES.pages.INITIAL.options.RESIST.description": "Remove [blue]{Cards}[/blue] cards from your [gold]Deck[/gold]. Add [red]{ResistCurse}[/red] to your [gold]Deck[/gold].",
+  "GRAVE_OF_THE_FORGOTTEN.pages.INITIAL.options.CONFRONT.description": "Add [red]{Curse}[/red] to your [gold]Deck[/gold]. [gold]Enchant[/gold] a card that [gold]Exhausts[/gold] with [purple]{Enchantment}[/purple].",
+  "LOST_WISP.pages.INITIAL.options.CLAIM.description": "Add [red]{Curse}[/red] to your [gold]Deck[/gold]. Obtain the [gold]{Relic}[/gold].",
+  "LUMINOUS_CHOIR.pages.INITIAL.options.REACH_INTO_THE_FLESH.description": "Remove [blue]2[/blue] cards from your [gold]Deck[/gold]. Add [red]Spore Mind[/red] to your [gold]Deck[/gold].",
+  "PUNCH_OFF.pages.INITIAL.options.NAB.description": "Add [red]Injury[/red] to your [gold]Deck[/gold]. Obtain a random [gold]Relic[/gold].",
+  "SPIRALING_WHIRLPOOL.pages.INITIAL.options.REACH_IN.description": "Obtain a random [gold]Relic[/gold]. Add [red]Writhe[/red] to your [gold]Deck[/gold].",
+  "THIS_OR_THAT.pages.INITIAL.options.ORNATE.description": "Add [red]{Curse}[/red] to your [gold]Deck[/gold]. Obtain a random [gold]Relic[/gold].",
+  "TRIAL.pages.MERCHANT.options.GUILTY.description": "Add [red]Regret[/red] to your [gold]Deck[/gold]. Obtain [blue]2[/blue] random [gold]Relics[/gold].",
+  "TRIAL.pages.MERCHANT.options.INNOCENT.description": "Add [red]Shame[/red] to your [gold]Deck[/gold]. [gold]Upgrade[/gold] [blue]2[/blue] cards.",
+  "TRIAL.pages.NOBLE.options.INNOCENT.description": "Add [red]Regret[/red] to your [gold]Deck[/gold]. Obtain [blue]300[/blue] [gold]Gold[/gold].",
+  "TRIAL.pages.NONDESCRIPT.options.GUILTY.description": "Add [red]Doubt[/red] to your [gold]Deck[/gold]. Gain [blue]2[/blue] card rewards.",
+  "TRIAL.pages.NONDESCRIPT.options.INNOCENT.description": "Add [red]Doubt[/red] to your [gold]Deck[/gold]. [gold]Transform[/gold] [blue]2[/blue] cards."
+}
