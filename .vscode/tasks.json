@@ -18,16 +18,16 @@
       "problemMatcher": ["$msCompile"]
     },
     // Do i even need this? Building for debug is plenty, since its only publish that matters
-    // {
-    //   "label": "Build Mod",
-    //   "type": "shell",
-    //   "command": "dotnet build -p:WorkshopChannel=${input:channel}",
-    //   "problemMatcher": ["$msCompile"]
-    // },
+    {
+      "label": "Build Mod",
+      "type": "shell",
+      "command": "dotnet build -p:WorkshopChannel=${input:channel}",
+      "problemMatcher": ["$msCompile"]
+    },
     {
       "label": "Publish Mod",
       "type": "shell",
-      "command": "dotnet publish -c Release -p:WorkshopChannel=${input:channel}",
+      "command": "dotnet publish -c ExportRelease -p:WorkshopChannel=${input:channel}",
       "problemMatcher": ["$msCompile"],
       "dependsOn": ["Credits: Validate"]
     },

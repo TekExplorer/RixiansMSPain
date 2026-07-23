@@ -13,10 +13,12 @@ using MegaCrit.Sts2.Core.Models.Characters;
 using MegaCrit.Sts2.Core.Models.Enchantments;
 using MegaCrit.Sts2.Core.Models.Encounters;
 using MegaCrit.Sts2.Core.Models.Monsters;
+using MegaCrit.Sts2.Core.Models.Potions;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Nodes.Cards.Holders;
+using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
 using MegaCrit.Sts2.Core.Runs;
 
@@ -331,7 +333,33 @@ public partial class AlternateArts
             var ActHasQueen = runState.Act.AllBossEncounters.Any(boss => boss is QueenBoss);
             return ActHasQueen && card.IsUpgraded;
         }),
+        new CardImgFactory2<PiercingWail>("silent/piercing_wail_if_shivs", card => {
+            var owner = Util.GetOwner(card);
+            if (owner == null) return null;
+            if (owner.Potions.Any(potion => potion is CunningPotion)) return true;
+            var hand = CardPile.Get(PileType.Hand, owner);
+            if (hand == null) return null;
+            return hand.Cards.Any(IsOrMakesShivs);
+        }),
     ];
+    static bool IsOrMakesShivs(CardModel card) => card switch
+    {
+        _ when card.Tags.Contains(CardTag.Shiv) => true,
+        Shiv => true, // redundant: hit by the above
+        BladeDance => true,
+        CloakAndDagger => true,
+        // InfiniteBlades => true, // doesn't trigger this turn
+        StormOfSteel => true,
+        UpMySleeve => true,
+        HiddenDaggers => true,
+        FanOfKnives => true,
+        BladeOfInk => true,
+        LeadingStrike => true,
+        BladeSymphony => true,
+        KnifeTrap => true,
+        _ => false
+    };
+
     static class SnapAlt
     {
         static readonly SpireField<Snap, bool> SnapOstyDied = new(() => false);

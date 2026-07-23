@@ -51,7 +51,12 @@ function Get-JsonSafe ([string]$path) {
 
 function Set-JsonSafe ([string]$path, [System.Collections.Specialized.OrderedDictionary]$data) {
     $jsonOutput = $data | ConvertTo-Json -Depth 10
-    $jsonOutput = [regex]::Replace($jsonOutput, '\\u([0-9a-fA-F]{4})', { param($match) [char][int]"0x$($match.Groups.Value)" })
+    # Fix: Extract only the 4 hex digits from the matched string
+    $jsonOutput = [regex]::Replace($jsonOutput, '\\u([0-9a-fA-F]{4})', {
+            param($match)
+            [char][int]"0x$($match.Value.Substring(2))"
+        })
+
     [System.IO.File]::WriteAllText((Get-Item $path).FullName, $jsonOutput, [System.Text.Encoding]::UTF8)
 }
 
