@@ -8,6 +8,7 @@ using HarmonyLib;
 using BaseLib.Extensions;
 using System.Reflection;
 using MegaCrit.Sts2.Core.Assets;
+using BaseLib.Audio;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
@@ -18,6 +19,8 @@ public partial class MainFile : Node
     public const string ModId = "HideDetailsMod"; //At the moment, this is used only for the Logger and harmony names.
 
     public static Logger Logger { get; } = new(ModId, LogType.Generic);
+
+    public static AutoModAudio Audio { get; } = new("res://HideDetailsMod/audio");
 
     public static void Initialize()
     {
