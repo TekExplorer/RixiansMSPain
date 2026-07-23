@@ -139,7 +139,7 @@ function Get-ArtistsLookup ([System.Collections.Specialized.OrderedDictionary]$a
     return $lookup
 }
 
-function Validate-AndFixUsernames ([System.Collections.Specialized.OrderedDictionary]$usernamesData, [System.Collections.Specialized.OrderedDictionary]$artistsLookup) {
+function Test-AndFixUsernames ([System.Collections.Specialized.OrderedDictionary]$usernamesData, [System.Collections.Specialized.OrderedDictionary]$artistsLookup) {
     $usernamesKeys = @($usernamesData.Keys)
     foreach ($key in $usernamesKeys) {
         $value = $usernamesData[$key]
@@ -209,5 +209,5 @@ if ($AssetsOnly) {
 $artistsLookup = Get-ArtistsLookup -artistsData $artistsData
 $usernamesData = Get-JsonSafe -path $UsernamesPath
 
-Validate-AndFixUsernames -usernamesData $usernamesData -artistsLookup $artistsLookup
+Test-AndFixUsernames -usernamesData $usernamesData -artistsLookup $artistsLookup
 Save-ChangesIfNeeded -artistsData $artistsData -usernamesData $usernamesData
