@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://0nc8hnq6qrqk"
-path="res://.godot/imported/neurosurge.png-0e6b6fd3c3a85b5fe69cfb7b747be03e.ctex"
+uid="uid://dcmhreeip25te"
+path="res://.godot/imported/Bad Apple, Putrefy AnimatePose2-2.png-09bca734a3846012317c03d157a83cba.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/necrobinder/neurosurge.png"
-dest_files=["res://.godot/imported/neurosurge.png-0e6b6fd3c3a85b5fe69cfb7b747be03e.ctex"]
+source_file="res://HideDetailsMod/images/PutrefyBadApple/PutrefyBadApple/Bad Apple, Putrefy AnimatePose2-2.png"
+dest_files=["res://.godot/imported/Bad Apple, Putrefy AnimatePose2-2.png-09bca734a3846012317c03d157a83cba.ctex"]
 
 [params]
 
