@@ -1,167 +1,60 @@
 {
   "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "channel",
+      "type": "pickString",
+      "description": "Select the deployment channel",
+      "options": ["Canary", "Production"],
+      "default": "Canary"
+    }
+  ],
   "tasks": [
     {
       "label": "Build HideDetailsMod (Debug)",
       "type": "shell",
-      "command": "dotnet",
-      "args": [
-        "build",
-        "${workspaceFolder}/HideDetailsMod.csproj",
-        "-c",
-        "Debug"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "command": "dotnet build -c Debug",
+      "group": { "kind": "build", "isDefault": true },
       "problemMatcher": ["$msCompile"]
     },
     {
-      "label": "Build HideDetailsMod (Canary)",
+      "label": "Build HideDetailsMod (Channel)",
       "type": "shell",
-      "command": "dotnet",
-      "args": [
-        "build",
-        "${workspaceFolder}/HideDetailsMod.csproj",
-        "-p:WorkshopChannel=Canary"
-      ],
+      "command": "dotnet build -p:WorkshopChannel=${input:channel}",
       "problemMatcher": ["$msCompile"]
     },
     {
-      "label": "Publish HideDetailsMod (Canary)",
+      "label": "Publish HideDetailsMod (Channel)",
       "type": "shell",
-      "command": "dotnet",
-      "args": [
-        "publish",
-        "${workspaceFolder}/HideDetailsMod.csproj",
-        "-c",
-        "Release",
-        "-p:WorkshopChannel=Canary"
-      ],
+      "command": "dotnet publish -c Release -p:WorkshopChannel=${input:channel}",
       "problemMatcher": ["$msCompile"]
     },
     {
-      "label": "Upload HideDetailsMod (Canary)",
+      "label": "Upload HideDetailsMod (Channel)",
       "type": "shell",
-      "command": "cmd",
-      "options": {
-        "cwd": "${workspaceFolder}/workshop"
-      },
-      "args": [
-        "/c",
-        "call",
-        "${workspaceFolder}/workshop/upload_to_workshop.bat",
-        "Canary"
-      ]
+      "command": "cmd /c call upload_to_workshop.bat ${input:channel}",
+      "options": { "cwd": "${workspaceFolder}/workshop" },
+      "dependsOn": ["Publish HideDetailsMod (Channel)"]
     },
-    {
-      "label": "Build HideDetailsMod (Production)",
-      "type": "shell",
-      "command": "dotnet",
-      "args": [
-        "build",
-        "${workspaceFolder}/HideDetailsMod.csproj",
-        "-p:WorkshopChannel=Production"
-      ],
-      "problemMatcher": ["$msCompile"]
-    },
-    {
-      "label": "Publish HideDetailsMod (Production)",
-      "type": "shell",
-      "command": "dotnet",
-      "args": [
-        "publish",
-        "${workspaceFolder}/HideDetailsMod.csproj",
-        "-c",
-        "Release",
-        "-p:WorkshopChannel=Production"
-      ],
-      "problemMatcher": ["$msCompile"]
-    },
-    {
-      "label": "Upload HideDetailsMod (Production)",
-      "type": "shell",
-      "command": "cmd",
-      "options": {
-        "cwd": "${workspaceFolder}/workshop"
-      },
-      "args": [
-        "/c",
-        "call",
-        "${workspaceFolder}/workshop/upload_to_workshop.bat",
-        "Production"
-      ]
-    },
-
     {
       "label": "Credits: Validate",
       "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "${workspaceFolder}/scripts/CreditsTool.ps1",
-        "-Mode",
-        "Validate"
-      ],
-      "group": {
-        "kind": "test",
-        "isDefault": true
-      },
-      "problemMatcher": [],
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": true,
-        "clear": true
-      }
+      "command": "powershell -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/CreditsTool.ps1 -Mode Validate",
+      "group": { "kind": "test", "isDefault": true },
+      "presentation": { "reveal": "always", "clear": true }
     },
     {
       "label": "Credits: Fix",
       "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "${workspaceFolder}/scripts/CreditsTool.ps1",
-        "-Mode",
-        "Fix"
-      ],
+      "command": "powershell -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/CreditsTool.ps1 -Mode Fix",
       "group": "build",
-      "problemMatcher": [],
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared",
-        "showReuseMessage": true,
-        "clear": true
-      }
+      "presentation": { "reveal": "always", "focus": true, "clear": true }
     },
     {
       "label": "Credits: Add Missing Credits",
       "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "${workspaceFolder}/scripts/CreditsTool.ps1",
-        "-Mode",
-        "Fix",
-        "-AssetsOnly"
-      ],
-      "problemMatcher": [],
-      "presentation": {
-        "echo": true,
-        "reveal": "silent",
-        "panel": "shared"
-      }
+      "command": "powershell -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/CreditsTool.ps1 -Mode Fix -AssetsOnly",
+      "presentation": { "reveal": "silent" }
     }
   ]
 }
