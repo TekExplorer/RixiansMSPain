@@ -92,6 +92,20 @@
         "${workspaceFolder}/workshop/upload_to_workshop.bat",
         "Production"
       ]
+    },
+    {
+      "label": "Add Missing Credits",
+      "type": "shell",
+      "command": "powershell",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/add_mising_credits.ps1"
+      ]
     }
   ]
 }
