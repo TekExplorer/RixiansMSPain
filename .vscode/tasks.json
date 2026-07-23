@@ -11,45 +11,47 @@
   ],
   "tasks": [
     {
-      "label": "Build HideDetailsMod (Debug)",
+      "label": "Build Mod (Debug)",
       "type": "shell",
       "command": "dotnet build -c Debug",
       "group": { "kind": "build", "isDefault": true },
       "problemMatcher": ["$msCompile"]
     },
+    // Do i even need this? Building for debug is plenty, since its only publish that matters
+    // {
+    //   "label": "Build Mod",
+    //   "type": "shell",
+    //   "command": "dotnet build -p:WorkshopChannel=${input:channel}",
+    //   "problemMatcher": ["$msCompile"]
+    // },
     {
-      "label": "Build HideDetailsMod (Channel)",
-      "type": "shell",
-      "command": "dotnet build -p:WorkshopChannel=${input:channel}",
-      "problemMatcher": ["$msCompile"]
-    },
-    {
-      "label": "Publish HideDetailsMod (Channel)",
+      "label": "Publish Mod",
       "type": "shell",
       "command": "dotnet publish -c Release -p:WorkshopChannel=${input:channel}",
-      "problemMatcher": ["$msCompile"]
+      "problemMatcher": ["$msCompile"],
+      "dependsOn": ["Credits: Validate"]
     },
     {
-      "label": "Upload HideDetailsMod (Channel)",
+      "label": "Upload Mod",
       "type": "shell",
       "command": "cmd /c call upload_to_workshop.bat ${input:channel}",
       "options": { "cwd": "${workspaceFolder}/workshop" },
-      "dependsOn": ["Publish HideDetailsMod (Channel)"]
+      "dependsOn": ["Publish Mod"]
     },
     {
       "label": "Credits: Validate",
       "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/CreditsTool.ps1 -Mode Validate",
+      "command": "powershell -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/CreditsTool.ps1 -Mode Validate -Channel ${input:channel}",
       "group": { "kind": "test", "isDefault": true },
       "presentation": { "reveal": "always", "clear": true }
     },
-    {
-      "label": "Credits: Fix",
-      "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/CreditsTool.ps1 -Mode Fix",
-      "group": "build",
-      "presentation": { "reveal": "always", "focus": true, "clear": true }
-    },
+    // {
+    //   "label": "Credits: Fix",
+    //   "type": "shell",
+    //   "command": "powershell -ExecutionPolicy Bypass -File ${workspaceFolder}/scripts/CreditsTool.ps1 -Mode Fix",
+    //   "group": "build",
+    //   "presentation": { "reveal": "always", "focus": true, "clear": true }
+    // },
     {
       "label": "Credits: Add Missing Credits",
       "type": "shell",

@@ -5,6 +5,10 @@ param (
     [string]$Mode = "Validate",
 
     [Parameter(Mandatory = $false)]
+    [ValidateSet("Canary", "Production")]
+    [string]$Channel = "Production",
+
+    [Parameter(Mandatory = $false)]
     [switch]$AssetsOnly
 )
 
@@ -114,7 +118,6 @@ function Sync-ImageAssets ([System.Collections.Specialized.OrderedDictionary]$ar
 function Get-ArtistsLookup ([System.Collections.Specialized.OrderedDictionary]$artistsData) {
     $lookup = [ordered]@{}
 
-    # FIX: Loop explicitly through dictionary keys to prevent interference from internal property names like 'Count'
     foreach ($artistKey in $artistsData.Keys) {
         $artistValue = $artistsData[$artistKey]
 
@@ -182,8 +185,14 @@ function Save-ChangesIfNeeded ([System.Collections.Specialized.OrderedDictionary
     }
     else {
         if ($Global:HasValidationErrors) {
-            Write-Host "`nCredits validation FAILED with structural errors." -ForegroundColor Red
-            exit 1
+            if ($Channel -eq "Production") {
+                Write-Host "`n[CRITICAL] Credits validation FAILED for Production deployment." -ForegroundColor Red
+                exit 1
+            }
+            else {
+                Write-Host "`n[WARNING] Credits validation FAILED. Proceeding anyway because target is Canary." -ForegroundColor Yellow
+                exit 0
+            }
         }
         else {
             Write-Host "`nCredits validation PASSED successfully." -ForegroundColor Green
@@ -202,7 +211,11 @@ Sync-ImageAssets -artistsData $artistsData
 
 if ($AssetsOnly) {
     if ($Global:ArtistFileModified) { Set-JsonSafe -path $ArtistsPath -data $artistsData }
-    exit [int]$Global:HasValidationErrors
+
+    if ($Global:HasValidationErrors -and $Channel -eq "Production") {
+        exit 1
+    }
+    exit 0
 }
 
 # Step 2: Extract mapping rules and sanitize files
