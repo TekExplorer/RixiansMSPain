@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://yq3jtd8vw8sw"
-path="res://.godot/imported/photon_cut.jpg-54a39747a23f13435cc05f12f3173783.ctex"
+uid="uid://d1f7vellu2ey6"
+path="res://.godot/imported/photon_cut.png-e50a190fc352a655836f6b91ab8e0aab.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/regent/photon_cut.jpg"
-dest_files=["res://.godot/imported/photon_cut.jpg-54a39747a23f13435cc05f12f3173783.ctex"]
+source_file="res://artist_assets/regent/photon_cut.png"
+dest_files=["res://.godot/imported/photon_cut.png-e50a190fc352a655836f6b91ab8e0aab.ctex"]
 
 [params]
 

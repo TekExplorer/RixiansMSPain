@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d31wcwyxysrwr"
-path="res://.godot/imported/summon_forth.jpg-08bf9b1a15bafe940aa749af9f329c35.ctex"
+uid="uid://clqjc2xhmqjxy"
+path="res://.godot/imported/summon_forth.png-87ebcd6d61efaf39c850ed22eb9cc2a5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/regent/summon_forth.jpg"
-dest_files=["res://.godot/imported/summon_forth.jpg-08bf9b1a15bafe940aa749af9f329c35.ctex"]
+source_file="res://artist_assets/regent/summon_forth.png"
+dest_files=["res://.godot/imported/summon_forth.png-87ebcd6d61efaf39c850ed22eb9cc2a5.ctex"]
 
 [params]
 

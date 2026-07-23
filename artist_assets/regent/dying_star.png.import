@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://csf2are61iss5"
-path="res://.godot/imported/kingly_punch.jpg-43c72171be6a2ffbad23fce33eee0c9f.ctex"
+uid="uid://cap804pfyc07i"
+path="res://.godot/imported/dying_star.png-b40d6e8a10cda78af809e14c699206ee.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://artist_assets/regent/kingly_punch.jpg"
-dest_files=["res://.godot/imported/kingly_punch.jpg-43c72171be6a2ffbad23fce33eee0c9f.ctex"]
+source_file="res://artist_assets/regent/dying_star.png"
+dest_files=["res://.godot/imported/dying_star.png-b40d6e8a10cda78af809e14c699206ee.ctex"]
 
 [params]
 
