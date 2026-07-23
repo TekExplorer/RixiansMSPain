@@ -14,6 +14,7 @@ static class Credits
         return self;
     }
 
+    // TODO: every file gets a credit. Specially handle if the credit is the same as non-alt version
     public static IEnumerable<IHoverTip> Tooltips(CardModel card)
     {
         List<IHoverTip> tips = [];
@@ -78,7 +79,7 @@ static class Credits
             yield return new HoverTip(overlayDesc) { IsDebuff = true };
         }
     }
-    internal static LocString Replace(LocString str) => LocString.GetIfExists("usernames", str.GetRawText()) ?? str;
+    internal static LocString Replace(LocString str) => LocString.GetIfExists("usernames", str.GetRawText().ToLower()) ?? str;
     internal static string CreditsKeyFor(CardModel card)
     {
         var pool = PoolOf(card);
