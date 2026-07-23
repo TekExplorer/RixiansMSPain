@@ -1,7 +1,7 @@
 ﻿{
   "title": "Rixian's MSPain (Canary)",
   "description": "This is the tester's version of the mod. Go see the public one!",
-  "changeNote": "Added Rebound, Spirit of Ash+.\nRemoved card names from events",
+  "changeNote": "Added Rebound, Spirit of Ash+.\nRemoved card names from events\nAdded credits",
   "visibility": "unlisted",
   "tags": [],
   "dependencies": [3737335127]

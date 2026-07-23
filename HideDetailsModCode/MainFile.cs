@@ -26,6 +26,7 @@ public partial class MainFile : Node
         ModConfigRegistry.Register(ModId, new MyModConfig());
         CustomLocTableManager.Register("usernames");
         CustomLocTableManager.Register("artists");
+        CustomLocTableManager.Register("event_chatter");
         //If you want to use scripts defined in your mod for Godot scenes, uncomment the following line.
         Godot.Bridge.ScriptManagerBridge.LookupScriptsInAssembly(assembly);
 
