@@ -2,6 +2,7 @@ using BaseLib.Extensions;
 using BaseLib.Utils;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -27,13 +28,6 @@ namespace HideDetailsMod.HideDetailsModCode;
 [HarmonyPatch]
 public partial class AlternateArts
 {
-    static bool CardIsBeingInspected(CardModel card)
-    {
-        if (InspectCardPatch.CardBeingInspected[card]) return true;
-        NCard? nCard = NCard.FindOnTable(card);
-        if (nCard == null) return false;
-        return InspectCardPatch.NCardBeingInspected[nCard];
-    }
 
     public static void CardNeedsReload(CardModel card) => AltArtListenerPatch.NCardNeedsUpdateEvent[card]?.Invoke();
 
@@ -154,22 +148,33 @@ public partial class AlternateArts
     {
         // static BaseLib.Utils.AddedNode<NCard, Control> thing;
     }
+    // TODO: call somewhere
+    public static void PreloadAll()
+    {
+        var altArts = Arts.SelectMany(factory => factory.AllPathsAsImg);
 
+        foreach (var art in altArts)
+        {
+            if (art == null) return;
+            if (art.Exists()) PreloadManager.Cache.GetTexture2D(art.PortraitPath);
+            if (art.Upgraded().Exists()) PreloadManager.Cache.GetTexture2D(art.Upgraded().PortraitPath);
+        }
+    }
     static public void InitCheck()
     {
-        foreach (var Art in Arts)
+        try
         {
-            foreach (var img in Art.AllPathsAsImg)
-            {
-                if (!img.Exists())
-                {
-                    MainFile.Logger.Error($"Img {img.Path} does not exist!");
-                }
-            }
+            Arts.SelectMany(Art => Art.AllPathsAsImg)
+                .Where(Img => !Img.Exists())
+                .Do(Img => MainFile.Logger.Warn($"Img {Img.Path} does not exist!"));
+        }
+        catch (Exception error)
+        {
+            MainFile.Logger.Warn($"InitCheck failed with: {error}");
         }
     }
 
-    public static readonly ICardImgFactory[] Arts = [
+    public static ICardImgFactory[] Arts => [
         new CardImgFactory2<Shiv>(["token/shiv_2", "token/shiv_fanned", "token/shiv_fanned_inky"], card => {
             if (card.HasFanOfKnives) {
                 if (card.Enchantment is Inky) return "token/shiv_fanned_inky";
@@ -177,10 +182,7 @@ public partial class AlternateArts
             }
             if (MyModConfig.UseBetaShivArt) return "token/shiv_2";
             return null;
-        }) {
-            WhenPowerApplied = (shiv, _, power, _) => { if (power is FanOfKnivesPower) CardNeedsReload(shiv); },
-            WhenCardEnchanted = (shiv, enchantment, _) => { if (enchantment is Inky) CardNeedsReload(shiv); }
-        },
+        }),
         new CardImgFactory2<Predator>("silent/predator_gold_axe", card => Util.HasCard<GoldAxe>(Util.GetOwner(card))),
         new CardImgFactory2<Outbreak>("silent/outbreak_if_noxious_fumes", card => {
             // MainFile.Logger.Debug($"[Alt Art] [Outbreak] Checking for NoxiousFumes");
@@ -249,15 +251,7 @@ public partial class AlternateArts
         }) {
             WhenCardPlayed = (spoilsOfBattle, _, cardPlay) => {if (cardPlay.Card is FallingStar) CardNeedsReload(spoilsOfBattle);}
         },
-        new CardImgFactory2<Parry>("regent/parry_alt", card => {
-            if (card.IsCanonical) return null;
-            if (card.Pile != null) return null; // regular perry version
-            // pile is null, and not canonical. probably a shop or something
-            if (CardIsBeingInspected(card)) return null;
-            return true;
-        }) {
-            WhenCardInspected = (parry, nCard, _) => Util.ReloadCard(nCard)
-        },
+        ParryAlt,
         TinkerTimePatch.AltArt,
         new CardImgFactory2<Dowsing>(new List<int>([1,2,3,4,5]).Select(num => $"quest/dowsing_{num}"), card => {
             if (card.IsCanonical) return null;
@@ -342,6 +336,15 @@ public partial class AlternateArts
             return hand.Cards.Any(IsOrMakesShivs);
         }),
     ];
+    static public bool ParryWasInspected { get; set; } = false;
+    private static ICardImgFactory ParryAlt => new CardImgFactory2<Parry>("regent/parry_alt", card =>
+    {
+        if (card.IsCanonical) return false;
+        if (card.Pile != null) return false; // regular perry version
+                                             // pile is null, and not canonical. probably a shop or something
+        if (ParryWasInspected) return false;
+        return true;
+    });
     static bool IsOrMakesShivs(CardModel card) => card switch
     {
         _ when card.Tags.Contains(CardTag.Shiv) => true,

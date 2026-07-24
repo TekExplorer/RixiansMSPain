@@ -114,6 +114,10 @@
             ContinueOnError="WarnAndContinue" />
     </Target>
 
+    <PropertyGroup Condition="'$(WorkshopChannel)' == 'Canary'">
+        <DefineConstants>$(DefineConstants);CANARY</DefineConstants>
+    </PropertyGroup>
+
     <!-- Workshop -->
     <PropertyGroup>
         <WorkshopChannel Condition="'$(WorkshopChannel)' == ''">Production</WorkshopChannel>

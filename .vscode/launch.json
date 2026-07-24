@@ -7,9 +7,9 @@
       "request": "launch",
       "cwd": "C:/Program Files (x86)/Steam/steamapps/common/Slay the Spire 2",
       "program": "C:/Program Files (x86)/Steam/steamapps/common/Slay the Spire 2/SlayTheSpire2.exe",
-      "args": ["-log Generic Debug"],
+      // "args": ["-log Generic Debug"],
       "stopAtEntry": false,
-      "preLaunchTask": "Build HideDetailsMod (Debug)",
+      "preLaunchTask": "Build Mod (Debug)",
       "console": "internalConsole"
     }
   ]

@@ -13,7 +13,7 @@ class CanaryModImagePatch
     public static void PostFix(NModInfoContainer __instance, Mod mod)
     {
         if (mod.manifest?.id != "HideDetailsMod") return;
-        if (!(mod.manifest?.name ?? "").Contains("(Canary)")) return;
+        if (!MainFile.IsCanary) return;
         string path = "res://HideDetailsMod/mod_image_canary.png";
         if (ResourceLoader.Exists(path))
         {

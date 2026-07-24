@@ -41,7 +41,6 @@ abstract public class ICardImgFactory(IEnumerable<string> AllPaths)
     abstract public bool IsFor(CardModel card);
     abstract public CardImg? Get(CardModel card);
 
-    public abstract void OnCardInspected(NCard nCard, InspectionState state);
     public abstract void OnCardGenerated(AbstractModel thisModel, CardModel generatedCard);
     public abstract void OnCardPlayed(AbstractModel thisModel, PlayerChoiceContext choiceContext, CardPlay cardPlay);
     public abstract void OnPowerApplied(AbstractModel thisModel, PlayerChoiceContext choiceContext, PowerModel power, decimal amount);
@@ -70,7 +69,6 @@ public class CardImgFactory(Type CardType, IEnumerable<string> AllPaths, Func<Ca
         return new(result);
     }
 
-    public Action<NCard, InspectionState>? WhenCardInspected { get; set; }
     public Action<AbstractModel, CardModel>? WhenCardGenerated { get; set; }
     public Action<AbstractModel, PlayerChoiceContext, CardPlay>? WhenCardPlayed { get; set; }
     public Action<AbstractModel, PlayerChoiceContext, PowerModel, decimal>? WhenPowerApplied { get; set; }
@@ -80,8 +78,6 @@ public class CardImgFactory(Type CardType, IEnumerable<string> AllPaths, Func<Ca
     public Action<AbstractModel, PlayerChoiceContext, CardModel, bool>? WhenCardDrawn { get; set; }
     public Action<CardModel, EnchantmentModel, decimal>? WhenCardEnchanted { get; set; }
 
-    public override void OnCardInspected(NCard nCard, InspectionState state)
-    { WhenCardInspected?.Invoke(nCard, state); }
     public override void OnCardGenerated(AbstractModel thisModel, CardModel generatedCard)
     { WhenCardGenerated?.Invoke(thisModel, generatedCard); }
     public override void OnCardPlayed(AbstractModel thisModel, PlayerChoiceContext choiceContext, CardPlay cardPlay)
@@ -118,7 +114,6 @@ public class CardImgFactory2<T>(IEnumerable<string> AllPaths, Func<T, string?> C
         if (result == null) return null;
         return new(result);
     }
-    public Action<T, NCard, InspectionState>? WhenCardInspected { get; set; }
     public Action<T, CardModel>? WhenCardGenerated { get; set; }
     public Action<T, PlayerChoiceContext, CardPlay>? WhenCardPlayed { get; set; }
     public Action<T, PlayerChoiceContext, PowerModel, decimal>? WhenPowerApplied { get; set; }
@@ -128,8 +123,6 @@ public class CardImgFactory2<T>(IEnumerable<string> AllPaths, Func<T, string?> C
     public Action<T, PlayerChoiceContext, CardModel, bool>? WhenCardDrawn { get; set; }
     public Action<T, EnchantmentModel, decimal>? WhenCardEnchanted { get; set; }
 
-    public override void OnCardInspected(NCard nCard, InspectionState state)
-    { if (nCard.Model is T self) WhenCardInspected?.Invoke(self, nCard, state); }
     public override void OnCardGenerated(AbstractModel thisModel, CardModel generatedCard)
     { if (thisModel is T self) WhenCardGenerated?.Invoke(self, generatedCard); }
     public override void OnCardPlayed(AbstractModel thisModel, PlayerChoiceContext choiceContext, CardPlay cardPlay)

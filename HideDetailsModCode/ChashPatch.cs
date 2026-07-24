@@ -16,8 +16,17 @@ namespace HideDetailsMod.HideDetailsModCode;
 
 static class ClashPatch
 {
-    static public ICardImgFactory AltArt = new CardImgFactory2<Clash>("event/clash_playable", static card => card.CardIsPlayable());
-    static internal bool? CardIsPlayable(this CardModel card) => (bool?)IsPlayableMethod.Invoke(card, []);
+    static public ICardImgFactory AltArt = new CardImgFactory2<Clash>("event/clash_playable", static card =>
+    {
+        if (card.IsCanonical) return null;
+        return card.CardIsPlayable();
+    });
+    static internal bool? CardIsPlayable(this CardModel card)
+    {
+        if (card.IsCanonical) return false;
+        return (bool?)IsPlayableMethod.Invoke(card, []);
+    }
+
     static internal MethodInfo IsPlayableMethod => AccessTools.PropertyGetter(typeof(Clash), "IsPlayable");
     // TODO: find a way to guard this against desync
     [HarmonyPrefix]
