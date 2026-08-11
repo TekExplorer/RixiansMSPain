@@ -9,16 +9,23 @@ param (
     [string]$Channel = "Production",
 
     [Parameter(Mandatory = $false)]
-    [switch]$AssetsOnly
+    [switch]$AssetsOnly,
+
+    # TODO: make these items mandatory and put them in the tasks.json. Use ENV
+    [Parameter(Mandatory = $false)]
+    [string]$AssetFolder = "HideDetailsMod/artist_assets",
+    
+    [Parameter(Mandatory = $false)]
+    [string]$UsernamesPath = "HideDetailsMod/localization/eng/usernames.json",
+    
+    [Parameter(Mandatory = $false)]
+    [string]$ArtistsPath = "HideDetailsMod/localization/eng/artists.json"
 )
 
-# ==========================================
-# HARDCODED CONSTANTS & DIRECTORIES
-# ==========================================
-$AssetFolder = "artist_assets"
-$UsernamesPath = "HideDetailsMod/localization/eng/usernames.json"
-$ArtistsPath = "HideDetailsMod/localization/eng/artists.json"
 
+# ==========================================
+# HARDCODED CONSTANTS
+# ==========================================
 $Extensions = @("*.png", "*.jpg", "*.jpeg")
 $ExcludeBeta = $true
 $KeyIgnorePattern = "^\."

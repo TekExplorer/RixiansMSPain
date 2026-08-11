@@ -1,83 +1,167 @@
-using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Cards;
 
-using static HideDetailsMod.HideDetailsModCode.AlternateArts;
+using System.Reflection;
+using BaseLib.Utils;
+using HarmonyLib;
+using HideDetailsMod.HideDetailsModCode.AlternateArts;
+using MegaCrit.Sts2.Core.Modding;
+
 namespace HideDetailsMod.HideDetailsModCode.Patches;
-
-[HarmonyPatch]
-public class ArtPatch
+// TODO: put in proper location
+public static class HarmonyPatchHelpers
 {
-    [HarmonyPostfix, HarmonyPatch(typeof(CardModel), nameof(CardModel.AllPortraitPaths), MethodType.Getter)]
-    public static void AllPortraitPaths(CardModel __instance, ref IEnumerable<string> __result) => InternalAllPortraitPaths(__instance, ref __result);
-    [HarmonyPostfix, HarmonyPatch(typeof(MadScience), nameof(MadScience.AllPortraitPaths), MethodType.Getter)]
-    public static void AllPortraitPaths2(MadScience __instance, ref IEnumerable<string> __result) => InternalAllPortraitPaths(__instance, ref __result);
-    internal static void InternalAllPortraitPaths(CardModel card, ref IEnumerable<string> __result)
+    /// <summary>
+    /// Finds all implementations and overrides of the given MethodInfo across specified assemblies.
+    /// </summary>
+    /// <param name="baseMethod">The MethodInfo representing the target method signature and declaring type.</param>
+    /// <param name="assemblies">Optional list of assemblies to search in. Defaults to all loaded non-dynamic assemblies.</param>
+    /// <returns>An enumerable of MethodBase targets for [HarmonyTargetMethods].</returns>
+    public static IEnumerable<MethodBase> GetMethodImplementations(
+        MethodInfo baseMethod,
+        IEnumerable<Assembly>? assemblies = null)
     {
-        if (!MyModConfig.UseCustomArt) return;
-        try
+        if (baseMethod == null) throw new ArgumentNullException(nameof(baseMethod));
+
+        Type declaringType = baseMethod.DeclaringType
+            ?? throw new ArgumentException("Base method must have a valid DeclaringType.", nameof(baseMethod));
+
+        string methodName = baseMethod.Name;
+        Type[] paramTypes = baseMethod.GetParameters().Select(p => p.ParameterType).ToArray();
+        Type[]? genericArgs = baseMethod.IsGenericMethod ? baseMethod.GetGenericArguments() : null;
+
+        // assemblies ??= AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic);
+        // No need for searching unneeded places
+        assemblies ??= ModManager.Mods.SelectMany(mod => mod.assemblies).Prepend(typeof(ModManager).Assembly);
+        foreach (var assembly in assemblies)
         {
-            List<string> result = [.. __result];
+            Type[] types;
+            try
+            {
+                types = assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                types = e.Types.Where(t => t != null).ToArray();
+            }
 
-            var found = GetAltsFor(card);
+            foreach (var type in types)
+            {
+                // Must be a subtype, implement the interface, or be the declaring type itself
+                if (!declaringType.IsAssignableFrom(type))
+                    continue;
 
-            result.AddRange(found.SelectMany(alt => alt.All).Select(Img => Img.PortraitPath));
+                // Look for declared method matching the exact signature on this subtype
+                MethodInfo method = AccessTools.DeclaredMethod(type, methodName, paramTypes, genericArgs);
 
-            var upgraded = CardImg.Upgraded(card);
-            if (upgraded.Exists()) result.Add(upgraded.PortraitPath);
-            __result = result;
+                // Make sure the method exists on this class specifically and isn't abstract
+                if (method != null && !method.IsAbstract)
+                {
+                    yield return method;
+                }
+            }
         }
-        catch (Exception e)
+    }
+}
+//TODO: optimize image overrides
+[HarmonyPatch]
+public static class ArtPatch
+{
+    [HarmonyPatch]
+    public static class AllPortraitPaths
+    {
+        [HarmonyTargetMethods]
+        public static IEnumerable<MethodBase> TargetMethods()
         {
-            MainFile.Logger.Error($"Error in AllPortraitPaths: {e}");
+            // Simply pass the target base method directly
+            MethodInfo baseMethod = AccessTools.PropertyGetter(typeof(CardModel), nameof(CardModel.AllPortraitPaths));
+            return HarmonyPatchHelpers.GetMethodImplementations(baseMethod);
+        }
+        [HarmonyPostfix]
+        internal static void PostFix(CardModel __instance, ref IEnumerable<string> __result)
+        {
+            if (!MyModConfig.UseCustomArt) return;
+            try
+            {
+                IAlternateCardArt.Patch.AllPortraitPaths(__instance, ref __result);
+            }
+            catch (Exception e)
+            {
+                MainFile.Logger.Error($"Error in AllPortraitPaths: {e}");
+            }
         }
     }
 
-    static CardImg ImgFor(CardModel card)
-    {
-        var factories = GetAltsFor(card);
-        foreach (var factory in factories)
-        {
-            var img = factory.Get(card);
-            if (img == null) continue;
-            if (card.IsUpgraded && img.Upgraded().Exists()) img = img.Upgraded();
-            return img;
-        }
-        var Img = new CardImg(card);
-        if (card.IsUpgraded && Img.Upgraded().Exists()) Img = Img.Upgraded();
-        return Img;
-    }
 
-    [HarmonyPostfix, HarmonyPatch(typeof(CardModel), nameof(CardModel.PortraitPath), MethodType.Getter)]
-    public static void PortraitPath(CardModel __instance, ref string __result) => InternalPortraitPath(__instance, ref __result);
-    [HarmonyPostfix, HarmonyPatch(typeof(MadScience), nameof(MadScience.PortraitPath), MethodType.Getter)]
-    public static void PortraitPath2(MadScience __instance, ref string __result) => InternalPortraitPath(__instance, ref __result);
-    internal static void InternalPortraitPath(CardModel card, ref string __result)
+    static private SpireField<CardModel, (CardImg? Base, CardImg? Upgraded)> OverrideImg = new SpireField<CardModel, (CardImg? Base, CardImg? Upgraded)>(() => (null, null)).CopyOnClone();
+    static public void SetOverrideImage(this CardModel card, (CardImg? Base, CardImg? Upgraded) Override) => OverrideImg.Set(card, Override);
+    static public (CardImg? Base, CardImg? Upgraded) GetOverrideImage(this CardModel card) => OverrideImg.Get(card);
+    [HarmonyPatch]
+    public static class PortraitPath
     {
-        if (!MyModConfig.UseCustomArt) return;
-        try
+        [HarmonyTargetMethods]
+        public static IEnumerable<MethodBase> TargetMethods()
         {
-            var Img = ImgFor(card);
-            if (Img != null) __result = Img.PortraitPath;
+            // Simply pass the target base method directly
+            MethodInfo baseMethod = AccessTools.PropertyGetter(typeof(CardModel), nameof(CardModel.PortraitPath));
+            var impls = HarmonyPatchHelpers.GetMethodImplementations(baseMethod);
+            MainFile.Logger.Info($"Found ");
+            return impls;
         }
-        catch (Exception e)
-        { MainFile.Logger.Error($"Error in PortraitPath: {e}"); }
-    }
 
-    // PortraitPngPath
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(CardModel), "PortraitPngPath", MethodType.Getter)]
-    // [HarmonyPatch(typeof(MadScience), "PortraitPngPath", MethodType.Getter)] // doesn't exist lol
-    public static void PortraitPngPath(CardModel? __instance, ref string __result)
-    {
-        if (!MyModConfig.UseCustomArt) return;
-        if (__instance == null) return;
-        try
+
+        [HarmonyPostfix]
+        internal static void PostFix(CardModel __instance, ref string __result)
         {
-            var Img = ImgFor(__instance);
-            if (Img != null) __result = Img.PortraitPngPath;
+            if (!MyModConfig.UseCustomArt) return;
+            try
+            {
+
+                var (OverrideBase, OverrideUpgrade) = __instance.GetOverrideImage();
+                var Override = __instance.IsUpgraded ? OverrideUpgrade : OverrideBase;
+                if (Override != null && Override.Exists())
+                {
+                    __result = Override.PortraitPath;
+                    return;
+                }
+
+                IAlternateCardArt.Patch.PortraitPath(__instance, ref __result);
+            }
+            catch (Exception e)
+            { MainFile.Logger.Error($"Error in PortraitPath: {e}"); }
         }
-        catch (Exception e)
-        { MainFile.Logger.Error($"Error in PortraitPngPath: {e}"); }
+
+    }
+    [HarmonyPatch]
+    public static class PortraitPngPath
+    {
+        [HarmonyTargetMethods]
+        public static IEnumerable<MethodBase> TargetMethods()
+        {
+            // Simply pass the target base method directly
+            MethodInfo baseMethod = AccessTools.PropertyGetter(typeof(CardModel), "PortraitPngPath");
+            var impls = HarmonyPatchHelpers.GetMethodImplementations(baseMethod);
+            MainFile.Logger.Info($"Found ");
+            return impls;
+        }
+        [HarmonyPostfix]
+        internal static void PostFix(CardModel __instance, ref string __result)
+        {
+            if (!MyModConfig.UseCustomArt) return;
+            if (__instance == null) return;
+            try
+            {
+                var (OverrideBase, OverrideUpgrade) = __instance.GetOverrideImage();
+                var Override = __instance.IsUpgraded ? OverrideUpgrade : OverrideBase;
+                if (Override != null && Override.Exists())
+                {
+                    __result = Override.PortraitPngPath;
+                    return;
+                }
+
+                IAlternateCardArt.Patch.PortraitPngPath(__instance, ref __result);
+            }
+            catch (Exception e)
+            { MainFile.Logger.Error($"Error in PortraitPngPath: {e}"); }
+        }
     }
 }

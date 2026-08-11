@@ -10,7 +10,13 @@
       "args": ["-log Generic Debug"],
       "stopAtEntry": false,
       "preLaunchTask": "Build Mod (Debug)",
-      "console": "internalConsole"
+      "console": "internalConsole",
+      // "justMyCode": false
+      "justMyCode": false,
+      "symbolOptions": {
+        "searchMicrosoftSymbolServer": true,
+        "searchNuGetOrgSymbolServer": true
+      }
     }
   ]
 }

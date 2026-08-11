@@ -146,9 +146,11 @@ public readonly struct NetModSettings
         if (string.IsNullOrEmpty(modStr)) return null;
         return modStr;
     }
+    public static NetModSettings? GetPlayerConfig(Player? player) => GetPlayerConfig(player?.NetId);
+
     public static NetModSettings? GetPlayerConfig(ulong? NetId)
     {
-        if (NetId == 1) return new();
+        if (NetId == null) return null;
         if (NetId is not { } id) return null;
         var modStr = GetPlayerModString(id); // TODO: weird cast. check it.
         if (string.IsNullOrEmpty(modStr)) return null;

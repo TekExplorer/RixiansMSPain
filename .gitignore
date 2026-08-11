@@ -12,3 +12,11 @@ packages/
 Directory.Build.props
 .vscode/settings.json
 mod-uploader.log
+
+# Sts2 dirs
+/src/
+/animations/
+/images/
+/scenes/
+/shaders/
+/themes/

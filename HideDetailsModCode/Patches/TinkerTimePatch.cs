@@ -13,48 +13,7 @@ namespace HideDetailsMod.HideDetailsModCode.Patches;
 [HarmonyPatch]
 public static class TinkerTimePatch
 {
-    static readonly string Curious = "event/mad_science_power_curious";
-    static readonly string Expertise = "event/mad_science_power_expertise";
-    static readonly string Improvement = "event/mad_science_power_improvement";
-    static readonly string[] powerArts = [Curious, Expertise, Improvement];
     static readonly SpireField<MadScience, TinkerTime.RiderEffect?> VisualRider = new(() => null);
-    static public readonly ICardImgFactory AltArt = new CardImgFactory2<MadScience>([.. powerArts], static card =>
-    {
-        var rider = VisualRider[card] ?? card.TinkerTimeRider;
-        // var index = CurrentTemporalIndex(3);
-
-        if (rider == TinkerTime.RiderEffect.None && card.Type == CardType.Power)
-        {
-            // TODO: should cycle through the 3 options
-            // return powerArts[index];
-            MainFile.Logger.Warn("MadScience shouldn't be missing a Rider when displayed as a power!");
-        }
-
-        return rider switch
-        {
-            TinkerTime.RiderEffect.None => card.Type switch
-            {
-                CardType.None => null, // uh...
-                CardType.Attack => null, // only one art
-                CardType.Skill => null, // only one art
-                // TODO: request "base" version
-                CardType.Power => null, // powerArts[index],
-                _ => null, // idk how you got weird versions of the card...
-            },
-            // default location for the rest
-            TinkerTime.RiderEffect.Sapping => null,
-            TinkerTime.RiderEffect.Violence => null,
-            TinkerTime.RiderEffect.Choking => null,
-            TinkerTime.RiderEffect.Energized => null,
-            TinkerTime.RiderEffect.Wisdom => null,
-            TinkerTime.RiderEffect.Chaos => null,
-            TinkerTime.RiderEffect.Expertise => Expertise,
-            TinkerTime.RiderEffect.Curious => Curious,
-            TinkerTime.RiderEffect.Improvement => Improvement,
-            _ => null,
-        };
-    });
-
     [HarmonyPatch]
     static class EventOptionsLocPatch
     {

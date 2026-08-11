@@ -13,7 +13,7 @@
     {
       "label": "Build Mod (Debug)",
       "type": "shell",
-      "command": "dotnet build -c Debug -p:WorkshopChannel=${input:channel}",
+      "command": "dotnet build -c Debug -p:WorkshopChannel=Canary",
       "group": { "kind": "build", "isDefault": true },
       "problemMatcher": ["$msCompile"]
     },
@@ -71,8 +71,8 @@
       ],
       "options": {
         "env": {
-          "INPUT_PATH": "res://artist_assets/",
-          "OUTPUT_PATH": "res://images/atlases/card_atlas.sprites/"
+          "INPUT_PATH": "res://HideDetailsMod/artist_assets/",
+          "OUTPUT_PATH": "res://HideDetailsMod/images/atlases/card_atlas.sprites/"
         }
       },
       "presentation": {

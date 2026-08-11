@@ -15,7 +15,7 @@ func _init() -> void:
 		print("\n📖 Usage:")
 		print("  godot --headless -s %s -- <input_dir> <output_dir>" % script_path)
 		print("\n💡 Example:")
-		print("  godot --headless -s %s -- res://artist_assets/ res://images/atlases/card_atlas.sprites/\n" % script_path)
+		print("  godot --headless -s %s -- res://HideDetailsMod/artist_assets/ res://images/atlases/card_atlas.sprites/\n" % script_path)
 		quit(1)
 		return
 		

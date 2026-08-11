@@ -35,7 +35,8 @@ public partial class OstyDanceAnimated : Control
 	void UpdateModel(CardModel? cardModel)
 	{
 		if (animation is null) return;
-		if (cardModel is PullAggro)
+
+		if (cardModel is PullAggro && MyModConfig.UseCustomArt)
 		{
 			Visible = true;
 			if (!animation.IsPlaying()) animation.Play();
@@ -50,6 +51,7 @@ public partial class OstyDanceAnimated : Control
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		// TODO: Could be better
 		UpdateModel(card?.Model);
 	}
 }

@@ -1,4 +1,3 @@
-using BaseLib.Config;
 using BaseLib.Utils;
 using Logger = MegaCrit.Sts2.Core.Logging.Logger;
 using LogType = MegaCrit.Sts2.Core.Logging.LogType;
@@ -16,16 +15,13 @@ namespace HideDetailsMod.HideDetailsModCode;
 public partial class MainFile : Node
 {
     public const string ModId = "HideDetailsMod"; //At the moment, this is used only for the Logger and harmony names.
-
     public static Logger Logger { get; } = new(ModId, LogType.Generic);
-
     public static AutoModAudio Audio { get; } = new("res://HideDetailsMod/audio");
-
     public static void Initialize()
     {
         var assembly = Assembly.GetExecutingAssembly();
 
-        ModConfigRegistry.Register(ModId, new MyModConfig());
+        MyModConfig.Init();
         CustomLocTableManager.Register("usernames");
         CustomLocTableManager.Register("artists");
         CustomLocTableManager.Register("event_chatter");
@@ -35,11 +31,10 @@ public partial class MainFile : Node
         Harmony harmony = new(ModId);
 
         harmony.TryPatchAll(assembly);
-        AlternateArts.InitCheck();
     }
 
 #if CANARY
-    public static bool IsCanary => MyModConfig.EmulateCanaryMode ? true : false;
+    public static bool IsCanary => MyModConfig.EmulateCanaryMode;
 #else
     public static bool IsCanary => false;
 #endif

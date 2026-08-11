@@ -19,7 +19,7 @@ if (-not (Test-Path $PropsPath)) {
 }
 
 [xml]$props = Get-Content $PropsPath
-$godotExe = $props.Project.PropertyGroup.GodotPath
+$godotExe = $props.Project.PropertyGroup.GodotPath.Trim();
 
 if ([string]::IsNullOrWhiteSpace($godotExe)) {
     throw "GodotPath element is missing or empty in '$PropsPath'"
@@ -27,6 +27,8 @@ if ([string]::IsNullOrWhiteSpace($godotExe)) {
 
 # Run Godot via CMD wrapper to bypass PowerShell stream interception
 cmd /c `"$godotExe`" --headless --import -s $GdScript -- $InputPath $OutputPath
+
+# & "$godotExe" --headless --import -s $GdScript -- $InputPath $OutputPath
 
 # Catch real Godot crashes
 if ($LASTEXITCODE -ne 0) {
