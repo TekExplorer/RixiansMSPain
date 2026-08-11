@@ -26,6 +26,17 @@ window/stretch/aspect="expand"
 
 project/assembly_name="HideDetailsMod"
 
+[file_customization]
+
+folder_colors={
+"res://artist_assets/Char Select/": "yellow",
+"res://artist_assets/Char Select/Defect/": "blue",
+"res://artist_assets/Char Select/Ironclad/": "red",
+"res://artist_assets/Char Select/Nercobinder/": "pink",
+"res://artist_assets/Char Select/Regent/": "orange",
+"res://artist_assets/Char Select/Silent/": "green"
+}
+
 [rendering]
 
 renderer/rendering_method="mobile"

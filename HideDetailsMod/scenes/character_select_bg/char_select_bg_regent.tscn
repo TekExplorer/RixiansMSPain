@@ -1,0 +1,72 @@
+[gd_scene load_steps=6 format=3 uid="uid://w21ox0d04opk"]
+
+[ext_resource type="Script" uid="uid://dey8fk26ksk5a" path="res://src/Core/Nodes/Screens/CharacterSelect/NRegentCharacterSelectBg.cs" id="1_301rk"]
+[ext_resource type="Texture2D" uid="uid://bn0vntvg6llhf" path="res://character_select/regent splash screen_bg.png" id="2_o0m4b"]
+[ext_resource type="Texture2D" uid="uid://e4dra6xbqka0" path="res://character_select/regent_splashscreen_rigent_on_chair.png" id="2_wwc1h"]
+[ext_resource type="Texture2D" uid="uid://bdxru37u2rqj2" path="res://character_select/regent splash screen_minion.png" id="4_q43pu"]
+[ext_resource type="Texture2D" uid="uid://bpx5hkb63moa6" path="res://character_select/regent splash screen signature.png" id="5_xijby"]
+
+[node name="RegentBg" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -960.0
+offset_top = -521.0
+offset_right = 1600.0
+offset_bottom = 679.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(1280, 600)
+script = ExtResource("1_301rk")
+
+[node name="LinkButton" type="LinkButton" parent="."]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 61.0
+offset_right = 632.0
+offset_bottom = 149.0
+uri = "https://vgen.co/seapixxel"
+
+[node name="BG" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 48.0
+offset_top = -19.0
+offset_right = 1982.2222
+offset_bottom = 1069.0
+texture = ExtResource("2_o0m4b")
+expand_mode = 1
+
+[node name="Regent" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 304.0
+offset_top = 133.0
+offset_right = 1925.3334
+offset_bottom = 1045.0
+texture = ExtResource("2_wwc1h")
+expand_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -72.0
+offset_top = -35.0
+offset_right = -259.7334
+offset_bottom = -123.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_q43pu")
+expand_mode = 2
+
+[node name="RegentSplashScreenSignature" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 13.0
+offset_right = 3096.0
+offset_bottom = 1597.0
+texture = ExtResource("5_xijby")
+expand_mode = 1

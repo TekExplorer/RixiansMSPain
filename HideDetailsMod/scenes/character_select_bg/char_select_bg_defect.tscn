@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3 uid="uid://dx4u4vkcymxy8"]
+
+[ext_resource type="Texture2D" uid="uid://y2yesjhpwhnh" path="res://character_select/defect_splash.png" id="1_l7xin"]
+
+[node name="DefectBg" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -960.0
+offset_top = -521.0
+offset_right = 1600.0
+offset_bottom = 679.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(1280, 600)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 72.0
+offset_top = -27.0
+offset_right = 1958.2222
+offset_bottom = 1034.0
+texture = ExtResource("1_l7xin")
+expand_mode = 1
+
+[node name="Insta" type="LinkButton" parent="."]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 925.0
+offset_right = 296.0
+offset_bottom = 981.0
+uri = "https://www.instagram.com/billieihak.art/"
+
+[node name="Artstation" type="LinkButton" parent="."]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 973.0
+offset_right = 488.0
+offset_bottom = 1029.0
+uri = "https://billieihaka.artstation.com"
