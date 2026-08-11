@@ -1,0 +1,70 @@
+[gd_scene load_steps=5 format=3 uid="uid://w21ox0d04opk"]
+
+[ext_resource type="Texture2D" uid="uid://cww4m8l0nqyvd" path="res://artist_assets/Char Select/Regent/regent splash screen_bg.png" id="1_p00qi"]
+[ext_resource type="Texture2D" uid="uid://cekmpcfrgnrlc" path="res://artist_assets/Char Select/Regent/regent_splashscreen_rigent_on_chair.png" id="2_yr4te"]
+[ext_resource type="Texture2D" uid="uid://dfkmiw0cwclff" path="res://artist_assets/Char Select/Regent/regent splash screen_minion.png" id="3_hqmus"]
+[ext_resource type="Texture2D" uid="uid://c2gvkmmtu78im" path="res://artist_assets/Char Select/Regent/regent splash screen signature.png" id="4_luwcc"]
+
+[node name="RegentBg" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -960.0
+offset_top = -521.0
+offset_right = 1600.0
+offset_bottom = 679.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(1280, 600)
+
+[node name="LinkButton" type="LinkButton" parent="."]
+layout_mode = 0
+offset_left = 224.0
+offset_top = 117.0
+offset_right = 760.0
+offset_bottom = 205.0
+uri = "https://vgen.co/seapixxel"
+
+[node name="BG" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 5.0
+offset_right = 1982.2222
+offset_bottom = 1093.0
+texture = ExtResource("1_p00qi")
+expand_mode = 1
+
+[node name="Regent" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 304.0
+offset_top = 157.0
+offset_right = 1925.3334
+offset_bottom = 1069.0
+texture = ExtResource("2_yr4te")
+expand_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -72.0
+offset_top = -11.0
+offset_right = -259.7334
+offset_bottom = -99.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_hqmus")
+expand_mode = 2
+
+[node name="RegentSplashScreenSignature" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 152.0
+offset_top = 69.0
+offset_right = 3224.0
+offset_bottom = 1653.0
+texture = ExtResource("4_luwcc")
+expand_mode = 1

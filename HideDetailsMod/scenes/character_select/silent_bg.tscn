@@ -1,8 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://yreuhigmtdk3"]
+[gd_scene load_steps=4 format=3 uid="uid://dfdsnx61nb0fg"]
 
-[ext_resource type="Texture2D" uid="uid://s510bwyyswex" path="res://HideDetailsMod/images/character_select/silent/silent_splash_art_bg.png" id="1_vtpom"]
-[ext_resource type="Texture2D" uid="uid://c4837wnnwggbm" path="res://HideDetailsMod/images/character_select/silent/silent_splash_art_silent.png" id="2_16ub1"]
-[ext_resource type="Texture2D" uid="uid://cgxhi6w1xtyrd" path="res://HideDetailsMod/images/character_select/silent/silent_splash_art_smoke.png" id="3_16xwh"]
+[ext_resource type="Texture2D" uid="uid://s510bwyyswex" path="res://artist_assets/Char Select/Silent/silent_splash_art_bg.png" id="1_vtpom"]
+[ext_resource type="Texture2D" uid="uid://c4837wnnwggbm" path="res://artist_assets/Char Select/Silent/silent_splash_art_silent.png" id="2_16ub1"]
+[ext_resource type="Texture2D" uid="uid://cgxhi6w1xtyrd" path="res://artist_assets/Char Select/Silent/silent_splash_art_smoke.png" id="3_16xwh"]
 
 [node name="SilentBg" type="Control"]
 layout_mode = 3
@@ -19,23 +19,55 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(1280, 600)
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
-offset_right = 2634.0
-offset_bottom = 1236.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1136.0
+offset_top = -555.0
+offset_right = 1352.0
+offset_bottom = 842.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("1_vtpom")
 expand_mode = 2
+stretch_mode = 4
 
-[node name="Character" type="TextureRect" parent="."]
+[node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 1
-offset_right = 3840.0
-offset_bottom = 2159.0
-scale = Vector2(0.49720237, 0.49720237)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 48.0
+offset_top = 21.0
+offset_right = -591.1107
+offset_bottom = -99.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("2_16ub1")
+expand_mode = 1
 
-[node name="Fumes" type="TextureRect" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-scale = Vector2(0.5017109, 0.5017109)
+[node name="TextureRect3" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -552.0
+offset_top = -147.0
+offset_right = -552.0
+offset_bottom = -147.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("3_16xwh")
+expand_mode = 2
+
+[node name="LinkButton" type="LinkButton" parent="."]
+layout_mode = 0
+offset_left = 296.0
+offset_top = 61.0
+offset_right = 832.0
+offset_bottom = 117.0
+uri = "https://ignitionart.carrd.co/"

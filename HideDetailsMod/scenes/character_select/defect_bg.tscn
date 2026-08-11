@@ -1,0 +1,133 @@
+[gd_scene load_steps=12 format=3 uid="uid://dx4u4vkcymxy8"]
+
+[ext_resource type="Texture2D" uid="uid://b5orn8ix6fqku" path="res://artist_assets/Char Select/Defect/DEFECT-BACKGROUND.png" id="1_aueyx"]
+[ext_resource type="Texture2D" uid="uid://bu0v6nxjf3335" path="res://artist_assets/Char Select/Defect/DEFECT - SIGNATURE.png" id="2_4vuig"]
+[ext_resource type="Texture2D" uid="uid://dnumsoom488lu" path="res://artist_assets/Char Select/Defect/DEFECT-DEFECT.png" id="3_cv5jk"]
+[ext_resource type="Texture2D" uid="uid://dm5njwgni86rj" path="res://artist_assets/Char Select/Defect/DEFECT-STARS.png" id="4_gwsr0"]
+[ext_resource type="Texture2D" uid="uid://bekjedsmr0x4l" path="res://artist_assets/Char Select/Defect/DEFECT - COMIC STARS.png" id="5_v4gs8"]
+[ext_resource type="Texture2D" uid="uid://bfwwgksc1nf8w" path="res://artist_assets/Char Select/Defect/DEFECT - LIGHTNING ORB.png" id="6_dilj5"]
+[ext_resource type="Texture2D" uid="uid://drfri7xsaxb57" path="res://artist_assets/Char Select/Defect/DEFECT - FROST ORB.png" id="7_uev1e"]
+[ext_resource type="Texture2D" uid="uid://bvwihumg1w8jg" path="res://artist_assets/Char Select/Defect/DEFECT - DARK ORB.png" id="8_qeglf"]
+[ext_resource type="Texture2D" uid="uid://daln2o2ljj14o" path="res://artist_assets/Char Select/Defect/DEFECT - GLASS ORB.png" id="9_k25tb"]
+[ext_resource type="Texture2D" uid="uid://d0g118o6w583d" path="res://artist_assets/Char Select/Defect/DEFECT - PLASMA ORB.png" id="10_1nhjq"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_l84cy"]
+
+[node name="DefectBg" type="Control"]
+material = SubResource("CanvasItemMaterial_l84cy")
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -960.0
+offset_top = -521.0
+offset_right = 1600.0
+offset_bottom = 679.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(1280, 600)
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 136.0
+offset_top = -27.0
+offset_right = 2022.2222
+offset_bottom = 1034.0
+texture = ExtResource("1_aueyx")
+expand_mode = 1
+
+[node name="InstaArt" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 142.0
+offset_top = 933.0
+offset_right = 442.58252
+offset_bottom = 1005.0
+texture = ExtResource("2_4vuig")
+expand_mode = 2
+
+[node name="InstaLink" type="LinkButton" parent="InstaArt"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 8.0
+offset_right = 298.0
+offset_bottom = 64.0
+uri = "https://www.instagram.com/billieihak.art/"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_right = 104.0
+offset_bottom = 40.0
+
+[node name="MagicalGirl" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 136.0
+offset_top = -27.0
+offset_right = 2024.0
+offset_bottom = 1037.0
+texture = ExtResource("3_cv5jk")
+expand_mode = 2
+
+[node name="Stars" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 136.0
+offset_top = -19.0
+offset_right = 2008.0
+offset_bottom = 1045.0
+texture = ExtResource("4_gwsr0")
+expand_mode = 2
+
+[node name="Stars2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_right = 2016.0
+offset_bottom = 821.0
+texture = ExtResource("5_v4gs8")
+expand_mode = 3
+
+[node name="Lightning" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 552.0
+offset_top = -35.0
+offset_right = 791.42444
+offset_bottom = 205.0
+texture = ExtResource("6_dilj5")
+expand_mode = 3
+
+[node name="Frost" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 880.0
+offset_top = -75.0
+offset_right = 1210.9961
+offset_bottom = 194.0
+texture = ExtResource("7_uev1e")
+expand_mode = 3
+
+[node name="Darkness" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 320.0
+offset_top = 677.0
+offset_right = 535.482
+offset_bottom = 893.0
+texture = ExtResource("8_qeglf")
+expand_mode = 3
+
+[node name="Glass" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 184.0
+offset_top = 453.0
+offset_right = 383.5204
+offset_bottom = 653.0
+texture = ExtResource("9_k25tb")
+expand_mode = 3
+
+[node name="Plasma" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 264.0
+offset_top = 109.0
+offset_right = 493.48917
+offset_bottom = 341.0
+texture = ExtResource("10_1nhjq")
+expand_mode = 3

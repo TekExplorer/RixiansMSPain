@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cfxvksbae4bdf"]
+[gd_scene load_steps=2 format=3 uid="uid://d0bbkqmb0k7wy"]
 
-[ext_resource type="Texture2D" uid="uid://bl7sit63ikr8v" path="res://HideDetailsMod/images/character_select/necrobinder_splash.png" id="1_qwdqh"]
+[ext_resource type="Texture2D" uid="uid://cugny8hxhannc" path="res://artist_assets/Char Select/Nercobinder/FishStickMystic_NecrobinderSplash-FULLART.png" id="1_qwdqh"]
 
-[node name="NecrobinderBg" type="Control"]
+[node name="NercoBg" type="Control"]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -19,9 +19,30 @@ pivot_offset = Vector2(1280, 600)
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = -437.0
-offset_top = -107.0
-offset_right = 2197.0
-offset_bottom = 1129.0
-expand_mode = 2
+offset_left = 168.0
+offset_top = -3.0
+offset_right = 2059.5557
+offset_bottom = 1061.0
 texture = ExtResource("1_qwdqh")
+expand_mode = 1
+
+[node name="Insta" type="LinkButton" parent="."]
+layout_mode = 0
+offset_left = 504.0
+offset_top = 997.0
+offset_right = 552.0
+offset_bottom = 1045.0
+
+[node name="YT" type="LinkButton" parent="."]
+layout_mode = 0
+offset_left = 560.0
+offset_top = 997.0
+offset_right = 616.0
+offset_bottom = 1037.0
+
+[node name="TikTok" type="LinkButton" parent="."]
+layout_mode = 0
+offset_left = 624.0
+offset_top = 997.0
+offset_right = 672.0
+offset_bottom = 1045.0
