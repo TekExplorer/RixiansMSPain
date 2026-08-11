@@ -1,0 +1,44 @@
+[gd_scene load_steps=2 format=3 uid="uid://c862bvrpulufn"]
+
+[ext_resource type="Texture2D" uid="uid://c0rbal5upreag" path="res://artist_assets/Char Select/Ironclad/ironswole-deemeeart_test.png" id="1_sjlag"]
+
+[node name="SilentBg" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -960.0
+offset_top = -521.0
+offset_right = 1600.0
+offset_bottom = 679.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(1280, 600)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1136.0
+offset_top = -547.0
+offset_right = 743.0
+offset_bottom = 453.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_sjlag")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="LinkButton" type="LinkButton" parent="."]
+process_mode = 4
+layout_mode = 0
+offset_left = 296.0
+offset_top = 61.0
+offset_right = 832.0
+offset_bottom = 117.0
+uri = "https://ignitionart.carrd.co/"

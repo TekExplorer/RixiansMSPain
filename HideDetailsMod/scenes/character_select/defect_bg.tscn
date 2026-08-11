@@ -62,6 +62,7 @@ offset_right = 104.0
 offset_bottom = 40.0
 
 [node name="MagicalGirl" type="TextureRect" parent="."]
+process_mode = 4
 layout_mode = 0
 offset_left = 136.0
 offset_top = -27.0
