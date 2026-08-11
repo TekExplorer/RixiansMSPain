@@ -12,7 +12,7 @@ namespace HideDetailsMod.HideDetailsModCode.Scenes;
 
 partial class RattleAnimation : Control
 {
-    static public AddedNode<NCard, RattleAnimation> Node = new("HideDetailsMod/scenes/cards/Rattle.tscn",
+    static public AddedNode<NCard, RattleAnimation> node = new("HideDetailsMod/scenes/cards/Rattle.tscn",
         (card, animation) => animation.SetCard(card));
 
     //reference to the animation player node
@@ -49,7 +49,7 @@ partial class RattleAnimation : Control
         rattle_tween_animation.TweenProperty(card.Body, "rotation_degrees", 0.0f, 0.2f);
         
         card.Body.RemoveChildSafely(this);
-        card.Body.AddChildSafely(Node);
+        //card.Body.AddChildSafely(node);
         card._ancientPortrait.AddSiblingSafely(this);
         //Manually replace cost, effect text ect. if not hidden
         
@@ -103,6 +103,6 @@ partial class RattleAnimation : Control
 
         if (!Visible) return;
 
-        if (model?.Pile.Type == PileType.Play) PlayAndLoopAnimation();
+        if (model?.Pile?.Type == PileType.Play) PlayAndLoopAnimation();
     }
 }

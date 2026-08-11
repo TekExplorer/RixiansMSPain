@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://dfdsnx61nb0fg"]
 
-[ext_resource type="Texture2D" uid="uid://s510bwyyswex" path="res://character_select/silent/silent_splash_art_bg.png" id="1_byc0s"]
-[ext_resource type="Texture2D" uid="uid://c4837wnnwggbm" path="res://character_select/silent/silent_splash_art_silent.png" id="2_tdsn3"]
-[ext_resource type="Texture2D" uid="uid://cgxhi6w1xtyrd" path="res://character_select/silent/silent_splash_art_smoke.png" id="3_rohnr"]
+[ext_resource type="Texture2D" uid="uid://s510bwyyswex" path="res://artist_assets/Char Select/Silent/silent_splash_art_bg.png" id="1_byc0s"]
+[ext_resource type="Texture2D" uid="uid://c4837wnnwggbm" path="res://artist_assets/Char Select/Silent/silent_splash_art_silent.png" id="2_tdsn3"]
+[ext_resource type="Texture2D" uid="uid://cgxhi6w1xtyrd" path="res://artist_assets/Char Select/Silent/silent_splash_art_smoke.png" id="3_rohnr"]
 
 [node name="SilentBg" type="Control"]
 layout_mode = 3

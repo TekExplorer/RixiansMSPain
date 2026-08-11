@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://w21ox0d04opk"]
 
-[ext_resource type="Script" uid="uid://dey8fk26ksk5a" path="res://src/Core/Nodes/Screens/CharacterSelect/NRegentCharacterSelectBg.cs" id="1_301rk"]
-[ext_resource type="Texture2D" uid="uid://bn0vntvg6llhf" path="res://character_select/regent splash screen_bg.png" id="2_o0m4b"]
-[ext_resource type="Texture2D" uid="uid://e4dra6xbqka0" path="res://character_select/regent_splashscreen_rigent_on_chair.png" id="2_wwc1h"]
-[ext_resource type="Texture2D" uid="uid://bdxru37u2rqj2" path="res://character_select/regent splash screen_minion.png" id="4_q43pu"]
-[ext_resource type="Texture2D" uid="uid://bpx5hkb63moa6" path="res://character_select/regent splash screen signature.png" id="5_xijby"]
+[ext_resource type="Script" path="res://src/Core/Nodes/Screens/CharacterSelect/NRegentCharacterSelectBg.cs" id="1_301rk"]
+[ext_resource type="Texture2D" uid="uid://cww4m8l0nqyvd" path="res://artist_assets/Char Select/Regent/regent splash screen_bg.png" id="2_o0m4b"]
+[ext_resource type="Texture2D" uid="uid://cekmpcfrgnrlc" path="res://artist_assets/Char Select/Regent/regent_splashscreen_rigent_on_chair.png" id="2_wwc1h"]
+[ext_resource type="Texture2D" uid="uid://dfkmiw0cwclff" path="res://artist_assets/Char Select/Regent/regent splash screen_minion.png" id="4_q43pu"]
+[ext_resource type="Texture2D" uid="uid://c2gvkmmtu78im" path="res://artist_assets/Char Select/Regent/regent splash screen signature.png" id="5_xijby"]
 
 [node name="RegentBg" type="Control"]
 layout_mode = 3

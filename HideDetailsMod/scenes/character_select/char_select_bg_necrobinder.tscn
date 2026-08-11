@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://d0bbkqmb0k7wy"]
 
-[ext_resource type="Texture2D" uid="uid://bl7sit63ikr8v" path="res://character_select/necrobinder_splash.png" id="1_cfcas"]
+[ext_resource type="Texture2D" uid="uid://cugny8hxhannc" path="res://artist_assets/Char Select/Nercobinder/FishStickMystic_NecrobinderSplash-FULLART.png" id="1_cfcas"]
 
 [node name="NercoBg" type="Control"]
 layout_mode = 3
