@@ -5,17 +5,17 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-# Resolve absolute paths
+# Map absolute path structure using the workspace root
 $binRoot = $PSScriptRoot
-$workshopRoot = Split-Path -Parent $binRoot
-$workspaceRoot = Split-Path -Parent $workshopRoot
-$channelRoot = Join-Path $workspaceRoot $Channel
-$contentRoot = Join-Path $channelRoot 'content'
+$workshopScriptsRoot = Split-Path -Parent $binRoot
+$workspaceRoot = Split-Path -Parent $workshopScriptsRoot
 
-$jsonPath = Join-Path $contentRoot 'HideDetailsMod.json'
+# Match your specific structure: workshop\{{channel}}\content\HideDetailsMod.json
+$channelRoot = Join-Path $workspaceRoot "workshop\$Channel"
+$jsonPath = Join-Path $channelRoot 'content\HideDetailsMod.json'
 
 if (-not (Test-Path $jsonPath)) {
-    throw "HideDetailsMod.json not found at '$jsonPath'. Cannot determine version."
+    throw "HideDetailsMod.json not found at expected path: '$jsonPath'. Cannot determine version."
 }
 
 # 1. Parse JSON Version
@@ -26,10 +26,12 @@ if (-not $version) {
     throw "Could not find 'version' property inside HideDetailsMod.json."
 }
 
+# Format safety for the tag prefix
 if (-not $version.StartsWith('v')) {
     $version = "v$version"
 }
 
+# Append the channel configuration if Canary to protect production spaces
 if ($Channel -eq 'Canary') {
     $version = "$version-canary"
 }
@@ -51,7 +53,7 @@ if ($gitStatus) {
 $tagExists = git tag -l $version
 if ($tagExists) {
     Write-Host "Tag '$version' already exists. Skipping Git tagging step."
-    return $true # Explicitly exit successfully to allow upload
+    return $true
 }
 
 # 4. Create and Push Tag
