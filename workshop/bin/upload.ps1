@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 $workspaceRoot = Split-Path -Parent $PSScriptRoot
 $workshopRoot = Join-Path $workspaceRoot $Channel
 $runtimeInfo = [System.Runtime.InteropServices.RuntimeInformation]
-# Use the platform-specific uploader name on Windows vs. other systems.
+
 $uploaderName = if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) {
     'ModUploader.exe'
 }
@@ -25,6 +25,8 @@ $requiredContentFiles = @(
     'HideDetailsMod.json'
     'HideDetailsMod.pdb'
     'HideDetailsMod.pck'
+    'HideDetailsMod.Beta.betapack'
+    'HideDetailsMod.Beta.pdb'
 )
 
 if (-not (Test-Path $workshopRoot)) {
@@ -34,9 +36,7 @@ if (-not (Test-Path $workshopRoot)) {
 # Collect any missing required files so we can fail early.
 $missingFiles = foreach ($fileName in $requiredContentFiles) {
     $filePath = Join-Path $contentRoot $fileName
-    if (-not (Test-Path $filePath)) {
-        $fileName
-    }
+    if (-not (Test-Path $filePath)) { $fileName }
 }
 
 # Stop if the build/publish step has not produced all required outputs.
@@ -60,12 +60,24 @@ if (-not (Test-Path $uploaderPath)) {
     }
 }
 
-# Require an explicit typed confirmation before uploading.
-$confirmation = Read-Host "Type UPLOAD to continue"
+# --- STEP 1: Tag Before Upload ---
+Write-Host "Running pre-upload Git validation and tagging..."
+& (Join-Path $PSScriptRoot 'git_tag.ps1') -Channel $Channel
+
+# --- STEP 2: Explicit Confirmation Prompt ---
+$confirmation = Read-Host "Type UPLOAD to proceed with publishing to Steam Workshop"
 if ($confirmation -ne 'UPLOAD') {
     Write-Host 'Upload cancelled.'
     exit 0
 }
 
-# Run the uploader against the workshop root.
+# --- STEP 3: Execute Workshop Upload ---
+Write-Host "Uploading content to Steam Workshop..."
 & $uploaderPath upload -w $workshopRoot
+
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Success! Mod successfully tagged and pushed to the Workshop."
+}
+else {
+    throw "Uploader failed with exit code $LASTEXITCODE."
+}
