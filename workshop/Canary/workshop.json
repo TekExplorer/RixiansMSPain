@@ -1,7 +1,7 @@
 ﻿{
   "title": "Rixian's MSPain (Canary)",
   "description": "This is the tester's version of the mod. Go see the public one!",
-  "changeNote": "Fixed freddy epitaph appearing on new Soul\nFixed credits not showing when tooltips are enabled\nUpdated Right Hand Hand\nUpdated Death's Door\nFixed bug where Shared Fate would break in the compendium\nFixed issue where canary wouldnt use the inverted mod image",
+  "changeNote": "Fixed freddy epitaph appearing on new Soul\nFixed credits not showing when tooltips are enabled\nUpdated Right Hand Hand\nUpdated Death's Door\nAdded base/canonical Mad Science (Power) just in case\nFixed bug where Shared Fate would break in the compendium\nFixed issue where canary wouldnt use the inverted mod image",
   "visibility": "unlisted",
   "tags": [],
   "dependencies": [3737335127]
