@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cm6mx2c2hd5dv"
-path="res://.godot/imported/deaths_door_if_applied_doom.png-0635d06bbf8a05dc7e1ab09cfce62923.ctex"
+uid="uid://b1laj5orbnryn"
+path="res://.godot/imported/mad_science_power.png-0d21db2453a325539ad91c81bcfb8a32.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/artist_assets/necrobinder/deaths_door_if_applied_doom.png"
-dest_files=["res://.godot/imported/deaths_door_if_applied_doom.png-0635d06bbf8a05dc7e1ab09cfce62923.ctex"]
+source_file="res://HideDetailsMod/artist_assets/event/mad_science_power.png"
+dest_files=["res://.godot/imported/mad_science_power.png-0d21db2453a325539ad91c81bcfb8a32.ctex"]
 
 [params]
 

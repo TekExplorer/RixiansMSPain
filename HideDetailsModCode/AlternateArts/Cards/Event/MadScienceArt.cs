@@ -9,6 +9,7 @@ public class MadScienceArt : AlternateCardArt<MadScience>
 {
     static CardImg Attack { get; } = new("event/mad_science_attack");
     static CardImg Skill { get; } = new("event/mad_science_skill");
+    static CardImg Power { get; } = new("event/mad_science_power");
     static CardImg Curious { get; } = new("event/mad_science_power_curious");
     static CardImg Expertise { get; } = new("event/mad_science_power_expertise");
     static CardImg Improvement { get; } = new("event/mad_science_power_improvement");
@@ -33,7 +34,7 @@ public class MadScienceArt : AlternateCardArt<MadScience>
             {
                 CardType.Attack => Attack,
                 CardType.Skill => Skill,
-                CardType.Power => Expertise, // placeholder
+                CardType.Power => Power,
                 _ => Attack,
             },
         };

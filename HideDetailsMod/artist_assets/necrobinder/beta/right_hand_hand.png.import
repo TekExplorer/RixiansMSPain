@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cm6mx2c2hd5dv"
-path="res://.godot/imported/deaths_door_if_applied_doom.png-0635d06bbf8a05dc7e1ab09cfce62923.ctex"
+uid="uid://cxefpuo17sdqm"
+path="res://.godot/imported/right_hand_hand.png-49e92abebdeaa3829aef1b65e3a79881.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/artist_assets/necrobinder/deaths_door_if_applied_doom.png"
-dest_files=["res://.godot/imported/deaths_door_if_applied_doom.png-0635d06bbf8a05dc7e1ab09cfce62923.ctex"]
+source_file="res://HideDetailsMod/artist_assets/necrobinder/beta/right_hand_hand.png"
+dest_files=["res://.godot/imported/right_hand_hand.png-49e92abebdeaa3829aef1b65e3a79881.ctex"]
 
 [params]
 

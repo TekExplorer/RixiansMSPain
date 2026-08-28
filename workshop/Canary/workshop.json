@@ -1,7 +1,7 @@
 ﻿{
   "title": "Rixian's MSPain (Canary)",
   "description": "This is the tester's version of the mod. Go see the public one!",
-  "changeNote": "Added Neurosurge Yippee!\nAdded simple Squeeze effect\nAdded creature effects for Squeeze, Flatten, and Rattle\nAdded Squeeze+, Reflect+, and updated arts for Reflect, Squeeze, The Bomb, and Skewer\nCanary-only arts can now be visually shown to non-canary users.\nAdded a Safe mode option to disable special effects in case something breaks\nAdded Main branch compatibility\nAdded In-game Credits!\nFixed compendium bugs with shiv and soul canary arts\nFixed art loading bug",
+  "changeNote": "Fixed freddy epitaph appearing on new Soul\nFixed credits not showing when tooltips are enabled\nUpdated Right Hand Hand\nUpdated Death's Door",
   "visibility": "unlisted",
   "tags": [],
   "dependencies": [3737335127]

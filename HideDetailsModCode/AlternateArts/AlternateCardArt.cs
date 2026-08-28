@@ -105,7 +105,18 @@ public abstract class AlternateCardArt
         .Where(art => art.Exists);
     static IEnumerable<(CardImg? Base, CardImg? Upgraded)> GetArtsFor(CardModel card)
     => Arts
-        .Select(art => art.GetSplit(card))
+        .Select(art =>
+        {
+            try
+            {
+                return art.GetSplit(card);
+            }
+            catch (Exception e)
+            {
+                MainFile.Logger.Error($"Error in GetSplit for {card.Id.Entry}:\n{e}");
+                return null;
+            }
+        })
         .Distinct()
         .OfType<(CardImg? Base, CardImg? Upgraded)>();
 
