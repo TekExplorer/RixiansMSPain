@@ -65,24 +65,33 @@
         <Compile Remove="HideDetailsMod.Beta/**" />
     </ItemGroup>
 
+    <!-- Global file inclusions (Shared across all channels) -->
     <ItemGroup>
         <None Include="Directory.References.props" />
         <None Condition="Exists('Directory.Build.props')" Include="Directory.Build.props" />
         <None Include=".gitignore" />
-        <None Include="HideDetailsMod.json" />
-        <None Include="HideDetailsMod.canary.json" />
         <None Include="project.godot" />
         <None Include="HideDetailsMod/**" />
+    </ItemGroup>
+
+    <!-- Conditional JSON configurations for IDE solution explorer visibility -->
+    <ItemGroup Condition="'$(WorkshopChannel)' != 'Canary'">
+        <None Include="HideDetailsMod.json" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(WorkshopChannel)' == 'Canary'">
+        <None Include="HideDetailsMod.canary.json" />
     </ItemGroup>
 
     <Target Name="CheckDependencyPaths">
         <Error Text=" Slay the Spire 2 data not found at path '$(Sts2DataDir)'" Condition="'$(Sts2DataDir)' == '' or !Exists('$(Sts2DataDir)')" />
     </Target>
 
+    <!-- FIXED TARGET: Now uses $(LocalJsonSource) to copy and rename the file properly -->
     <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent">
-        <Message Text="Copying .dll .pdb and .json to mods folder." Importance="high" />
+        <Message Text="Copying .dll .pdb and $(LocalJsonSource) to mods folder as $(AssemblyName).json." Importance="high" />
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
-        <Copy SourceFiles="$(AssemblyName).json" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
+        <Copy SourceFiles="$(LocalJsonSource)" DestinationFiles="$(ModsPath)$(MSBuildProjectName)/$(AssemblyName).json" />
         <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
     </Target>
 
@@ -104,13 +113,16 @@
         <DefineConstants>$(DefineConstants);CANARY</DefineConstants>
     </PropertyGroup>
 
-    <!-- Workshop -->
+    <!-- Workshop & Local Channel Configurations -->
     <PropertyGroup>
         <WorkshopChannel Condition="'$(WorkshopChannel)' == ''">Production</WorkshopChannel>
         <WorkshopRoot>$(MSBuildProjectDirectory)\workshop\$(WorkshopChannel)</WorkshopRoot>
         <WorkshopContentRoot>$(WorkshopRoot)\content</WorkshopContentRoot>
-        <WorkshopJsonSource Condition="'$(WorkshopChannel)' == 'Canary'">HideDetailsMod.canary.json</WorkshopJsonSource>
-        <WorkshopJsonSource Condition="'$(WorkshopChannel)' != 'Canary'">HideDetailsMod.json</WorkshopJsonSource>
+        
+        <!-- Define Local and Workshop source handles uniformly -->
+        <LocalJsonSource Condition="'$(WorkshopChannel)' == 'Canary'">HideDetailsMod.canary.json</LocalJsonSource>
+        <LocalJsonSource Condition="'$(WorkshopChannel)' != 'Canary'">HideDetailsMod.json</LocalJsonSource>
+        <WorkshopJsonSource>$(LocalJsonSource)</WorkshopJsonSource>
     </PropertyGroup>
 
     <Target Name="CopyToWorkshopContent" AfterTargets="PostBuildEvent">
