@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://wngivsq7ywvs"]
+[gd_scene load_steps=6 format=3 uid="uid://wngivsq7ywvs"]
 
+[ext_resource type="Script" uid="uid://lmsjmjdxa11k" path="res://HideDetailsModCode/Scenes/CharacterSelect/NecrobinderBg.cs" id="1_7363j"]
 [ext_resource type="Texture2D" uid="uid://byf1wuaybvw2n" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-BG_LAYER0.png" id="1_xsw5j"]
 [ext_resource type="Texture2D" uid="uid://2q4hunv6ky66" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-SIMPLE-1.png" id="2_u1lud"]
 [ext_resource type="Texture2D" uid="uid://c27kto6ehm42f" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-OstyOVERBox_LAYER4.png" id="3_tnu10"]
@@ -14,6 +15,7 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_7363j")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
@@ -62,6 +64,7 @@ expand_mode = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="OstyFingers" type="TextureRect" parent="Necrobinder"]
+unique_name_in_owner = true
 z_index = 1
 layout_mode = 1
 anchors_preset = 15
