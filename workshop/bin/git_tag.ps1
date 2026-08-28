@@ -50,15 +50,29 @@ if ($gitStatus) {
     }
 }
 
-# 3. Check if Local Tag Already Exists
+# 3. Check and Handle Existing Tags with Force Option
 $tagExists = git tag -l $version
-if (-not $tagExists) {
+$shouldTag = $true
+
+if ($tagExists) {
+    Write-Warning "Tag '$version' already exists locally."
+    $forceTag = Read-Host "Would you like to FORCE reset this tag to your current commit? (Y/N)"
+    
+    if ($forceTag -in @('Y', 'y', 'Yes', 'yes')) {
+        Write-Host "Overwriting and pushing updated Git tag: $version"
+        # Force recreate locally and force push to remote
+        git tag -f -a $version -m "Workshop Release ($Channel): $version"
+        git push origin $version -f
+    }
+    else {
+        Write-Host "Keeping existing tag. Moving on to check GitHub Release..."
+        $shouldTag = $false
+    }
+}
+else {
     Write-Host "Creating and pushing new Git tag: $version"
     git tag -a $version -m "Workshop Release ($Channel): $version"
     git push origin $version
-}
-else {
-    Write-Host "Tag '$version' already exists locally. Moving on to check GitHub Release..."
 }
 
 # 4. GitHub CLI Availability & Installation Check
@@ -125,22 +139,27 @@ catch {
 }
 
 if ($releaseExists) {
-    Write-Host "GitHub Release for '$version' already exists. Skipping release step."
-    return $true
+    # If we forced a new tag, we should also delete the old GitHub release draft so we can update it
+    if ($shouldTag -and $forceTag -in @('Y', 'y', 'Yes', 'yes')) {
+        Write-Host "Existing GitHub release found. Deleting old release to replace it..."
+        gh release delete $version --yes
+    }
+    else {
+        Write-Host "GitHub Release for '$version' already exists. Skipping release step."
+        return $true
+    }
 }
 
 # Title and Configuration
 $releaseTitle = "Release $version ($Channel)"
 $isPrerelease = if ($Channel -eq 'Canary') { "--prerelease" } else { "" }
 
-# --- NEW: Create Zip Archive of the Content Folder ---
+# Create Zip Archive of the Content Folder
 $zipPath = Join-Path $channelRoot "HideDetailsMod-$version.zip"
 Write-Host "Zipping workshop content folder to $zipPath..."
 
 if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 Compress-Archive -Path (Join-Path $contentRoot '*') -DestinationPath $zipPath -Force
-
-# --- End Zip Generation ---
 
 Write-Host "Creating GitHub Release draft for $version with zipped contents..."
 
