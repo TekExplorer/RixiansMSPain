@@ -51,8 +51,7 @@ public abstract class AlternateCardArt
 {
     public static List<Type> GetDirectGenericSubtypes(Type openGenericBase)
     {
-        var mod = ModManager.GetLoadedMods().FirstOrDefault(mod => mod.manifest.id == MainFile.ModId);
-        var assemblies = Traverse.Create(mod).Property<List<Assembly>>("assemblies").Value;
+        var assemblies = Traverse.Create(MainFile.Mod).Property<List<Assembly>>("assemblies").Value;
 
         IEnumerable<Type> types;
         if (ModManager.State == ModManagerState.None)
