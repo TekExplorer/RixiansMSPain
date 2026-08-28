@@ -2,14 +2,13 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Characters;
-using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 
 namespace HideDetailsMod.HideDetailsModCode.Patches;
 // TODO: rename file
 [HarmonyPatch]
 static class CharacterSelectPatch
 {
-    public static bool Enabled => !MainFile.IsCanary;
+    public static bool Enabled => MainFile.NecrobinderSetIsPublic;
     [HarmonyPatch(typeof(CharacterModel), nameof(CharacterModel.CharacterSelectBg), MethodType.Getter)]
     static class CharacterSelectBgPatch
     {

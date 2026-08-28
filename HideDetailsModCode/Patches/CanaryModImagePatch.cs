@@ -10,9 +10,10 @@ namespace HideDetailsMod.HideDetailsModCode.Patches;
 [HarmonyPatch(typeof(NModInfoContainer), nameof(NModInfoContainer.Fill))]
 class CanaryModImagePatch
 {
-    public static void PostFix(NModInfoContainer __instance, Mod mod)
+    [HarmonyPostfix]
+    public static void Postfix(NModInfoContainer __instance, Mod mod)
     {
-        if (mod.manifest?.id != "HideDetailsMod") return;
+        if (mod.manifest?.id != MainFile.ModId) return;
         if (!MainFile.IsCanary) return;
         string path = "res://HideDetailsMod/mod_image_canary.png";
         if (ResourceLoader.Exists(path))

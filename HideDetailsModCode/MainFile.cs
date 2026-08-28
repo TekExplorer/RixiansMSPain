@@ -11,7 +11,6 @@ using MegaCrit.Sts2.Core.Debug;
 using System.Runtime.Loader;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Helpers;
-using MegaCrit.Sts2.Core.Commands;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
@@ -19,7 +18,13 @@ namespace HideDetailsMod.HideDetailsModCode;
 [ModInitializer(nameof(Initialize))]
 public partial class MainFile : Node
 {
+    public static Mod Mod => ModManager.Mods.FirstOrDefault(mod => mod.manifest?.id == ModId);
     public const string ModId = "HideDetailsMod"; //At the moment, this is used only for the Logger and harmony names.
+#if DEBUG
+    public static bool NecrobinderSetIsPublic => true;
+#else
+    public static bool NecrobinderSetIsPublic => Mod.version?.Minor >= 3;
+#endif
     public static Logger Logger { get; } = new(ModId, LogType.Generic);
     public static AutoModAudio Audio { get; } = new("res://HideDetailsMod/audio");
     public static bool DefectSetActive => false;
@@ -91,9 +96,11 @@ public partial class MainFile : Node
         }
     }
 
+    public static bool IsCanary => IsActuallyCanary && MyModConfig.EmulateCanaryMode;
+
 #if CANARY
-    public static bool IsCanary => MyModConfig.EmulateCanaryMode;
+    public static bool IsActuallyCanary => true;
 #else
-    public static bool IsCanary => false;
+    public static bool IsActuallyCanary => false;
 #endif
 }
