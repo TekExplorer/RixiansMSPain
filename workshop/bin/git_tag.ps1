@@ -113,9 +113,20 @@ if ($LASTEXITCODE -ne 0) {
     }
 }
 
-# Check if the release already exists on GitHub to make the script idempotent
-$releaseExists = gh release view $version 2>&1
-if ($LASTEXITCODE -eq 0) {
+# Safely check if the release already exists on GitHub to make the script idempotent
+$releaseExists = $false
+try {
+    # Silence native command errors so they don't trip PowerShell's error preference
+    $null = gh release view $version --json url 2>$null
+    if ($LASTEXITCODE -eq 0) {
+        $releaseExists = $true
+    }
+}
+catch {
+    $releaseExists = $false
+}
+
+if ($releaseExists) {
     Write-Host "GitHub Release for '$version' already exists. Skipping release step."
     return $true
 }
