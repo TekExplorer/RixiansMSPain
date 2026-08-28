@@ -10,9 +10,10 @@ $binRoot = $PSScriptRoot                         # workshop\bin
 $workshopScriptsRoot = Split-Path -Parent $binRoot # workshop
 $workspaceRoot = Split-Path -Parent $workshopScriptsRoot # workspace root
 
-# Match path: workshop\{{channel}}\content\HideDetailsMod.json
+# Match path: workshop\{{channel}}\content\
 $channelRoot = Join-Path $workspaceRoot "workshop\$Channel"
-$jsonPath = Join-Path $channelRoot 'content\HideDetailsMod.json'
+$contentRoot = Join-Path $channelRoot 'content'
+$jsonPath = Join-Path $contentRoot 'HideDetailsMod.json'
 
 if (-not (Test-Path $jsonPath)) {
     throw "HideDetailsMod.json not found at expected path: '$jsonPath'. Cannot determine version."
@@ -71,7 +72,6 @@ if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
         
         if ($LASTEXITCODE -eq 0) {
             Write-Host "Installation successful! Refreshing environment variables..."
-            # Dynamically refresh PATH so the current session can find 'gh' without a restart
             $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
             
             if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
@@ -100,7 +100,6 @@ if ($LASTEXITCODE -ne 0) {
     $loginGh = Read-Host "Would you like to log in to GitHub now? (Y/N)"
     if ($loginGh -in @('Y', 'y', 'Yes', 'yes')) {
         gh auth login
-        # Re-check status after login attempt
         $authCheck = gh auth status 2>&1
         if ($LASTEXITCODE -ne 0) {
             Write-Warning "Authentication failed or cancelled. Skipping release creation."
@@ -116,7 +115,6 @@ if ($LASTEXITCODE -ne 0) {
 # Safely check if the release already exists on GitHub to make the script idempotent
 $releaseExists = $false
 try {
-    # Silence native command errors so they don't trip PowerShell's error preference
     $null = gh release view $version --json url 2>$null
     if ($LASTEXITCODE -eq 0) {
         $releaseExists = $true
@@ -135,14 +133,29 @@ if ($releaseExists) {
 $releaseTitle = "Release $version ($Channel)"
 $isPrerelease = if ($Channel -eq 'Canary') { "--prerelease" } else { "" }
 
-Write-Host "Creating GitHub Release draft for $version..."
+# --- NEW: Create Zip Archive of the Content Folder ---
+$zipPath = Join-Path $channelRoot "HideDetailsMod-$version.zip"
+Write-Host "Zipping workshop content folder to $zipPath..."
 
-# Create the release draft
+if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+Compress-Archive -Path (Join-Path $contentRoot '*') -DestinationPath $zipPath -Force
+
+# --- End Zip Generation ---
+
+Write-Host "Creating GitHub Release draft for $version with zipped contents..."
+
+# Create the release draft and upload the zip asset simultaneously
 if ($isPrerelease) {
-    gh release create $version --draft --title $releaseTitle --generate-notes --prerelease
+    gh release create $version $zipPath --draft --title $releaseTitle --generate-notes --prerelease
 }
 else {
-    gh release create $version --draft --title $releaseTitle --generate-notes
+    gh release create $version $zipPath --draft --title $releaseTitle --generate-notes
+}
+
+# Clean up the local temp zip file after uploading it to GitHub
+if (Test-Path $zipPath) {
+    Write-Host "Cleaning up local archive..."
+    Remove-Item $zipPath -Force
 }
 
 if ($LASTEXITCODE -eq 0) {
