@@ -5,6 +5,9 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# --- CONFIGURATION: REPOSITORY BASE PROPERTIES ---
+$GitHubRepoUrl = "https://github.com/TekExplorer/RixiansMSPain"
+
 # Resolve absolute paths based on: workshop\bin\git_tag.ps1
 $binRoot = $PSScriptRoot                         # workshop\bin
 $workshopScriptsRoot = Split-Path -Parent $binRoot # workshop
@@ -24,23 +27,13 @@ if (-not (Test-Path $jsonPath)) {
 # 1. Parse JSON Version
 $manifest = Get-Content $jsonPath -Raw | ConvertFrom-Json
 $version = $manifest.version
+if (-not $version) { throw "Could not find 'version' property inside HideDetailsMod.json." }
 
-if (-not $version) {
-    throw "Could not find 'version' property inside HideDetailsMod.json."
-}
-
-# Format safety for the tag prefix
-if (-not $version.StartsWith('v')) {
-    $version = "v$version"
-}
-
-# Append the channel configuration if Canary to protect production spaces
-if ($Channel -eq 'Canary') {
-    $version = "$version-canary"
-}
+if (-not $version.StartsWith('v')) { $version = "v$version" }
+if ($Channel -eq 'Canary' -and -not $version.EndsWith('-canary')) { $version = "$version-canary" }
 
 # 2. Check for Uncommitted Changes
-Write-Host "Checking local Git repository status..."
+Write-Host "Checking local Git repository status..." -ForegroundColor Cyan
 $gitStatus = git status --porcelain
 if ($gitStatus) {
     Write-Warning "You have uncommitted changes in your repository!"
@@ -48,200 +41,174 @@ if ($gitStatus) {
     
     $confirmUpdate = Read-Host "Did you forget to update the version and commit? Stop execution? (Y/N)"
     if ($confirmUpdate -in @('Y', 'y', 'Yes', 'yes', '')) {
-        throw "Pipeline stopped. Please bump the version in HideDetailsMod.json, commit, and try again."
+        throw "Pipeline stopped. Please commit your active fields and try again."
     }
 }
 
 # 3. Check and Handle Existing Tags with Force Option
 $tagExists = git tag -l $version
 $shouldTag = $true
+$forceTag = 'no'
 
 if ($tagExists) {
     Write-Warning "Tag '$version' already exists locally."
     $forceTag = Read-Host "Would you like to FORCE reset this tag to your current commit? (Y/N)"
     
     if ($forceTag -in @('Y', 'y', 'Yes', 'yes')) {
-        Write-Host "Overwriting and pushing updated Git tag: $version"
+        Write-Host "Overwriting and pushing updated Git tag: $version" -ForegroundColor Yellow
         git tag -f -a $version -m "Workshop Release ($Channel): $version"
         git push origin $version -f
     }
     else {
-        Write-Host "Keeping existing tag. Moving on to check GitHub Release..."
+        Write-Host "Keeping existing tag. Moving on to check GitHub Release..." -ForegroundColor Gray
         $shouldTag = $false
     }
 }
 else {
-    Write-Host "Creating and pushing new Git tag: $version"
+    Write-Host "Creating and pushing new Git tag: $version" -ForegroundColor Green
     git tag -a $version -m "Workshop Release ($Channel): $version"
     git push origin $version
 }
 
-# --- NEW: Automated CHANGELOG.md Generation Flow ---
-Write-Host "Updating local CHANGELOG.md..."
+# --- 4. REFERENCE-STYLE CHANGELOG GENERATION & EXTRACTION FLOW ---
+Write-Host "Updating local CHANGELOG.md..." -ForegroundColor Cyan
 $currentDate = Get-Date -Format "yyyy-MM-dd"
-$newChangelogEntry = ""
+$releaseDescriptionText = ""
 
 if (Test-Path $workshopJsonPath) {
     $workshopMetadata = Get-Content $workshopJsonPath -Raw | ConvertFrom-Json
     $changeNote = $workshopMetadata.changeNote
 
     if ($changeNote) {
-        # Format multi-line change notes into clean Markdown bullet points
         $formattedNotes = ""
         $changeNote -split "\r?\n" | ForEach-Object {
             $line = $_.Trim()
             if ($line) {
-                # Ensure each line starts cleanly with a Markdown bullet point
-                if (-not ($line.StartsWith('-') -or $line.StartsWith('*'))) {
-                    $line = "- $line"
-                }
+                if (-not ($line.StartsWith('-') -or $line.StartsWith('*'))) { $line = "- $line" }
                 $formattedNotes += "$line`n"
             }
         }
 
-        # Build the fresh Markdown header blocks
-        $newChangelogEntry = "## [$version] - $currentDate`n`n$formattedNotes`n"
-    }
-}
+        # Extracted notes body payload for GitHub Release Notes usage
+        $releaseDescriptionText = $formattedNotes
+        $newChangelogEntry = "## [$version] - $currentDate`n`n$formattedNotes"
 
-if ($newChangelogEntry) {
-    # If a changelog file exists, prepend the new text to the top of it safely
-    if (Test-Path $changelogPath) {
-        $existingContent = Get-Content $changelogPath -Raw
-        
-        # Check to see if we've already written notes for this specific version entry to avoid stacking duplicates
-        if (-not ($existingContent -match "## \[$version\]")) {
-            $updatedContent = $newChangelogEntry + $existingContent
-            Set-Content $changelogPath -Value $updatedContent
-            Write-Host "Prepended new release notes to CHANGELOG.md."
-        }
-        else {
-            Write-Host "Notes for version $version already exist in CHANGELOG.md. Skipping file prepend."
-        }
-    }
-    else {
-        # Fallback if no file exists yet: build a brand new one
-        $initialContent = "# Changelog`n`nAll notable changes to this project will be documented in this file.`n`n" + $newChangelogEntry
-        Set-Content $changelogPath -Value $initialContent
-        Write-Host "Created a brand new CHANGELOG.md."
-    }
-}
-# --- End Changelog Flow ---
+        $oldContent = ""
+        if (Test-Path $changelogPath) { $oldContent = Get-Content $changelogPath -Raw }
 
-# 4. GitHub CLI Availability & Installation Check
-if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
-    Write-Warning "GitHub CLI ('gh') is not installed."
-    $installGh = Read-Host "Would you like to install GitHub CLI now using winget? (Y/N)"
-    
-    if ($installGh -in @('Y', 'y', 'Yes', 'yes')) {
-        Write-Host "Installing GitHub CLI via winget... Please wait."
-        winget install --id GitHub.cli --silent --accept-source-agreements --accept-package-agreements
-        
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "Installation successful! Refreshing environment variables..."
-            $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
-            
-            if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
-                Write-Warning "GitHub CLI was installed, but still cannot be found in PATH. Please restart your terminal later."
-                return $true
+        if ($oldContent -notmatch "## \[$version\]") {
+            $prevTag = (git describe --tags --abbrev=0 "${version}^" 2>$null)
+            if ($null -eq $prevTag) { $prevTag = (git tag --sort=-v:refname | Select-Object -Skip 1 -First 1) }
+
+            $urlReferenceDefinition = "[$version]: $GitHubRepoUrl/releases/tag/$version"
+            $diffRangeUrl = "$GitHubRepoUrl/releases/tag/$version"
+            if ($prevTag) {
+                $prevTagClean = $prevTag.Trim()
+                $urlReferenceDefinition = "[$version]: $GitHubRepoUrl/compare/$prevTagClean...$version"
+                $diffRangeUrl = "$GitHubRepoUrl/compare/$prevTagClean...$version"
+            }
+
+            # Inject localized compare link directly into the specific description blob
+            $releaseDescriptionText += "`n### Git Timeline Diff`nSee complete code changes: [$prevTagClean...$version]($diffRangeUrl)`n"
+
+            if ([string]::IsNullOrEmpty($oldContent)) {
+                $initialContent = "# Changelog`n`nAll notable changes to this project will be documented in this file.`n`n" + $newChangelogEntry + "`n`n" + $urlReferenceDefinition
+                Set-Content $changelogPath -Value $initialContent -Encoding utf8
+                Write-Host "Created a brand new reference-style CHANGELOG.md." -ForegroundColor Green
+            }
+            else {
+                $splitContent = $oldContent -split "(?=\r?\n\[v\d)"
+                $mainTextSections = $splitContent
+                $footerLinksDefinitions = ""
+                if ($splitContent.Count -gt 1) { $footerLinksDefinitions = ($splitContent[1..($splitContent.Count - 1)] -join "") }
+
+                $updatedContent = ($mainTextSections -replace "(# Changelog\r?\n\r?All.*\r?\n\r?)", "`$1$newChangelogEntry`n") + "`n" + $footerLinksDefinitions.TrimEnd() + "`n" + $urlReferenceDefinition
+                Set-Content $changelogPath -Value $updatedContent -Encoding utf8
+                Write-Host "Prepended release notes and updated footer references." -ForegroundColor Green
             }
         }
         else {
-            Write-Warning "winget failed to install GitHub CLI. Skipping GitHub Release flow."
-            return $true
+            Write-Host "Notes for version $version already exist in CHANGELOG.md. Prepend skipped." -ForegroundColor Gray
+            
+            # If skipping prepend, extract the previous tag range anyway to populate descriptions gracefully
+            $prevTag = (git describe --tags --abbrev=0 "${version}^" 2>$null)
+            if ($prevTag) {
+                $diffRangeUrl = "$GitHubRepoUrl/compare/$($prevTag.Trim())...$version"
+                $releaseDescriptionText += "`n### Git Timeline Diff`nSee complete code changes: [$($prevTag.Trim())...$version]($diffRangeUrl)`n"
+            }
         }
-    }
-    else {
-        Write-Host "Skipping GitHub CLI installation and Release creation."
-        return $true
     }
 }
 
-# 5. GitHub Release Flow
-Write-Host "GitHub CLI detected. Checking authentication status..."
+# 5. GitHub CLI Availability & Installation Check
+if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+    Write-Warning "GitHub CLI ('gh') is not installed. Skipping release flow."
+    return $true
+}
 
-# Verify the user is authenticated with GitHub
+# 6. GitHub Release Flow
+Write-Host "GitHub CLI detected. Checking authentication status..." -ForegroundColor Cyan
 $authCheck = gh auth status 2>&1
 if ($LASTEXITCODE -ne 0) {
-    Write-Warning "GitHub CLI is not authenticated!"
-    $loginGh = Read-Host "Would you like to log in to GitHub now? (Y/N)"
-    if ($loginGh -in @('Y', 'y', 'Yes', 'yes')) {
-        gh auth login
-        $authCheck = gh auth status 2>&1
-        if ($LASTEXITCODE -ne 0) {
-            Write-Warning "Authentication failed or cancelled. Skipping release creation."
-            return $true
-        }
-    }
-    else {
-        Write-Host "Skipping GitHub Release creation due to lack of authentication."
-        return $true
-    }
+    Write-Warning "GitHub CLI is not authenticated! Skipping release creation."
+    return $true
 }
 
-# Safely check if the release already exists on GitHub to make the script idempotent
 $releaseExists = $false
 try {
     $null = gh release view $version --json url 2>$null
-    if ($LASTEXITCODE -eq 0) {
-        $releaseExists = $true
-    }
+    if ($LASTEXITCODE -eq 0) { $releaseExists = $true }
 }
-catch {
-    $releaseExists = $false
-}
+catch { $releaseExists = $false }
 
 if ($releaseExists) {
     if ($shouldTag -and $forceTag -in @('Y', 'y', 'Yes', 'yes')) {
-        Write-Host "Existing GitHub release found. Deleting old release to replace it..."
+        Write-Host "Deleting old GitHub release to replace it..." -ForegroundColor Yellow
         gh release delete $version --yes
     }
     else {
-        Write-Host "GitHub Release for '$version' already exists. Skipping release step."
+        Write-Host "GitHub Release for '$version' already exists. Skipping release step." -ForegroundColor Gray
         return $true
     }
 }
 
-# Title and Configuration
-# $releaseTitle = "Release $version ($Channel)"
-$releaseTitle = "$version"
-$isPrerelease = if ($Channel -eq 'Canary') { "--prerelease" } else { "" }
-
 # Create Zip Archive of the Content Folder
 $zipPath = Join-Path $channelRoot "HideDetailsMod-$version.zip"
-Write-Host "Zipping workshop content folder to $zipPath..."
+Write-Host "Zipping workshop content folder to $zipPath..." -ForegroundColor Cyan
 
 if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 Compress-Archive -Path (Join-Path $contentRoot '*') -DestinationPath $zipPath -Force
 
-Write-Host "Creating GitHub Release draft for $version with zipped contents..."
+# --- 7. FIXED: DUMP EXTRACTED LOG TEXT TO TEMPORARY GENERATION VECTOR ---
+$tempNotesPath = [System.IO.Path]::GetTempFileName()
+$releaseDescriptionText | Set-Content -Path $tempNotesPath -Encoding utf8
 
-# Create the release draft and upload the zip asset simultaneously
+# $releaseTitle = "Release $version ($Channel)"
+$releaseTitle = "$version"
+
+$isPrerelease = if ($Channel -eq 'Canary') { $true } else { $false }
+
+Write-Host "Creating GitHub Release draft for $version with localized changenotes..." -ForegroundColor Green
+
 if ($isPrerelease) {
-    gh release create $version $zipPath --draft --title $releaseTitle --generate-notes --prerelease
+    gh release create $version $zipPath --draft --title $releaseTitle --notes-file $tempNotesPath --prerelease
 }
 else {
-    gh release create $version $zipPath --draft --title $releaseTitle --generate-notes
+    gh release create $version $zipPath --draft --title $releaseTitle --notes-file $tempNotesPath
 }
 
-# Clean up the local temp zip file after uploading it to GitHub
-if (Test-Path $zipPath) {
-    Write-Host "Cleaning up local archive..."
-    Remove-Item $zipPath -Force
-}
+# Clean up temporary generation trackers safely
+if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+if (Test-Path $tempNotesPath) { Remove-Item $tempNotesPath -Force }
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "Successfully created draft release: $releaseTitle"
+    Write-Host "Successfully created draft release: $releaseTitle" -ForegroundColor Green
     
-    # Prompt to publish immediately
     $publishNow = Read-Host "Do you want to PUBLISH this release immediately? (Y/N)"
     if ($publishNow -in @('Y', 'y', 'Yes', 'yes')) {
-        Write-Host "Publishing GitHub release..."
+        Write-Host "Publishing GitHub release..." -ForegroundColor Cyan
         gh release edit $version --draft=false
-        Write-Host "Release is now public!"
-    }
-    else {
-        Write-Host "Release left as a DRAFT. You can edit and publish it later on GitHub."
+        Write-Host "Release is now public!" -ForegroundColor Green
     }
 }
 else {
