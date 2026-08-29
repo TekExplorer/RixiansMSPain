@@ -14,6 +14,8 @@ $workspaceRoot = Split-Path -Parent $workshopScriptsRoot # workspace root
 $channelRoot = Join-Path $workspaceRoot "workshop\$Channel"
 $contentRoot = Join-Path $channelRoot 'content'
 $jsonPath = Join-Path $contentRoot 'HideDetailsMod.json'
+$workshopJsonPath = Join-Path $channelRoot 'workshop.json'
+$changelogPath = Join-Path $workspaceRoot 'CHANGELOG.md'
 
 if (-not (Test-Path $jsonPath)) {
     throw "HideDetailsMod.json not found at expected path: '$jsonPath'. Cannot determine version."
@@ -60,7 +62,6 @@ if ($tagExists) {
     
     if ($forceTag -in @('Y', 'y', 'Yes', 'yes')) {
         Write-Host "Overwriting and pushing updated Git tag: $version"
-        # Force recreate locally and force push to remote
         git tag -f -a $version -m "Workshop Release ($Channel): $version"
         git push origin $version -f
     }
@@ -74,6 +75,58 @@ else {
     git tag -a $version -m "Workshop Release ($Channel): $version"
     git push origin $version
 }
+
+# --- NEW: Automated CHANGELOG.md Generation Flow ---
+Write-Host "Updating local CHANGELOG.md..."
+$currentDate = Get-Date -Format "yyyy-MM-dd"
+$newChangelogEntry = ""
+
+if (Test-Path $workshopJsonPath) {
+    $workshopMetadata = Get-Content $workshopJsonPath -Raw | ConvertFrom-Json
+    $changeNote = $workshopMetadata.changeNote
+
+    if ($changeNote) {
+        # Format multi-line change notes into clean Markdown bullet points
+        $formattedNotes = ""
+        $changeNote -split "\r?\n" | ForEach-Object {
+            $line = $_.Trim()
+            if ($line) {
+                # Ensure each line starts cleanly with a Markdown bullet point
+                if (-not ($line.StartsWith('-') -or $line.StartsWith('*'))) {
+                    $line = "- $line"
+                }
+                $formattedNotes += "$line`n"
+            }
+        }
+
+        # Build the fresh Markdown header blocks
+        $newChangelogEntry = "## [$version] - $currentDate ($Channel)`n`n$formattedNotes`n"
+    }
+}
+
+if ($newChangelogEntry) {
+    # If a changelog file exists, prepend the new text to the top of it safely
+    if (Test-Path $changelogPath) {
+        $existingContent = Get-Content $changelogPath -Raw
+        
+        # Check to see if we've already written notes for this specific version entry to avoid stacking duplicates
+        if (-not ($existingContent -match "## \[$version\]")) {
+            $updatedContent = $newChangelogEntry + $existingContent
+            Set-Content $changelogPath -Value $updatedContent
+            Write-Host "Prepended new release notes to CHANGELOG.md."
+        }
+        else {
+            Write-Host "Notes for version $version already exist in CHANGELOG.md. Skipping file prepend."
+        }
+    }
+    else {
+        # Fallback if no file exists yet: build a brand new one
+        $initialContent = "# Changelog`n`nAll notable changes to this project will be documented in this file.`n`n" + $newChangelogEntry
+        Set-Content $changelogPath -Value $initialContent
+        Write-Host "Created a brand new CHANGELOG.md."
+    }
+}
+# --- End Changelog Flow ---
 
 # 4. GitHub CLI Availability & Installation Check
 if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
@@ -139,7 +192,6 @@ catch {
 }
 
 if ($releaseExists) {
-    # If we forced a new tag, we should also delete the old GitHub release draft so we can update it
     if ($shouldTag -and $forceTag -in @('Y', 'y', 'Yes', 'yes')) {
         Write-Host "Existing GitHub release found. Deleting old release to replace it..."
         gh release delete $version --yes
