@@ -52,7 +52,13 @@
       "type": "shell",
       "command": "cmd /c call upload_to_workshop.bat ${input:channel}",
       "options": { "cwd": "${workspaceFolder}/workshop" },
-      "dependsOn": ["Publish Mod"]
+      "dependsOn": ["Publish Mod", "Commit version to Github"]
+    },
+    {
+      "label": "Commit version to Github",
+      "type": "shell",
+      "command": "powershell -ExecutionPolicy Bypass -File ${workspaceFolder}/workshop/bin/git_tag.ps1 -Channel ${input:channel}",
+      "options": { "cwd": "${workspaceFolder}/workshop" }
     },
     {
       "label": "Credits: Validate",

@@ -100,7 +100,7 @@ if (Test-Path $workshopJsonPath) {
         }
 
         # Build the fresh Markdown header blocks
-        $newChangelogEntry = "## [$version] - $currentDate ($Channel)`n`n$formattedNotes`n"
+        $newChangelogEntry = "## [$version] - $currentDate`n`n$formattedNotes`n"
     }
 }
 
