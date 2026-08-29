@@ -203,7 +203,8 @@ if ($releaseExists) {
 }
 
 # Title and Configuration
-$releaseTitle = "Release $version ($Channel)"
+# $releaseTitle = "Release $version ($Channel)"
+$releaseTitle = "$version"
 $isPrerelease = if ($Channel -eq 'Canary') { "--prerelease" } else { "" }
 
 # Create Zip Archive of the Content Folder
