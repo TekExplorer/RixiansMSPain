@@ -52,22 +52,33 @@ public partial class NecrobinderBg : Control
 		if (ReferenceEquals(this, Node)) Node = null;
 	}
 
+	// --- Hover / Bobbing Configurations ---
+	[Export] public float BobSpeed = 1.0f;     // How fast it floats up and down
+	[Export] public float BobAmplitude = 5.0f; // How high/low it floats (in pixels)
+	private double _timeAccumulator = 0.0;     // Keeps track of time elapsed
+
+
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
 		if (IsInstanceValid(InfoPanel))
 		{
-			// 1. Calculate the true center of the target InfoPanel in screen space
+			// 1. Calculate the base tracking positions
 			Vector2 targetCenterGlobal = InfoPanel.GlobalPosition + (InfoPanel.Size * 0.5f);
-
-			// 2. Convert that screen center point into local coordinates for this Control
 			Vector2 localTargetCenter = GetGlobalTransform().AffineInverse() * targetCenterGlobal;
-
-			// 3. Offset by Osty's own center size (scaled properly) so it is perfectly centered
 			Vector2 ostyCenterOffset = Osty.Size * 0.5f * Osty.Scale;
 
-			// 4. Move Osty to the target center, subtracting its own center point
-			Osty.Position = localTargetCenter - ostyCenterOffset;
+			// 2. Accumulate delta time to drive the math wave smoothly
+			_timeAccumulator += delta;
+
+			// 3. Calculate the bobbing vertical offset using a Sine wave
+			float bobOffset = MathF.Sin((float)_timeAccumulator * BobSpeed) * BobAmplitude;
+
+			// 4. Combine the tracking position with the vertical bobbing offset
+			Vector2 finalPosition = localTargetCenter - ostyCenterOffset;
+			finalPosition.Y += bobOffset;
+
+			Osty.Position = finalPosition;
 		}
 	}
 }
