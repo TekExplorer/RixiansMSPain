@@ -1,9 +1,59 @@
-[gd_scene load_steps=5 format=3 uid="uid://bhqkbdfpa8kwp"]
+[gd_scene load_steps=17 format=3 uid="uid://bhqkbdfpa8kwp"]
 
 [ext_resource type="Texture2D" uid="uid://2qs2jjxqs0ng" path="res://HideDetailsMod/images/character_select/silent/bg.png" id="1_vtpom"]
 [ext_resource type="Texture2D" uid="uid://c4837wnnwggbm" path="res://HideDetailsMod/images/character_select/silent/silent_splash_art_silent.png" id="2_16ub1"]
+[ext_resource type="Shader" uid="uid://cu7krqg4cighe" path="res://shaders/vfx/vfx_stepped_shader_fire_add.tres" id="2_b4qds"]
+[ext_resource type="Texture2D" uid="uid://dtaovewempx07" path="res://images/vfx/tileable_noise_1.png" id="3_1hebr"]
 [ext_resource type="Texture2D" uid="uid://cgxhi6w1xtyrd" path="res://HideDetailsMod/images/character_select/silent/silent_splash_art_smoke.png" id="3_16xwh"]
+[ext_resource type="Texture2D" uid="uid://bxa6vlqeby20" path="res://images/vfx/light.png" id="4_5myj0"]
 [ext_resource type="Texture2D" uid="uid://ss1krjof6va3" path="res://HideDetailsMod/images/character_select/silent/signature.png" id="4_16ub1"]
+[ext_resource type="Texture2D" uid="uid://8u0ij0tgmrfb" path="res://images/vfx/tileable_noise_2.png" id="5_eidra"]
+[ext_resource type="Texture2D" uid="uid://c1d43yssqhx3s" path="res://images/vfx/fire/wave_noise_round.png" id="6_wio3i"]
+[ext_resource type="Material" uid="uid://c4ycqv0gdxvmr" path="res://themes/canvas_item_material_additive_shared.tres" id="10_d5k5i"]
+[ext_resource type="Script" uid="uid://8tp7h0nkic6u" path="res://scenes/backgrounds/little_light_script.gd" id="11_jnojl"]
+[ext_resource type="Texture2D" uid="uid://d2srbops1xqm0" path="res://images/vfx/dot.png" id="12_gxg0j"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8n3r6"]
+shader = ExtResource("2_b4qds")
+shader_parameter/OuterColor = Color(0.190701, 0.255694, 0.0401071, 0.541176)
+shader_parameter/InnerColorStep = Vector2(0.975, 0.99)
+shader_parameter/Noise2Strength = 1.0
+shader_parameter/Noise2Scaling = Vector2(0.5, 0.5)
+shader_parameter/Noise2Panning = Vector2(0.05, 0.05)
+shader_parameter/Noise2Texture = ExtResource("3_1hebr")
+shader_parameter/Noise1Strength = 1.0
+shader_parameter/Noise1Scaling = Vector2(0.5, 0.5)
+shader_parameter/Noise1Panning = Vector2(0.1, 0.1)
+shader_parameter/Noise1Texture = ExtResource("3_1hebr")
+shader_parameter/InvertNoiseMask = true
+shader_parameter/NoiseMaskScale = Vector2(1, 2)
+shader_parameter/NoiseMaskOffset = Vector2(0, -0.63)
+shader_parameter/NoiseMask = ExtResource("4_5myj0")
+shader_parameter/Distortion2Scale = Vector2(1, 1)
+shader_parameter/Distortion2Panning = Vector2(0.045, 0.05)
+shader_parameter/Distortion2Texture = ExtResource("4_5myj0")
+shader_parameter/Distortion2Strength = 0.1
+shader_parameter/Distortion1Scale = Vector2(1, 1)
+shader_parameter/Distortion1Panning = Vector2(0.06, 0.05)
+shader_parameter/Distortion1Texture = ExtResource("3_1hebr")
+shader_parameter/Distortion1Strength = 0.095
+shader_parameter/DistortionMaskScale = Vector2(1, 1.2)
+shader_parameter/DistortionMaskOffset = Vector2(0, -0.025)
+shader_parameter/DistortionMask = ExtResource("5_eidra")
+shader_parameter/InnerColor = Color(0, 0, 0, 1)
+shader_parameter/OuterStep = Vector2(0.285, 0.99)
+
+[sub_resource type="Curve" id="Curve_guamx"]
+_data = [Vector2(0, 0.417635), 0.0, 0.0, 0, 0, Vector2(0.502521, 0.507939), 0.0, 0.0, 0, 0, Vector2(1, 0.423164), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_mtu4w"]
+offsets = PackedFloat32Array(0, 0.607407, 0.994413)
+colors = PackedColorArray(0.427493, 0.427493, 0.427493, 1, 1, 1, 1, 1, 0.427451, 0.427451, 0.427451, 1)
+
+[sub_resource type="Gradient" id="Gradient_b3gjp"]
+offsets = PackedFloat32Array(0, 0.178337)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
 
 [node name="SilentBg" type="Control"]
 layout_mode = 3
@@ -44,6 +94,12 @@ texture = ExtResource("1_vtpom")
 expand_mode = 1
 stretch_mode = 4
 
+[node name="stink_lines" type="Sprite2D" parent="Control"]
+material = SubResource("ShaderMaterial_8n3r6")
+position = Vector2(769.53345, 682.5)
+scale = Vector2(9.76582, 4.88672)
+texture = ExtResource("6_wio3i")
+
 [node name="Silent" type="TextureRect" parent="Control"]
 layout_mode = 1
 anchors_preset = -1
@@ -70,6 +126,56 @@ pivot_offset = Vector2(1958.4666, 1101.5)
 texture = ExtResource("3_16xwh")
 expand_mode = 1
 stretch_mode = 4
+
+[node name="light_small2" type="CPUParticles2D" parent="."]
+material = ExtResource("10_d5k5i")
+position = Vector2(938.46655, 6.5)
+rotation = 3.1032
+amount = 1
+texture = ExtResource("4_5myj0")
+lifetime = 3.0
+local_coords = true
+gravity = Vector2(0, 0)
+scale_amount_min = 20.0
+scale_amount_max = 20.0
+scale_amount_curve = SubResource("Curve_guamx")
+color = Color(0.670657, 0.444708, 5.77569e-07, 0.4)
+color_ramp = SubResource("Gradient_mtu4w")
+script = ExtResource("11_jnojl")
+
+[node name="ash2" type="CPUParticles2D" parent="."]
+position = Vector2(411.46655, 1186.5)
+amount = 20
+texture = ExtResource("12_gxg0j")
+lifetime = 15.0
+preprocess = 15.0
+local_coords = true
+emission_shape = 3
+emission_rect_extents = Vector2(800, 500)
+gravity = Vector2(20, -10)
+orbit_velocity_max = 0.03
+radial_accel_max = 1.0
+angle_max = 353.6
+color = Color(0.501961, 0.701961, 0.270588, 0.137255)
+color_ramp = SubResource("Gradient_b3gjp")
+
+[node name="ash3" type="CPUParticles2D" parent="."]
+position = Vector2(-107, 1361)
+amount = 20
+texture = ExtResource("12_gxg0j")
+lifetime = 15.0
+preprocess = 15.0
+local_coords = true
+emission_shape = 3
+emission_rect_extents = Vector2(800, 500)
+gravity = Vector2(20, -10)
+orbit_velocity_max = 0.03
+radial_accel_max = 1.0
+angle_max = 353.6
+scale_amount_min = 0.1
+scale_amount_max = 0.3
+color = Color(0.501961, 0.701961, 0.270588, 0.431373)
+color_ramp = SubResource("Gradient_b3gjp")
 
 [node name="Signature" type="TextureRect" parent="."]
 layout_mode = 1

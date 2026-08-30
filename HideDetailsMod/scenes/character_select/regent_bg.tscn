@@ -1,10 +1,22 @@
-[gd_scene load_steps=6 format=3 uid="uid://cyaeb86kqhe2g"]
+[gd_scene load_steps=12 format=3 uid="uid://cyaeb86kqhe2g"]
 
+[ext_resource type="Script" uid="uid://ddd2y48f8fxt7" path="res://HideDetailsModCode/Scenes/CharacterSelect/RegentBg.cs" id="1_hqmus"]
 [ext_resource type="Texture2D" uid="uid://cww4m8l0nqyvd" path="res://HideDetailsMod/images/character_select/regent/regent splash screen_bg.png" id="1_p00qi"]
 [ext_resource type="Texture2D" uid="uid://cekmpcfrgnrlc" path="res://HideDetailsMod/images/character_select/regent/regent_splashscreen_rigent_on_chair.png" id="2_yr4te"]
 [ext_resource type="Texture2D" uid="uid://dfkmiw0cwclff" path="res://HideDetailsMod/images/character_select/regent/regent splash screen_minion.png" id="3_hqmus"]
+[ext_resource type="Material" uid="uid://c4ycqv0gdxvmr" path="res://themes/canvas_item_material_additive_shared.tres" id="4_h05la"]
 [ext_resource type="Texture2D" uid="uid://c2gvkmmtu78im" path="res://HideDetailsMod/images/character_select/regent/regent splash screen signature.png" id="4_luwcc"]
+[ext_resource type="Texture2D" uid="uid://bxa6vlqeby20" path="res://images/vfx/light.png" id="5_5vk7f"]
 [ext_resource type="Texture2D" uid="uid://uxy4x67bvwdb" path="res://HideDetailsMod/images/character_select/regent/regent splash screen_sword.png" id="5_yr4te"]
+[ext_resource type="Script" uid="uid://8tp7h0nkic6u" path="res://scenes/backgrounds/little_light_script.gd" id="6_0fmol"]
+
+[sub_resource type="Curve" id="Curve_rdgfj"]
+_data = [Vector2(0, 0.417635), 0.0, 0.0, 0, 0, Vector2(0.502521, 0.507939), 0.0, 0.0, 0, 0, Vector2(1, 0.423164), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_lgs16"]
+offsets = PackedFloat32Array(0, 0.607407, 0.994413)
+colors = PackedColorArray(0.427493, 0.427493, 0.427493, 1, 1, 1, 1, 1, 0.427451, 0.427451, 0.427451, 1)
 
 [node name="RegentBg" type="Control"]
 layout_mode = 3
@@ -20,6 +32,7 @@ offset_bottom = 679.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(1280, 600)
+script = ExtResource("1_hqmus")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 0
@@ -31,13 +44,60 @@ texture = ExtResource("1_p00qi")
 expand_mode = 1
 
 [node name="Blade" type="TextureRect" parent="."]
+unique_name_in_owner = true
 layout_mode = 0
-offset_left = 257.0
-offset_top = 56.0
-offset_right = 1750.3335
-offset_bottom = 896.0
+offset_left = 158.0
+offset_top = 87.0
+offset_right = 1651.3336
+offset_bottom = 927.0
 texture = ExtResource("5_yr4te")
 expand_mode = 3
+
+[node name="Lights" type="Control" parent="Blade"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="light_small2" type="CPUParticles2D" parent="Blade/Lights"]
+material = ExtResource("4_h05la")
+position = Vector2(-173.66681, 41)
+rotation = 3.1032
+amount = 1
+texture = ExtResource("5_5vk7f")
+lifetime = 3.0
+local_coords = true
+gravity = Vector2(0, 0)
+scale_amount_min = 12.0
+scale_amount_max = 12.0
+scale_amount_curve = SubResource("Curve_rdgfj")
+color = Color(0.861643, 3.9371e-05, 0.630184, 0.4)
+color_ramp = SubResource("Gradient_lgs16")
+script = ExtResource("6_0fmol")
+
+[node name="light_small3" type="CPUParticles2D" parent="Blade/Lights"]
+material = ExtResource("4_h05la")
+position = Vector2(47.33319, -163)
+rotation = -0.076785386
+amount = 1
+texture = ExtResource("5_5vk7f")
+lifetime = 3.0
+local_coords = true
+gravity = Vector2(0, 0)
+scale_amount_min = 12.0
+scale_amount_max = 12.0
+scale_amount_curve = SubResource("Curve_rdgfj")
+color = Color(0.861643, 3.9371e-05, 0.630184, 0.4)
+color_ramp = SubResource("Gradient_lgs16")
+script = ExtResource("6_0fmol")
 
 [node name="Regent" type="TextureRect" parent="."]
 layout_mode = 0
@@ -63,6 +123,7 @@ texture = ExtResource("3_hqmus")
 expand_mode = 3
 
 [node name="Signature" type="TextureRect" parent="."]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 254.99998
 offset_top = 43.0

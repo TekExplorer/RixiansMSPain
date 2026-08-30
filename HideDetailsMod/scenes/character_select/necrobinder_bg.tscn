@@ -1,10 +1,26 @@
-[gd_scene load_steps=6 format=3 uid="uid://wngivsq7ywvs"]
+[gd_scene load_steps=13 format=3 uid="uid://wngivsq7ywvs"]
 
 [ext_resource type="Script" uid="uid://lmsjmjdxa11k" path="res://HideDetailsModCode/Scenes/CharacterSelect/NecrobinderBg.cs" id="1_7363j"]
 [ext_resource type="Texture2D" uid="uid://byf1wuaybvw2n" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-BG_LAYER0.png" id="1_xsw5j"]
 [ext_resource type="Texture2D" uid="uid://2q4hunv6ky66" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-SIMPLE-1.png" id="2_u1lud"]
+[ext_resource type="Texture2D" uid="uid://b7gtl7gvi5tfc" path="res://images/vfx/short_grain_rice_particle.png" id="3_mec4a"]
 [ext_resource type="Texture2D" uid="uid://c27kto6ehm42f" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-OstyOVERBox_LAYER4.png" id="3_tnu10"]
 [ext_resource type="Texture2D" uid="uid://d10hppiucyq4w" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-Signature.png" id="3_u1lud"]
+[ext_resource type="Material" uid="uid://c4ycqv0gdxvmr" path="res://themes/canvas_item_material_additive_shared.tres" id="7_rg0d7"]
+[ext_resource type="Texture2D" uid="uid://bxa6vlqeby20" path="res://images/vfx/light.png" id="8_e0l0s"]
+[ext_resource type="Script" uid="uid://8tp7h0nkic6u" path="res://scenes/backgrounds/little_light_script.gd" id="9_stp30"]
+
+[sub_resource type="Gradient" id="Gradient_f4x5s"]
+offsets = PackedFloat32Array(0, 0.178337, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="Curve" id="Curve_hpkxh"]
+_data = [Vector2(0, 0.417635), 0.0, 0.0, 0, 0, Vector2(0.502521, 0.507939), 0.0, 0.0, 0, 0, Vector2(1, 0.423164), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_sv0n6"]
+offsets = PackedFloat32Array(0, 0.607407, 0.994413)
+colors = PackedColorArray(0.427493, 0.427493, 0.427493, 1, 1, 1, 1, 1, 0.427451, 0.427451, 0.427451, 1)
 
 [node name="NercoBg" type="Control"]
 layout_mode = 3
@@ -32,6 +48,43 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_xsw5j")
 expand_mode = 1
+
+[node name="ash2" type="CPUParticles2D" parent="."]
+position = Vector2(-971, 525)
+rotation = 1.8228035
+amount = 20
+texture = ExtResource("3_mec4a")
+lifetime = 15.0
+preprocess = 15.0
+local_coords = true
+emission_shape = 3
+emission_rect_extents = Vector2(250, 250)
+gravity = Vector2(-50, -75)
+orbit_velocity_max = 0.03
+radial_accel_max = 1.0
+angle_max = 353.6
+scale_amount_min = 2.0
+scale_amount_max = 6.0
+color = Color(1, 0.129412, 1, 1)
+color_ramp = SubResource("Gradient_f4x5s")
+
+[node name="ash3" type="CPUParticles2D" parent="."]
+position = Vector2(-971, 525)
+rotation = 1.8228035
+amount = 20
+texture = ExtResource("3_mec4a")
+lifetime = 15.0
+preprocess = 15.0
+local_coords = true
+emission_shape = 3
+emission_rect_extents = Vector2(250, 250)
+gravity = Vector2(-100, -150)
+orbit_velocity_max = 0.03
+radial_accel_max = 1.0
+angle_max = 353.6
+scale_amount_max = 2.0
+color = Color(1, 0.351772, 0.672842, 1)
+color_ramp = SubResource("Gradient_f4x5s")
 
 [node name="Necrobinder" type="TextureRect" parent="."]
 layout_mode = 1
@@ -101,3 +154,19 @@ offset_left = 600.0
 offset_top = 973.0
 offset_right = 648.0
 offset_bottom = 1021.0
+
+[node name="light_small2" type="CPUParticles2D" parent="."]
+material = ExtResource("7_rg0d7")
+position = Vector2(853, 98)
+rotation = 3.1032
+amount = 1
+texture = ExtResource("8_e0l0s")
+lifetime = 3.0
+local_coords = true
+gravity = Vector2(0, 0)
+scale_amount_min = 12.0
+scale_amount_max = 12.0
+scale_amount_curve = SubResource("Curve_hpkxh")
+color = Color(0.861643, 3.9371e-05, 0.630184, 0.4)
+color_ramp = SubResource("Gradient_sv0n6")
+script = ExtResource("9_stp30")

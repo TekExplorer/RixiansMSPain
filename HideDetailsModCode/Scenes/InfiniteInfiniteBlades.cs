@@ -1,4 +1,3 @@
-using System;
 using BaseLib.Utils;
 using Godot;
 using MegaCrit.Sts2.Core.Models.Cards;
