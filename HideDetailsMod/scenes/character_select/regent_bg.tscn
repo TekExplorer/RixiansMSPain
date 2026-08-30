@@ -66,7 +66,6 @@ texture = ExtResource("5_yr4te")
 expand_mode = 3
 
 [node name="Lights" type="Control" parent="Blade"]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -98,7 +97,7 @@ script = ExtResource("6_0fmol")
 
 [node name="light_small3" type="CPUParticles2D" parent="Blade/Lights"]
 material = ExtResource("4_h05la")
-position = Vector2(47.33319, -163)
+position = Vector2(60.33319, -171)
 rotation = -0.076785386
 amount = 1
 texture = ExtResource("5_5vk7f")
