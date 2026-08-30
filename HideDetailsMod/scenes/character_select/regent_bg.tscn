@@ -1,14 +1,25 @@
-[gd_scene load_steps=12 format=3 uid="uid://cyaeb86kqhe2g"]
+[gd_scene load_steps=14 format=3 uid="uid://cyaeb86kqhe2g"]
 
 [ext_resource type="Script" uid="uid://ddd2y48f8fxt7" path="res://HideDetailsModCode/Scenes/CharacterSelect/RegentBg.cs" id="1_hqmus"]
 [ext_resource type="Texture2D" uid="uid://cww4m8l0nqyvd" path="res://HideDetailsMod/images/character_select/regent/regent splash screen_bg.png" id="1_p00qi"]
 [ext_resource type="Texture2D" uid="uid://cekmpcfrgnrlc" path="res://HideDetailsMod/images/character_select/regent/regent_splashscreen_rigent_on_chair.png" id="2_yr4te"]
+[ext_resource type="Shader" uid="uid://itjh4n128e43" path="res://HideDetailsMod/scenes/character_select/blade_glint.gdshader" id="3_5vk7f"]
 [ext_resource type="Texture2D" uid="uid://dfkmiw0cwclff" path="res://HideDetailsMod/images/character_select/regent/regent splash screen_minion.png" id="3_hqmus"]
 [ext_resource type="Material" uid="uid://c4ycqv0gdxvmr" path="res://themes/canvas_item_material_additive_shared.tres" id="4_h05la"]
 [ext_resource type="Texture2D" uid="uid://c2gvkmmtu78im" path="res://HideDetailsMod/images/character_select/regent/regent splash screen signature.png" id="4_luwcc"]
 [ext_resource type="Texture2D" uid="uid://bxa6vlqeby20" path="res://images/vfx/light.png" id="5_5vk7f"]
 [ext_resource type="Texture2D" uid="uid://uxy4x67bvwdb" path="res://HideDetailsMod/images/character_select/regent/regent splash screen_sword.png" id="5_yr4te"]
 [ext_resource type="Script" uid="uid://8tp7h0nkic6u" path="res://scenes/backgrounds/little_light_script.gd" id="6_0fmol"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0fmol"]
+shader = ExtResource("3_5vk7f")
+shader_parameter/blade_color_target = Color(0.1, 0.4, 0.8, 1)
+shader_parameter/color_tolerance = 0.60000002780148
+shader_parameter/white_brightness_cutoff = 0.85
+shader_parameter/shine_angle = -170.37999954305
+shader_parameter/shine_speed = 0.40000001574012
+shader_parameter/shine_sharpness = 1.0
+shader_parameter/shine_intensity = 0.30000001099011997
 
 [sub_resource type="Curve" id="Curve_rdgfj"]
 _data = [Vector2(0, 0.417635), 0.0, 0.0, 0, 0, Vector2(0.502521, 0.507939), 0.0, 0.0, 0, 0, Vector2(1, 0.423164), 0.0, 0.0, 0, 0]
@@ -45,6 +56,7 @@ expand_mode = 1
 
 [node name="Blade" type="TextureRect" parent="."]
 unique_name_in_owner = true
+material = SubResource("ShaderMaterial_0fmol")
 layout_mode = 0
 offset_left = 158.0
 offset_top = 87.0
@@ -54,6 +66,7 @@ texture = ExtResource("5_yr4te")
 expand_mode = 3
 
 [node name="Lights" type="Control" parent="Blade"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -142,3 +155,19 @@ offset_top = 25.0
 offset_right = 543.0
 offset_bottom = 125.0
 uri = "https://vgen.co/seapixxel"
+
+[node name="light_small" type="CPUParticles2D" parent="."]
+material = ExtResource("4_h05la")
+position = Vector2(1241.0001, -67.00001)
+rotation = -0.076785386
+amount = 1
+texture = ExtResource("5_5vk7f")
+lifetime = 3.0
+local_coords = true
+gravity = Vector2(0, 0)
+scale_amount_min = 12.0
+scale_amount_max = 12.0
+scale_amount_curve = SubResource("Curve_rdgfj")
+color = Color(0.861643, 3.9371e-05, 0.630184, 0.4)
+color_ramp = SubResource("Gradient_lgs16")
+script = ExtResource("6_0fmol")
