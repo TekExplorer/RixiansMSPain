@@ -110,6 +110,7 @@ offset_left = 152.53345
 offset_top = 10.418518
 offset_right = -235.46655
 offset_bottom = 10.418457
+scale = Vector2(1.0656446, 1.0656446)
 pivot_offset = Vector2(1300.4666, 977.537)
 texture = ExtResource("2_16ub1")
 expand_mode = 1
