@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Fixed Luminesce sparkles leaking to other cards\nMade more things responsive to the safe mode toggle",
+  "changeNote": "Fixed Luminesce sparkles leaking to other cards\nMade more things responsive to the safe mode toggle\nFixed Defile Exhaust icon being broken\nAdded credits for sfx and vfx",
   "tags": [],
   "dependencies": [3737335127]
 }
