@@ -3,15 +3,11 @@ using Godot;
 using HarmonyLib;
 using HideDetailsMod.HideDetailsModCode;
 using HideDetailsMod.HideDetailsModCode.Patches;
-using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.DevConsole;
 using MegaCrit.Sts2.Core.DevConsole.ConsoleCommands;
 using MegaCrit.Sts2.Core.Entities.Players;
-using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes;
-using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 
 class ShowAllArtsOfCardCmd : AbstractConsoleCmd
@@ -118,7 +114,7 @@ public static class Stuff
         Types.Get(card);
         card.GetOverrideImage();
 
-        IEnumerable<CardImg> Imgs = card.AllPortraitPaths.Where(path => path.Contains("HideDetailsMod/")).Select(CardImg.Of).OfType<CardImg>();
+        IEnumerable<CardImg> Imgs = card.AllPortraitPaths.Reverse().Where(path => path.Contains("HideDetailsMod/")).Select(CardImg.Of).OfType<CardImg>();
 
         var both = Imgs.Where(i => !i.IsUpgraded && Imgs.Contains(i.Upgraded()));
         var upgraded = Imgs.Where(i => i.IsUpgraded && !both.Contains(i.Downgraded()));

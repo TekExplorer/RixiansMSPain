@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Fixed freddy epitaph appearing on new Soul\nFixed credits not showing when tooltips are enabled\nUpdated Right Hand Hand\nUpdated Death's Door\nAdded base/canonical Mad Science (Power) just in case\nFixed bug where Shared Fate would break in the compendium\nFixed issue where canary wouldnt use the inverted mod image",
+  "changeNote": "Fixed Luminesce sparkles leaking to other cards\nMade more things responsive to the safe mode toggle",
   "tags": [],
   "dependencies": [3737335127]
 }

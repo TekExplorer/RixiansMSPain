@@ -28,6 +28,8 @@ static class Extensions
 }
 public static class Util
 {
+    public static NetModSettings ConfigFrom(Player? player) => NetModSettings.GetPlayerConfig(player?.NetId) ?? new();
+    public static NetModSettings ConfigFrom(CardModel? card) => ConfigFrom(GetOwner(card));
     public static bool HasCard<T>(Player? owner) where T : CardModel => HasCard(owner, card => card is T);
     public static bool HasCard(Player? owner, Func<CardModel, bool> predicate) => CardsOf(owner).Any(predicate);
     public static IEnumerable<CardModel> CombatCardsOf(Player? player) => CardsOf(player, IncludeDeck: false);

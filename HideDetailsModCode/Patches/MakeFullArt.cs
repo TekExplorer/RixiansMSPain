@@ -37,6 +37,18 @@ public class MakeFullArt
             MainFile.Logger.Error($"Something broke 2 {err}");
         }
     }
+
+    // [HarmonyPostfix]
+    // [HarmonyPatch(typeof(NCard), nameof(NCard._Ready))]
+    // static internal void FixAncientPositioning(NCard __instance)
+    // {
+    //     var portrait = __instance._ancientPortrait;
+    //     portrait.Position = new(
+    //         portrait.Position.X + 10,
+    //         portrait.Position.Y + 10
+    //     );
+    // }
+
     [HarmonyPatch]
     class UseFullArt
     {
@@ -48,20 +60,20 @@ public class MakeFullArt
             else if (type.Method(nameof(NCard.Reload)) is { } reload) yield return reload;
         }
         [HarmonyPostfix]
-        static void PostFix(
-          NCard? __instance,
-          TextureRect? ____frame,
-          TextureRect? ____portraitBorder,
-          TextureRect? ____ancientBorder,
-          TextureRect? ____portrait,
-          TextureRect? ____ancientPortrait,
-          TextureRect? ____banner,
-          Control? ____ancientBanner,
-          TextureRect? ____ancientTextBg,
-          TextureRect? ____ancientBorderGlassOverlay,
-          Material? ____canvasGroupMaskMaterial,
-          CanvasGroup? ____portraitCanvasGroup
-      )
+        static void Postfix(
+            NCard? __instance,
+            TextureRect? ____frame,
+            TextureRect? ____portraitBorder,
+            TextureRect? ____ancientBorder,
+            TextureRect? ____portrait,
+            TextureRect? ____ancientPortrait,
+            TextureRect? ____banner,
+            Control? ____ancientBanner,
+            TextureRect? ____ancientTextBg,
+            TextureRect? ____ancientBorderGlassOverlay,
+            Material? ____canvasGroupMaskMaterial,
+            CanvasGroup? ____portraitCanvasGroup
+        )
         {
             CardModel? model = __instance?.Model;
             if (____frame == null || ____ancientBorder == null || ____portrait == null ||

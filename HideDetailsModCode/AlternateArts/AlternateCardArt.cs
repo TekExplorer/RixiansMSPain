@@ -1,7 +1,9 @@
 using System.Reflection;
 using BaseLib.Utils;
+using Godot;
 using HarmonyLib;
 using HideDetailsMod.HideDetailsModCode.AlternateArts.Cards;
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Modding;
@@ -35,15 +37,67 @@ static internal class NCardAwareCardsPatch
     [HarmonyPatch(nameof(NCard.SubscribeToModel))]
     static internal void SubscribeToModel(NCard __instance, CardModel? model)
     {
+        if (MyModConfig.UseSimpleMode) return;
         if (model is not { } Model) return;
         AssociatedNCard[Model] = __instance;
+        foreach (var art in AlternateCardArt.Arts)
+        {
+            art.OnNCardSubscribed(Model, __instance);
+        }
     }
     [HarmonyPostfix]
     [HarmonyPatch(nameof(NCard.UnsubscribeFromModel))]
     static internal void UnsubscribeFromModel(NCard __instance, CardModel? model)
     {
+        if (MyModConfig.UseSimpleMode) return;
         if (model is not { } Model) return;
+        foreach (var art in AlternateCardArt.Arts)
+        {
+            art.OnNCardUnsubscribed(Model, __instance);
+        }
         if (AssociatedNCard[Model] == __instance) AssociatedNCard[Model] = null;
+    }
+    [HarmonyPatch(typeof(NCard), nameof(NCard.Model), MethodType.Setter)]
+    static class UpdateModelPatch
+    {
+        internal record ModelChanged(CardModel? PreviousModel, CardModel? NewModel);
+        [HarmonyPrefix]
+        static internal void Prefix(NCard __instance, CardModel? value, ref ModelChanged __state)
+        {
+            if (MyModConfig.UseSimpleMode) return;
+            var previousModel = __instance._model;
+            var newModel = value;
+            __state = new(previousModel, newModel);
+            foreach (var art in AlternateCardArt.Arts)
+            {
+                art.BeforeNCardModelChanged(previousModel, newModel, __instance);
+            }
+        }
+        [HarmonyPostfix]
+        static internal void Postfix(NCard __instance, ref ModelChanged __state)
+        {
+            foreach (var art in AlternateCardArt.Arts)
+            {
+                art.AfterNCardModelChanged(__state.PreviousModel, __state.NewModel, __instance);
+            }
+        }
+    }
+    [HarmonyPatch]
+    static class UpdateVisualsPatch
+    {
+        internal class ColorBox(Color color) { public Color color = color; }
+        static internal NotNullSpireField<NCard, ColorBox> NCardSparklesColor = new(card => new(card._sparkles.Modulate));
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(NCard), nameof(NCard.UpdateVisuals))]
+        public static void ApplyGlow(NCard __instance, PileType pileType, CardPreviewMode previewMode)
+        {
+            if (__instance.Model is not { } Model) return;
+            foreach (var art in AlternateCardArt.Arts)
+            {
+                art.AfterNCardUpdateVisuals(Model, __instance, pileType, previewMode);
+            }
+        }
     }
 }
 
@@ -51,8 +105,6 @@ public abstract class AlternateCardArt
 {
     public static List<Type> GetDirectGenericSubtypes(Type openGenericBase)
     {
-        var assemblies = Traverse.Create(MainFile.Mod).Property<List<Assembly>>("assemblies").Value;
-
         IEnumerable<Type> types;
         if (ModManager.State == ModManagerState.None)
         {
@@ -90,7 +142,7 @@ public abstract class AlternateCardArt
         ..GenericArts,
         new BaseArt(),
     ];
-    static List<AlternateCardArt> Arts => MyModConfig.UseSimpleMode ? [new MadScienceArt(), new BaseArt()] : _Arts;
+    static internal List<AlternateCardArt> Arts => MyModConfig.UseSimpleMode ? [new MadScienceArt(), new BaseArt()] : _Arts;
     static bool IsRestricted(CardModel card) => card.Pool switch
     {
         DefectCardPool when !MainFile.DefectSetActive => true,
@@ -184,36 +236,16 @@ public abstract class AlternateCardArt
         }
     }
 
-    // [HarmonyPatch(typeof(NCard), nameof(NCard.UpdatePortrait))]
-    static internal class PortraitContext
-    {
-        [HarmonyTargetMethods]
-        static internal IEnumerable<MethodInfo> Methods()
-        {
-            yield return typeof(NCard).Method("UpdatePortrait") ?? typeof(NCard).Method("Reload");
-        }
-        static public NCard? UpdatingNCard;
-        static internal void Prefix(NCard __instance)
-        {
-            UpdatingNCard = __instance;
-        }
-        static internal void Postfix()
-        {
-            UpdatingNCard = null;
-        }
-    }
-
     protected static NetModSettings ConfigFrom(Player? player) => NetModSettings.GetPlayerConfig(player?.NetId) ?? new();
     protected static NetModSettings ConfigFrom(CardModel? card) => ConfigFrom(Util.GetOwner(card));
 
-    protected NCard Node => PortraitContext.UpdatingNCard!;
-    protected NInspectCardScreen? InspectionScreen => Node.GetAncestorOfType<NInspectCardScreen>();
-    protected bool IsBeingInspected => InspectionScreen != null;
-    protected NCardLibrary? CardLibrary => Node.GetAncestorOfType<NCardLibrary>();
-    protected NCardRewardSelectionScreen? CardRewardScreen => Node.GetAncestorOfType<NCardRewardSelectionScreen>();
-    protected bool IsInCardRewardScreen => CardRewardScreen != null;
-    protected bool IsInShop => Node.GetAncestorOfType<NMerchantCard>() != null;
-    protected bool IsInCardLibrary => CardLibrary != null;
+    public virtual void AfterNCardUpdateVisuals(CardModel card, NCard node, PileType pileType, CardPreviewMode previewMode) { }
+    public virtual void OnNCardUpdateModel(CardModel previousModel, CardModel newModel, NCard node) { }
+    public virtual void OnNCardSubscribed(CardModel model, NCard node) { }
+    public virtual void OnNCardUnsubscribed(CardModel model, NCard node) { }
+
+    public virtual void BeforeNCardModelChanged(CardModel? previousModel, CardModel? newModel, NCard node) { }
+    public virtual void AfterNCardModelChanged(CardModel? previousModel, CardModel? newModel, NCard node) { }
 }
 
 public abstract class AlternateCardArt<T> : AlternateCardArt where T : CardModel
@@ -267,4 +299,22 @@ public abstract class AlternateCardArt<T> : AlternateCardArt where T : CardModel
         if (card is T typed) return GetSplit(typed);
         return base.GetSplit(card);
     }
+
+    public override void AfterNCardUpdateVisuals(CardModel card, NCard node, PileType pileType, CardPreviewMode previewMode)
+    {
+        if (card is T typed) AfterNCardUpdateVisuals(typed, node, pileType, previewMode);
+    }
+
+    public override void OnNCardSubscribed(CardModel card, NCard node)
+    {
+        if (card is T typed) OnNCardSubscribed(typed, node);
+    }
+    public override void OnNCardUnsubscribed(CardModel card, NCard node)
+    {
+        if (card is T typed) OnNCardUnsubscribed(typed, node);
+    }
+
+    public virtual void AfterNCardUpdateVisuals(T card, NCard node, PileType pileType, CardPreviewMode previewMode) { }
+    public virtual void OnNCardSubscribed(T card, NCard node) { }
+    public virtual void OnNCardUnsubscribed(T card, NCard node) { }
 }

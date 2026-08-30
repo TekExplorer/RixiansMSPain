@@ -18,10 +18,10 @@ public class ParryArt : AlternateCardArt<Parry>
     static bool WasSeen = false;
     public override CardImg? Get(Parry card)
     {
-        MainFile.Logger.Warn($"Parry data: {{WasSeen: {WasSeen}, Inspecting: {IsBeingInspected}, InShop: {IsInShop}, InReward: {IsInCardRewardScreen}}}");
-        if (!(IsInCardRewardScreen || IsInShop)) return null;
+        // MainFile.Logger.Warn($"Parry data: {{WasSeen: {WasSeen}, Inspecting: {IsBeingInspected}, InShop: {IsInShop}, InReward: {IsInCardRewardScreen}}}");
+        if (!(card.IsInCardRewardScreen || card.IsInShop)) return null;
 
-        if (IsBeingInspected)
+        if (card.IsBeingInspected)
         {
             WasSeen = true;
             return null;
