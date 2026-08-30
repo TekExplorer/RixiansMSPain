@@ -40,13 +40,14 @@ static public class DefileExhaustPatch
 public partial class DefileExhaustIcon : Control
 {
     static public readonly AddedNode<NExhaustPileButton, DefileExhaustIcon> Node = new("res://HideDetailsMod/images/defile_exhaust_icon.tscn", (button, rect) => rect.Button = button);
-
-    public NExhaustPileButton? Button;
+#nullable disable
+    public NExhaustPileButton Button;
+#nullable restore
     public TextureRect? icon;
     public override void _Ready()
     {
         icon = GetNodeOrNull<TextureRect>("Icon");
-        Button?.MoveChildSafely(this, Button._icon.GetIndex() + 1);
+        Button.MoveChildSafely(this, Button._icon.GetIndex() + 1);
     }
 
     public override void _Process(double delta)
