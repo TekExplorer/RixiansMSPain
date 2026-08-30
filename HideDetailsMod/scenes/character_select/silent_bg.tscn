@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bhqkbdfpa8kwp"]
+[gd_scene load_steps=19 format=3 uid="uid://bhqkbdfpa8kwp"]
 
 [ext_resource type="Texture2D" uid="uid://2qs2jjxqs0ng" path="res://HideDetailsMod/images/character_select/silent/bg.png" id="1_vtpom"]
 [ext_resource type="Texture2D" uid="uid://c4837wnnwggbm" path="res://HideDetailsMod/images/character_select/silent/silent_splash_art_silent.png" id="2_16ub1"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://ss1krjof6va3" path="res://HideDetailsMod/images/character_select/silent/signature.png" id="4_16ub1"]
 [ext_resource type="Texture2D" uid="uid://8u0ij0tgmrfb" path="res://images/vfx/tileable_noise_2.png" id="5_eidra"]
 [ext_resource type="Texture2D" uid="uid://c1d43yssqhx3s" path="res://images/vfx/fire/wave_noise_round.png" id="6_wio3i"]
+[ext_resource type="Shader" uid="uid://d3qtm303ydf72" path="res://HideDetailsMod/scenes/character_select/fire.gdshader" id="8_1hebr"]
 [ext_resource type="Material" uid="uid://c4ycqv0gdxvmr" path="res://themes/canvas_item_material_additive_shared.tres" id="10_d5k5i"]
 [ext_resource type="Script" uid="uid://8tp7h0nkic6u" path="res://scenes/backgrounds/little_light_script.gd" id="11_jnojl"]
 [ext_resource type="Texture2D" uid="uid://d2srbops1xqm0" path="res://images/vfx/dot.png" id="12_gxg0j"]
@@ -42,6 +43,13 @@ shader_parameter/DistortionMaskOffset = Vector2(0, -0.025)
 shader_parameter/DistortionMask = ExtResource("5_eidra")
 shader_parameter/InnerColor = Color(0, 0, 0, 1)
 shader_parameter/OuterStep = Vector2(0.285, 0.99)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5myj0"]
+shader = ExtResource("8_1hebr")
+shader_parameter/speed = 0.163
+shader_parameter/frequency = 15.0
+shader_parameter/amplitude = 0.01
+shader_parameter/offset = 0.0
 
 [sub_resource type="Curve" id="Curve_guamx"]
 _data = [Vector2(0, 0.417635), 0.0, 0.0, 0, 0, Vector2(0.502521, 0.507939), 0.0, 0.0, 0, 0, Vector2(1, 0.423164), 0.0, 0.0, 0, 0]
@@ -107,9 +115,9 @@ anchor_top = 0.129
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 152.53345
-offset_top = 10.418518
+offset_top = 4.418518
 offset_right = -235.46655
-offset_bottom = 10.418457
+offset_bottom = 4.418457
 scale = Vector2(1.0656446, 1.0656446)
 pivot_offset = Vector2(1300.4666, 977.537)
 texture = ExtResource("2_16ub1")
@@ -117,6 +125,7 @@ expand_mode = 1
 stretch_mode = 4
 
 [node name="Overlay" type="TextureRect" parent="Control"]
+material = SubResource("ShaderMaterial_5myj0")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
