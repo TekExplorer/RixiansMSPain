@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Fixed Luminesce sparkles leaking to other cards\nMade more things responsive to the safe mode toggle\nFixed Defile Exhaust icon being broken\nAdded credits for sfx and vfx\nSwitched to Atlases for card images, dramatically improving loading in the compendium\nAdded some padding to the top and left of the arts so that everything is properly aligned (goddammit Mega Crit)",
+  "changeNote": "Fixed Luminesce sparkles leaking to other cards\nMade more things responsive to the safe mode toggle\nFixed Defile Exhaust icon being broken\nAdded credits for sfx and vfx\nSwitched to Atlases for card images, dramatically improving loading in the compendium\nAdded some padding to the top and left of the arts so that everything is properly aligned (goddammit Mega Crit)\nShifted Pull Aggro to be better aligned\nFixed a bug with Infinite Blades VFX",
   "tags": [],
   "dependencies": [3737335127]
 }
