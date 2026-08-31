@@ -43,11 +43,7 @@ static class NCardExtensions
                 return existing;
             }
             var glow = node._uncommonGlow = NCardUncommonGlow.Create();
-            if (glow != null)
-            {
-                node.Body.AddChildSafely(glow);
-                node.Body.MoveChildSafely(glow, 1);
-            }
+            node.MoveBodyChildToBackSafely(glow);
             return glow;
         }
         public NCardRareGlow? AssertRareGlow()
@@ -58,14 +54,17 @@ static class NCardExtensions
                 return existing;
             }
             var glow = node._rareGlow = NCardRareGlow.Create();
-            if (glow != null)
+            node.MoveBodyChildToBackSafely(glow);
+            return glow;
+        }
+        private void MoveBodyChildToBackSafely(Node? glow)
+        {
+            if (glow != null && GodotObject.IsInstanceValid(node.Body))
             {
                 node.Body.AddChildSafely(glow);
                 node.Body.MoveChildSafely(glow, 1);
             }
-            return glow;
         }
-
         public void ResetSparklesColor()
         {
             node._sparkles.Modulate = NCardSparklesColor[node].color;

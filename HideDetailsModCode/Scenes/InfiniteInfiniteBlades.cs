@@ -12,7 +12,7 @@ public partial class InfiniteInfiniteBlades : Control
     public static readonly AddedNode<NCard, InfiniteInfiniteBlades> Node = new(static cardNode =>
     {
         var inf = new InfiniteInfiniteBlades() { CardNode = cardNode };
-        cardNode.Body.AddChild(inf);
+        cardNode.Body.AddChildSafely(inf);
         cardNode.Body.MoveChildSafely(inf, cardNode._portraitCanvasGroup.GetIndex() + 1);
 
         return inf;
