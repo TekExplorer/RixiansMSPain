@@ -1,6 +1,6 @@
 [gd_scene load_steps=19 format=3 uid="uid://bhqkbdfpa8kwp"]
 
-[ext_resource type="Texture2D" uid="uid://2qs2jjxqs0ng" path="res://HideDetailsMod/images/character_select/silent/bg.png" id="1_vtpom"]
+[ext_resource type="Texture2D" uid="uid://2qs2jjxqs0ng" path="res://HideDetailsMod/images/character_select/silent/background.png" id="1_vtpom"]
 [ext_resource type="Texture2D" uid="uid://c4837wnnwggbm" path="res://HideDetailsMod/images/character_select/silent/silent_splash_art_silent.png" id="2_16ub1"]
 [ext_resource type="Shader" uid="uid://cu7krqg4cighe" path="res://shaders/vfx/vfx_stepped_shader_fire_add.tres" id="2_b4qds"]
 [ext_resource type="Texture2D" uid="uid://dtaovewempx07" path="res://images/vfx/tileable_noise_1.png" id="3_1hebr"]

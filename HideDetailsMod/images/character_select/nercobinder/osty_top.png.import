@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2qs2jjxqs0ng"
-path="res://.godot/imported/bg.png-bf81f795084dda1136272df830039b56.ctex"
+uid="uid://c27kto6ehm42f"
+path="res://.godot/imported/osty_top.png-aecac608fc4218f82b6933d9e366610a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/silent/bg.png"
-dest_files=["res://.godot/imported/bg.png-bf81f795084dda1136272df830039b56.ctex"]
+source_file="res://HideDetailsMod/images/character_select/nercobinder/osty_top.png"
+dest_files=["res://.godot/imported/osty_top.png-aecac608fc4218f82b6933d9e366610a.ctex"]
 
 [params]
 

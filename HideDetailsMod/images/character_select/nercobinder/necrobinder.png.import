@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfkmiw0cwclff"
-path="res://.godot/imported/regent splash screen_minion.png-9f58e20e3342a765e57fcd481877a397.ctex"
+uid="uid://cuvx0dgap25o5"
+path="res://.godot/imported/necrobinder.png-0805eba12f57082a9ed94930cbba339d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/regent/regent splash screen_minion.png"
-dest_files=["res://.godot/imported/regent splash screen_minion.png-9f58e20e3342a765e57fcd481877a397.ctex"]
+source_file="res://HideDetailsMod/images/character_select/nercobinder/necrobinder.png"
+dest_files=["res://.godot/imported/necrobinder.png-0805eba12f57082a9ed94930cbba339d.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cfur7ty3hoxo7"
-path="res://.godot/imported/FishStickMystic_NecrobinderSplash-SIMPLE-2.png-c6a66d6d54f39d3a950a7cb242adcce2.ctex"
+uid="uid://dfkmiw0cwclff"
+path="res://.godot/imported/minions.png-cefa2e9e1abb7b653dd467d5e1401d2e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-SIMPLE-2.png"
-dest_files=["res://.godot/imported/FishStickMystic_NecrobinderSplash-SIMPLE-2.png-c6a66d6d54f39d3a950a7cb242adcce2.ctex"]
+source_file="res://HideDetailsMod/images/character_select/regent/minions.png"
+dest_files=["res://.godot/imported/minions.png-cefa2e9e1abb7b653dd467d5e1401d2e.ctex"]
 
 [params]
 

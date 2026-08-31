@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bohmf08ohpn8i"
-path="res://.godot/imported/FishStickMystic_NecrobinderSplash-OstyUNDERBox_LAYER2.png-ebb345456109d91a2bcd4fe3d01d0562.ctex"
+uid="uid://o6pfqxaysld5"
+path="res://.godot/imported/necrobinder_fire.png-b24d6b03c39b559d365529b90dd88544.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-OstyUNDERBox_LAYER2.png"
-dest_files=["res://.godot/imported/FishStickMystic_NecrobinderSplash-OstyUNDERBox_LAYER2.png-ebb345456109d91a2bcd4fe3d01d0562.ctex"]
+source_file="res://HideDetailsMod/images/character_select/nercobinder/necrobinder_fire.png"
+dest_files=["res://.godot/imported/necrobinder_fire.png-b24d6b03c39b559d365529b90dd88544.ctex"]
 
 [params]
 

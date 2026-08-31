@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d10hppiucyq4w"
-path="res://.godot/imported/FishStickMystic_NecrobinderSplash-Signature.png-0cb367664fc607837a31ffb32c49b17b.ctex"
+uid="uid://hrc75goe8deb"
+path="res://.godot/imported/background.png-91b6fe16c4e0b4b92a64837a5148a384.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-Signature.png"
-dest_files=["res://.godot/imported/FishStickMystic_NecrobinderSplash-Signature.png-0cb367664fc607837a31ffb32c49b17b.ctex"]
+source_file="res://HideDetailsMod/images/character_select/nercobinder/background.png"
+dest_files=["res://.godot/imported/background.png-91b6fe16c4e0b4b92a64837a5148a384.ctex"]
 
 [params]
 

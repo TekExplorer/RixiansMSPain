@@ -1,19 +1,19 @@
 [gd_scene load_steps=23 format=3 uid="uid://wngivsq7ywvs"]
 
 [ext_resource type="Script" uid="uid://lmsjmjdxa11k" path="res://HideDetailsModCode/Scenes/CharacterSelect/NecrobinderBg.cs" id="1_7363j"]
-[ext_resource type="Texture2D" uid="uid://byf1wuaybvw2n" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-BG_LAYER0.png" id="1_xsw5j"]
 [ext_resource type="Texture2D" uid="uid://b7gtl7gvi5tfc" path="res://images/vfx/short_grain_rice_particle.png" id="3_mec4a"]
-[ext_resource type="Texture2D" uid="uid://c27kto6ehm42f" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-OstyOVERBox_LAYER4.png" id="3_tnu10"]
-[ext_resource type="Texture2D" uid="uid://d10hppiucyq4w" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-Signature.png" id="3_u1lud"]
-[ext_resource type="Texture2D" uid="uid://c0k06rflut0up" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-NecroScythe_LAYER1.png" id="4_hpkxh"]
+[ext_resource type="Texture2D" uid="uid://c27kto6ehm42f" path="res://HideDetailsMod/images/character_select/nercobinder/osty_top.png" id="3_tnu10"]
+[ext_resource type="Texture2D" uid="uid://d10hppiucyq4w" path="res://HideDetailsMod/images/character_select/nercobinder/signature_FishStickMystic.png" id="3_u1lud"]
+[ext_resource type="Texture2D" uid="uid://hrc75goe8deb" path="res://HideDetailsMod/images/character_select/nercobinder/background.png" id="4_evxir"]
+[ext_resource type="Texture2D" uid="uid://c0k06rflut0up" path="res://HideDetailsMod/images/character_select/nercobinder/scythe_blade.png" id="4_hpkxh"]
 [ext_resource type="Shader" uid="uid://ubrqfaa1pgg0" path="res://HideDetailsMod/scenes/character_select/scythe_glint.gdshader" id="5_evxir"]
-[ext_resource type="Texture2D" uid="uid://o6pfqxaysld5" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-NecroFire_LAYER2.png" id="5_sv0n6"]
-[ext_resource type="Texture2D" uid="uid://claqqf8rbse61" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-NecroMAIN_LAYER3.png" id="6_evxir"]
+[ext_resource type="Texture2D" uid="uid://o6pfqxaysld5" path="res://HideDetailsMod/images/character_select/nercobinder/necrobinder_fire.png" id="5_sv0n6"]
 [ext_resource type="Shader" uid="uid://d3qtm303ydf72" path="res://HideDetailsMod/scenes/character_select/fire.gdshader" id="7_hpkxh"]
 [ext_resource type="Material" uid="uid://c4ycqv0gdxvmr" path="res://themes/canvas_item_material_additive_shared.tres" id="7_rg0d7"]
-[ext_resource type="Texture2D" uid="uid://coe37lgqckrfw" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-OstyFire_LAYER1.png" id="8_1seuc"]
+[ext_resource type="Texture2D" uid="uid://coe37lgqckrfw" path="res://HideDetailsMod/images/character_select/nercobinder/osty_fire.png" id="8_1seuc"]
 [ext_resource type="Texture2D" uid="uid://bxa6vlqeby20" path="res://images/vfx/light.png" id="8_e0l0s"]
-[ext_resource type="Texture2D" uid="uid://bohmf08ohpn8i" path="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-OstyUNDERBox_LAYER2.png" id="9_b4l4v"]
+[ext_resource type="Texture2D" uid="uid://cuvx0dgap25o5" path="res://HideDetailsMod/images/character_select/nercobinder/necrobinder.png" id="8_sv0n6"]
+[ext_resource type="Texture2D" uid="uid://bohmf08ohpn8i" path="res://HideDetailsMod/images/character_select/nercobinder/osty_bottom.png" id="9_b4l4v"]
 [ext_resource type="Script" uid="uid://8tp7h0nkic6u" path="res://scenes/backgrounds/little_light_script.gd" id="9_stp30"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_evxir"]
@@ -79,14 +79,16 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -945.77783
-offset_top = -532.0
-offset_right = 945.77783
-offset_bottom = 532.0
+offset_left = -1295.0
+offset_top = -560.0
+offset_right = 1370.5791
+offset_bottom = 541.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_xsw5j")
-expand_mode = 1
+scale = Vector2(1.0510213, 1.0510213)
+texture = ExtResource("4_evxir")
+expand_mode = 3
+stretch_mode = 4
 
 [node name="ash2" type="CPUParticles2D" parent="."]
 position = Vector2(-971, 525)
@@ -127,11 +129,11 @@ color_ramp = SubResource("Gradient_f4x5s")
 
 [node name="Necrobinder" type="Control" parent="."]
 anchors_preset = 0
-offset_left = -369.0
-offset_top = -489.0
-offset_right = 983.0
-offset_bottom = 552.0
-scale = Vector2(0.96569675, 0.96569675)
+offset_left = -450.00003
+offset_top = -507.00003
+offset_right = 902.0
+offset_bottom = 534.0
+scale = Vector2(1.063593, 1.063593)
 
 [node name="Scythe" type="TextureRect" parent="Necrobinder"]
 material = SubResource("ShaderMaterial_1seuc")
@@ -159,12 +161,12 @@ stretch_mode = 4
 
 [node name="Necrobinder" type="TextureRect" parent="Necrobinder"]
 layout_mode = 0
-offset_left = 21.0
-offset_top = 91.0
-offset_right = 1343.4065
-offset_bottom = 1034.0
+offset_left = 23.81697
+offset_top = 91.12592
+offset_right = 1383.6493
+offset_bottom = 1060.8141
 scale = Vector2(1.0059538, 1.0059538)
-texture = ExtResource("6_evxir")
+texture = ExtResource("8_sv0n6")
 expand_mode = 1
 stretch_mode = 4
 
@@ -213,10 +215,10 @@ expand_mode = 1
 
 [node name="Signature" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = -783.0
-offset_top = 458.0
-offset_right = -279.05554
-offset_bottom = 505.0
+offset_left = -664.0
+offset_top = 520.0
+offset_right = -160.05554
+offset_bottom = 567.0
 scale = Vector2(0.8846111, 0.8846111)
 texture = ExtResource("3_u1lud")
 expand_mode = 1

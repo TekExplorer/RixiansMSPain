@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cww4m8l0nqyvd"
-path="res://.godot/imported/regent splash screen_bg.png-99284d45c741f932b31a92bd90b7cd14.ctex"
+uid="uid://cekmpcfrgnrlc"
+path="res://.godot/imported/regent_on_throne.png-15cb8408bcf6f2921dda3222abb90c85.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/regent/regent splash screen_bg.png"
-dest_files=["res://.godot/imported/regent splash screen_bg.png-99284d45c741f932b31a92bd90b7cd14.ctex"]
+source_file="res://HideDetailsMod/images/character_select/regent/regent_on_throne.png"
+dest_files=["res://.godot/imported/regent_on_throne.png-15cb8408bcf6f2921dda3222abb90c85.ctex"]
 
 [params]
 

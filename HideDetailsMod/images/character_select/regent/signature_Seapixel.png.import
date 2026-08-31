@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bw3cul5qq0h7x"
-path="res://.godot/imported/silent_splash_art.png-6475a7a5111bdd7e3b5fc1412004bf37.ctex"
+uid="uid://c2gvkmmtu78im"
+path="res://.godot/imported/signature_Seapixel.png-6c14d036b23a2affd664eaacd3c920af.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/silent/silent_splash_art.png"
-dest_files=["res://.godot/imported/silent_splash_art.png-6475a7a5111bdd7e3b5fc1412004bf37.ctex"]
+source_file="res://HideDetailsMod/images/character_select/regent/signature_Seapixel.png"
+dest_files=["res://.godot/imported/signature_Seapixel.png-6c14d036b23a2affd664eaacd3c920af.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cekmpcfrgnrlc"
-path="res://.godot/imported/regent_splashscreen_rigent_on_chair.png-ecaca4174770a089e12eb3b66ff70bd5.ctex"
+uid="uid://d10hppiucyq4w"
+path="res://.godot/imported/signature_FishStickMystic.png-e63742ae4a4add043758af7d4cfeb7b6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/regent/regent_splashscreen_rigent_on_chair.png"
-dest_files=["res://.godot/imported/regent_splashscreen_rigent_on_chair.png-ecaca4174770a089e12eb3b66ff70bd5.ctex"]
+source_file="res://HideDetailsMod/images/character_select/nercobinder/signature_FishStickMystic.png"
+dest_files=["res://.godot/imported/signature_FishStickMystic.png-e63742ae4a4add043758af7d4cfeb7b6.ctex"]
 
 [params]
 

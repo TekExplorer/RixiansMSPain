@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cugny8hxhannc"
-path="res://.godot/imported/FishStickMystic_NecrobinderSplash-FULLART.png-25b53fb11e802592e1710e6bfa1d38cb.ctex"
+uid="uid://c0k06rflut0up"
+path="res://.godot/imported/scythe_blade.png-173b854042f51bb23e99aa6346cd4cb5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-FULLART.png"
-dest_files=["res://.godot/imported/FishStickMystic_NecrobinderSplash-FULLART.png-25b53fb11e802592e1710e6bfa1d38cb.ctex"]
+source_file="res://HideDetailsMod/images/character_select/nercobinder/scythe_blade.png"
+dest_files=["res://.godot/imported/scythe_blade.png-173b854042f51bb23e99aa6346cd4cb5.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://o6pfqxaysld5"
-path="res://.godot/imported/FishStickMystic_NecrobinderSplash-NecroFire_LAYER2.png-792250d70f0fab4243ca6a8a4b6dddc4.ctex"
+uid="uid://uxy4x67bvwdb"
+path="res://.godot/imported/sovereign_blade.png-a09907eecd6108930fbf4d9db9ae48f8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-NecroFire_LAYER2.png"
-dest_files=["res://.godot/imported/FishStickMystic_NecrobinderSplash-NecroFire_LAYER2.png-792250d70f0fab4243ca6a8a4b6dddc4.ctex"]
+source_file="res://HideDetailsMod/images/character_select/regent/sovereign_blade.png"
+dest_files=["res://.godot/imported/sovereign_blade.png-a09907eecd6108930fbf4d9db9ae48f8.ctex"]
 
 [params]
 

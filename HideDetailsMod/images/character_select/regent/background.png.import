@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://coe37lgqckrfw"
-path="res://.godot/imported/FishStickMystic_NecrobinderSplash-OstyFire_LAYER1.png-165f7b7e99d02429a58806c0bff402ec.ctex"
+uid="uid://cww4m8l0nqyvd"
+path="res://.godot/imported/background.png-6002f5cb805e52dd07c6f3f2bfc34d60.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/nercobinder/FishStickMystic_NecrobinderSplash-OstyFire_LAYER1.png"
-dest_files=["res://.godot/imported/FishStickMystic_NecrobinderSplash-OstyFire_LAYER1.png-165f7b7e99d02429a58806c0bff402ec.ctex"]
+source_file="res://HideDetailsMod/images/character_select/regent/background.png"
+dest_files=["res://.godot/imported/background.png-6002f5cb805e52dd07c6f3f2bfc34d60.ctex"]
 
 [params]
 

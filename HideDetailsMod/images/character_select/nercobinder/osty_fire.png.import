@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://uxy4x67bvwdb"
-path="res://.godot/imported/regent splash screen_sword.png-42b364d37388f73a186d211bba540fb3.ctex"
+uid="uid://coe37lgqckrfw"
+path="res://.godot/imported/osty_fire.png-0958cf27c28af262b53a363eaa7152b1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HideDetailsMod/images/character_select/regent/regent splash screen_sword.png"
-dest_files=["res://.godot/imported/regent splash screen_sword.png-42b364d37388f73a186d211bba540fb3.ctex"]
+source_file="res://HideDetailsMod/images/character_select/nercobinder/osty_fire.png"
+dest_files=["res://.godot/imported/osty_fire.png-0958cf27c28af262b53a363eaa7152b1.ctex"]
 
 [params]
 
