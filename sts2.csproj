@@ -32,6 +32,8 @@
     <ItemGroup>
         <Compile Remove="HideDetailsModCode/**/*.cs" />
         <Compile Remove="HideDetailsMod.Beta/**" />
+        <Compile Remove="ImageGen/**" />
+
         <!-- <Compile Remove="AutomatonCode/**/*.cs" />
         <Compile Remove="AwakenedCode/**/*.cs" />
         <Compile Remove="ChampCode/**/*.cs" />
