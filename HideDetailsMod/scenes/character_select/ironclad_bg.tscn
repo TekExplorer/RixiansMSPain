@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://dp68r5mgsyv8g"]
+[gd_scene load_steps=2 format=3 ]
 
-[ext_resource type="Texture2D" uid="uid://c0rbal5upreag" path="res://HideDetailsMod/images/character_select/ironclad/ironswole-deemeeart_test.png" id="1_sjlag"]
+[ext_resource type="Texture2D" path="res://HideDetailsMod/images/character_select/ironclad/ironswole-deemeeart_test.png" id="1_sjlag"]
 
 [node name="Control" type="Control"]
 layout_mode = 3

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="Texture2D" uid="uid://3groiid7mwg6" path="res://HideDetailsMod/images/defile_exhaust_icon.png" id="1_1smde"]
+[ext_resource type="Texture2D" path="res://HideDetailsMod/images/defile_exhaust_icon.png" id="1_1smde"]
 [ext_resource type="Script" path="res://HideDetailsModCode/Scenes/DefileExhaustIcon.cs" id="2_rbbor"]
 
 [node name="DefileExhaustIcon" type="Control"]
