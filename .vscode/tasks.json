@@ -50,7 +50,8 @@
     {
       "label": "Upload Mod",
       "type": "shell",
-      "command": "cmd /c call upload_to_workshop.bat ${input:channel}",
+      // "command": "cmd /c call upload_to_workshop.bat ${input:channel}",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/workshop/bin/upload.ps1 -Channel ${input:channel}",
       "options": { "cwd": "${workspaceFolder}/workshop" },
       "dependsOn": ["Publish Mod", "Commit version to Github"]
     },
