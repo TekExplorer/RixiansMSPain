@@ -88,7 +88,7 @@
         <Error Text=" Slay the Spire 2 data not found at path '$(Sts2DataDir)'" Condition="'$(Sts2DataDir)' == '' or !Exists('$(Sts2DataDir)')" />
     </Target>
 
-    <Target Name="RunAtlasPacker" BeforeTargets="BeforeBuild;BeforeRebuild;CheckDependencyPaths">
+    <Target Name="RunAtlasPacker" BeforeTargets="PackPck;GodotPublish">
         <Message Text="Running Atlas Packer..." Importance="high" />
         <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)\ImageGen\AtlasPacker.csproj&quot; -- -c &quot;$(MSBuildProjectDirectory)\ImageGen\atlas_config.json&quot;" Condition="Exists('$(MSBuildProjectDirectory)\ImageGen\AtlasPacker.csproj')" />
     </Target>
