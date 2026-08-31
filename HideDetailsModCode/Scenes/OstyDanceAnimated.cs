@@ -16,6 +16,7 @@ public partial class OstyDanceAnimated : Control
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		Position = new(Position.X - 3, Position.Y);
 		animation = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		Visible = false;
 		if (card == null) return;
