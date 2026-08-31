@@ -45,7 +45,7 @@
       "type": "shell",
       "command": "dotnet publish HideDetailsMod.csproj -c ExportRelease -p:WorkshopChannel=${input:channel}",
       "problemMatcher": ["$msCompile"],
-      "dependsOn": ["Credits: Validate", "Godot: Sync Card Atlas"]
+      "dependsOn": ["Credits: Validate"]
     },
     {
       "label": "Upload Mod",
