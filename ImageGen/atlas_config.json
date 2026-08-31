@@ -55,11 +55,15 @@
     {
       "name": "cards",
       "enabled": true,
+      "force": false,
       "inputRoot": "../HideDetailsMod/artist_assets/",
       "outputRoot": "../HideDetailsMod/images/atlases/card_atlas.sprites/",
       "atlasName": "card_atlas",
       "targetWidth": 606,
       "targetHeight": 852,
+      "maxTextureSize": 16384,
+      "warnAboveSize": 4096,
+      "downscaleProportionalOversized": true,
       "padding": 8,
       "canvasPadding": {
         "left": 10,

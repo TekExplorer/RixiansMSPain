@@ -91,7 +91,6 @@ public static class DummyGenerator
             using var labelFont = new Font("Consolas", 7.5f, FontStyle.Bold, GraphicsUnit.Pixel);
             using var headerFont = new Font("Consolas", 10.5f, FontStyle.Bold, GraphicsUnit.Pixel);
             using var subHeaderFont = new Font("Consolas", 9f, FontStyle.Bold, GraphicsUnit.Pixel);
-            using var centerFont = new Font("Consolas", 10f, FontStyle.Bold, GraphicsUnit.Pixel);
 
             using var textBrushDim = new SolidBrush(Color.FromArgb(200, 255, 255, 255));
             using var textBrushYellow = new SolidBrush(Color.FromArgb(255, 230, 80));
@@ -143,11 +142,11 @@ public static class DummyGenerator
             g.DrawEllipse(originPen, artX - 6, artY - 6, 12, 12);
             g.FillEllipse(textBrushGreen, artX - 2, artY - 2, 4, 4);
 
-            // E. HIGH-VISIBILITY INFO BADGE (Placed safely above center)
+            // E. Info Badge placed above center crosshairs
             int badgeW = 230;
             int badgeH = 72;
             int badgeX = artCenterX - (badgeW / 2);
-            int badgeY = artCenterY - 125; // Sits above center crosshair
+            int badgeY = artCenterY - 125;
 
             using var badgeBackBrush = new SolidBrush(Color.FromArgb(245, 15, 18, 24));
             using var badgeOuterPen = new Pen(Color.FromArgb(255, 230, 80), 2);
@@ -157,7 +156,6 @@ public static class DummyGenerator
             g.DrawRectangle(badgeOuterPen, badgeX, badgeY, badgeW, badgeH);
             g.DrawRectangle(badgeInnerPen, badgeX + 3, badgeY + 3, badgeW - 6, badgeH - 6);
 
-            // Badge text content
             using var strFormatCenter = new StringFormat { Alignment = StringAlignment.Center };
             g.DrawString($"★ {variant.Name.ToUpper()} ★", headerFont, textBrushYellow, badgeX + (badgeW / 2), badgeY + 8, strFormatCenter);
             g.DrawString($"PAD: L:{cPad.Left}px | T:{cPad.Top}px | R:{cPad.Right}px | B:{cPad.Bottom}px", subHeaderFont, textBrushCyan, badgeX + (badgeW / 2), badgeY + 26, strFormatCenter);
@@ -180,6 +178,7 @@ public static class DummyGenerator
             Name = variant.Name,
             RelSubDir = "",
             RelFilePath = $"{variant.Name}.png",
+            ImageHash = $"dummy_{variant.Name}_{cPad.Left}_{cPad.Top}_{cPad.Right}_{cPad.Bottom}",
             GroupKey = "dummy",
             OrigW = targetW,
             OrigH = targetH,
@@ -187,6 +186,7 @@ public static class DummyGenerator
             CardH = dH,
             TotalCellW = dW,
             TotalCellH = dH + headerH,
+            AppliedPadding = new ComputedPadding { Left = cPad.Left, Top = cPad.Top, Right = cPad.Right, Bottom = cPad.Bottom },
             HasCorrectRatio = true,
             Bucket = CardBucket.Main,
             Tier = MainTier.Exact,

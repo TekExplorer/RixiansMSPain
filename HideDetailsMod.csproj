@@ -88,6 +88,11 @@
         <Error Text=" Slay the Spire 2 data not found at path '$(Sts2DataDir)'" Condition="'$(Sts2DataDir)' == '' or !Exists('$(Sts2DataDir)')" />
     </Target>
 
+    <Target Name="RunAtlasPacker" BeforeTargets="BeforeBuild;BeforeRebuild;CheckDependencyPaths">
+        <Message Text="Running Atlas Packer..." Importance="high" />
+        <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)\ImageGen\AtlasPacker.csproj&quot; -- -c &quot;$(MSBuildProjectDirectory)\ImageGen\atlas_config.json&quot;" Condition="Exists('$(MSBuildProjectDirectory)\ImageGen\AtlasPacker.csproj')" />
+    </Target>
+
     <!-- FIXED TARGET: Now uses $(LocalJsonSource) to copy and rename the file properly -->
     <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent">
         <Message Text="Copying .dll .pdb and $(LocalJsonSource) to mods folder as $(AssemblyName).json." Importance="high" />

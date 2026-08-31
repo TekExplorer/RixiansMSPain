@@ -165,6 +165,9 @@ public class SingleAtlasProfile
     public int? TargetWidth { get; set; } = 606;
     public int? TargetHeight { get; set; } = 852;
     public int? Padding { get; set; } = 8;
+    public int? MaxTextureSize { get; set; } = 16384;
+    public int? WarnAboveSize { get; set; } = 4096;
+    public bool? DownscaleProportionalOversized { get; set; } = true;
     public bool? Force { get; set; } = false;
     public CanvasPadding CanvasPadding { get; set; } = new();
     public HeaderConfig Header { get; set; } = new();
@@ -181,6 +184,9 @@ public class MultiAtlasConfigFile
     public int? TargetWidth { get; set; }
     public int? TargetHeight { get; set; }
     public int? Padding { get; set; }
+    public int? MaxTextureSize { get; set; }
+    public int? WarnAboveSize { get; set; }
+    public bool? DownscaleProportionalOversized { get; set; }
     public bool? Force { get; set; }
     public bool? Enabled { get; set; }
     public CanvasPadding CanvasPadding { get; set; }
@@ -195,6 +201,7 @@ public class CardItem
     public string RelSubDir;
     public string RelFilePath;
     public string GroupKey;
+    public string ImageHash;
     public CardItem CanonicalItem;
     public int OrigW, OrigH, CardW, CardH;
     public int TotalCellW, TotalCellH;
@@ -202,6 +209,7 @@ public class CardItem
     public ComputedPadding AppliedPadding;
     public string AtlasPngRes;
     public bool HasCorrectRatio;
+    public bool WasDownscaled;
     public CardBucket Bucket;
     public MainTier Tier;
     public OversizedShape ShapeCategory;
