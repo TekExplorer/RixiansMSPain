@@ -214,11 +214,17 @@ texture = ExtResource("3_tnu10")
 expand_mode = 1
 
 [node name="Signature" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = -664.0
-offset_top = 520.0
-offset_right = -160.05554
-offset_bottom = 567.0
+unique_name_in_owner = true
+top_level = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -67.0
+offset_right = 524.0
+offset_bottom = -20.0
+grow_vertical = 0
 scale = Vector2(0.8846111, 0.8846111)
 texture = ExtResource("3_u1lud")
 expand_mode = 1
