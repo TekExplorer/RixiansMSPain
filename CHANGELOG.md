@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.2.14-canary] - 2026-08-31
+- Fixed Luminesce sparkles leaking to other cards
+- Made more things responsive to the safe mode toggle
+- Fixed Defile Exhaust icon being broken
+- Added credits for sfx and vfx
+- Switched to Atlases for card images, dramatically improving loading in the compendium
+- Added some padding to the top and left of the arts so that everything is properly aligned (goddammit Mega Crit)
+- Shifted Pull Aggro to be better aligned
+- Fixed a bug with Infinite Blades VFX
+
 ## [v0.2.13-canary] - 2026-08-28
 
 - Fixed freddy epitaph appearing on new Soul
@@ -258,3 +268,5 @@ All notable changes to this project will be documented in this file.
 [v0.0.3]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.2...v0.0.3
 [v0.0.2]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.1...v0.0.2
 [v0.0.1]: https://github.com/TekExplorer/RixiansMSPain/releases/tag/v0.0.1
+
+[v0.2.14-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.13-canary...v0.2.14-canary
