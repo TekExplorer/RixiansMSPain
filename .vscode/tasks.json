@@ -45,7 +45,7 @@
       "type": "shell",
       "command": "dotnet publish HideDetailsMod.csproj -c ExportRelease -p:WorkshopChannel=${input:channel}",
       "problemMatcher": ["$msCompile"],
-      "dependsOn": ["Credits: Validate", "Godot: Sync Card Atlas (.tres)"]
+      "dependsOn": ["Credits: Validate", "Godot: Sync Card Atlas"]
     },
     {
       "label": "Upload Mod",
@@ -81,28 +81,24 @@
       "presentation": { "reveal": "silent" }
     },
     {
-      "label": "Godot: Sync Card Atlas (.tres)",
+      "label": "Atlas: Sync Card Atlas",
       "type": "process",
-      "command": "powershell.exe",
+      "command": "dotnet",
       "args": [
-        "-NoProfile",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "${workspaceFolder}/scripts/Import-GodotImages.ps1"
+        "run",
+        "--project",
+        "${workspaceFolder}/ImageGen/AtlasPacker.csproj",
+        "--",
+        "-c",
+        "${workspaceFolder}/ImageGen/atlas_config.json"
       ],
-      "options": {
-        "env": {
-          "INPUT_PATH": "res://HideDetailsMod/artist_assets/",
-          "OUTPUT_PATH": "res://HideDetailsMod/images/atlases/card_atlas.sprites/"
-        }
-      },
       "presentation": {
         "echo": true,
         "reveal": "always",
         "panel": "shared",
         "clear": true
-      }
+      },
+      "problemMatcher": ["$msCompile"]
     },
     {
       "label": "Godot: Import",

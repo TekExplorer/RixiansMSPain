@@ -1,0 +1,91 @@
+{
+  "configs": [
+    {
+      "name": "dummies",
+      "enabled": false,
+      "outputRoot": "../HideDetailsMod/images/atlases/card_atlas.sprites/",
+      "atlasName": "card_atlas_dummy",
+      "targetWidth": 606,
+      "targetHeight": 852,
+      "padding": 8,
+      "header": {
+        "enabled": true,
+        "height": 26,
+        "fontFamily": "Consolas",
+        "fontSize": 10.0,
+        "bold": true,
+        "includeDimensions": true,
+        "includeAspectRatio": true,
+        "color": "#DCDCDC",
+        "warningColor": "#FF5050",
+        "correctRatioColor": "#64D2FF"
+      },
+      "dummyVariants": [
+        { "name": "_dummy_zero", "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        {
+          "name": "_dummy_current",
+          "left": 10,
+          "top": 10,
+          "right": 0,
+          "bottom": 2
+        },
+        {
+          "name": "_dummy_y_plus5",
+          "left": 10,
+          "top": 15,
+          "right": 0,
+          "bottom": 2
+        },
+        {
+          "name": "_dummy_x_plus5",
+          "left": 15,
+          "top": 10,
+          "right": 0,
+          "bottom": 2
+        },
+        {
+          "name": "_dummy_balanced_10_10",
+          "left": 10,
+          "top": 10,
+          "right": 10,
+          "bottom": 10
+        }
+      ]
+    },
+    {
+      "name": "cards",
+      "enabled": true,
+      "inputRoot": "../HideDetailsMod/artist_assets/",
+      "outputRoot": "../HideDetailsMod/images/atlases/card_atlas.sprites/",
+      "atlasName": "card_atlas",
+      "targetWidth": 606,
+      "targetHeight": 852,
+      "padding": 8,
+      "canvasPadding": {
+        "left": 10,
+        "top": 10,
+        "right": 0,
+        "bottom": 2,
+        "scaleWithResolution": true,
+        "mismatchedRatioMode": "ScaleToFit",
+        "showOutline": false,
+        "outlineColor": "#FF00FF"
+      },
+      "header": {
+        "enabled": false,
+        "height": 26,
+        "fontFamily": "Consolas",
+        "fontSize": 10.0,
+        "bold": true,
+        "includeDimensions": true,
+        "includeAspectRatio": true,
+        "color": "#DCDCDC",
+        "warningColor": "#FF5050",
+        "correctRatioColor": "#64D2FF"
+      },
+      "groups": {
+        "misc": ["curse", "status", "quest", "event", "token"]
+      }
+    }
+  ]
+}
