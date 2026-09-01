@@ -280,3 +280,5 @@ All notable changes to this project will be documented in this file.
 [v0.2.14-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.13-canary...v0.2.14-canary
 
 [v0.2.15-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.14-canary...v0.2.15-canary
+
+[v0.2.16-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.15-canary...v0.2.16-canary
