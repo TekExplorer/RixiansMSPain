@@ -61,6 +61,8 @@ public partial class MainFile : Node
         harmony.TryPatchAll(assembly);
 
         InitModCredits();
+
+        Preload.WarmUpSync();
     }
 
     static void InitModCredits()
