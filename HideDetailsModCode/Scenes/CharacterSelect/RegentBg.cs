@@ -13,8 +13,9 @@ public partial class RegentBg : Control
 
 	[Export]
 	private float maxTiltDegrees = 4.0f; // Significantly reduced for a very gentle sway
-
+#nullable disable
 	private TextureRect blade;
+#nullable restore
 	private Vector2 centerPoint;
 	private float angle = 0.0f;
 

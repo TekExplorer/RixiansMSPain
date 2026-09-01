@@ -15,7 +15,9 @@ public abstract partial class NCreatureModifierVfx : Node
         Permanent
     }
 
+#nullable disable
     public NCreatureVisuals _creatureVisuals;
+#nullable restore
     public DurationMode _mode = DurationMode.Timed;
     public float _duration = 0.4f;
 
@@ -68,7 +70,7 @@ public abstract partial class NCreatureModifierVfx : Node
     {
         _cancelToken = VfxCancellationToken.Token;
         _driver = CreatureTransformDriver.GetOrCreate(_creatureVisuals);
-        _driver.Register(this);
+        _driver?.Register(this);
 
         TaskHelper.RunSafely(PlayVfx());
     }

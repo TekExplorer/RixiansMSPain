@@ -6,7 +6,9 @@ namespace HideDetailsMod.HideDetailsModCode.Vfx;
 
 public partial class CreatureTransformDriver : Node
 {
+#nullable disable
     private Node2D _body;
+#nullable restore
     private Vector2 _basePosition;
     private Vector2 _baseScale;
     private float _baseRotation;

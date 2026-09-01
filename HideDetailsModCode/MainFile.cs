@@ -18,7 +18,7 @@ namespace HideDetailsMod.HideDetailsModCode;
 [ModInitializer(nameof(Initialize))]
 public partial class MainFile : Node
 {
-    public static Mod Mod => ModManager.Mods.FirstOrDefault(mod => mod.manifest?.id == ModId);
+    public static Mod Mod => ModManager.Mods.FirstOrDefault(mod => mod.manifest?.id == ModId)!;
     public const string ModId = "HideDetailsMod"; //At the moment, this is used only for the Logger and harmony names.
 #if DEBUG
     public static bool NecrobinderSetIsPublic => true;
@@ -37,6 +37,7 @@ public partial class MainFile : Node
         var is107 = version.Contains(".107.");
         if (!is107)
         {
+#nullable disable
             string modFolder = Path.GetDirectoryName(assembly.Location);
             string betaPackPath = Path.Combine(modFolder, "HideDetailsMod.Beta.betapack");
 
@@ -46,6 +47,7 @@ public partial class MainFile : Node
                 AccessTools.Method(typeof(ModManager), "AssociateAssemblyWithMod").Invoke(null, [ModId, asm]);
                 // ModManager.AssociateAssemblyWithMod(ModId, asm);
             }
+#nullable restore
         }
         MyModConfig.Init();
         CustomLocTableManager.Register("usernames");

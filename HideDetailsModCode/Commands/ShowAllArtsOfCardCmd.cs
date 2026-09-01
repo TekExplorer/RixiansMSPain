@@ -36,6 +36,7 @@ class ShowAllArtsOfCardCmd : AbstractConsoleCmd
         }
 
         var inspectScreen = NGame.Instance!.GetInspectCardScreen();
+        inspectScreen.Close();
         inspectScreen.Open(variants, 0);
 
         return new CmdResult(success: true, $"Previewed all '{cardModel.Id.Entry}' arts");
