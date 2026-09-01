@@ -17,6 +17,8 @@
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
         <Optimize>false</Optimize>
         <DebugType>portable</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <OptimizeCode>false</OptimizeCode>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -94,7 +96,7 @@
     </Target>
 
     <!-- FIXED TARGET: Now uses $(LocalJsonSource) to copy and rename the file properly -->
-    <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent">
+    <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent" Condition=" '$(BuildingForLiveReload)' != 'true' ">
         <Message Text="Copying .dll .pdb and $(LocalJsonSource) to mods folder as $(AssemblyName).json." Importance="high" />
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
         <Copy SourceFiles="$(LocalJsonSource)" DestinationFiles="$(ModsPath)$(MSBuildProjectName)/$(AssemblyName).json" />
@@ -131,7 +133,7 @@
         <WorkshopJsonSource>$(LocalJsonSource)</WorkshopJsonSource>
     </PropertyGroup>
 
-    <Target Name="CopyToWorkshopContent" AfterTargets="PostBuildEvent">
+    <Target Name="CopyToWorkshopContent" AfterTargets="PostBuildEvent" Condition=" '$(BuildingForLiveReload)' != 'true' ">
         <Message Text="Copying .dll .pdb and $(WorkshopJsonSource) to $(WorkshopChannel)/content." Importance="high" />
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(WorkshopContentRoot)" />
         <Copy SourceFiles="$(WorkshopJsonSource)" DestinationFiles="$(WorkshopContentRoot)\$(AssemblyName).json" />

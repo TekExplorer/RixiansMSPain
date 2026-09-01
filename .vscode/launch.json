@@ -9,15 +9,15 @@
       "program": "${workspaceFolder}/.game/SlayTheSpire2.exe",
       // "args": ["-fastmp", "host_standard"],
       // "args": ["-fastmp", "join", "-clientId", "1000"],
-      "args": ["-log", "Generic", "Debug"],
+      // "args": ["-log", "Generic", "Debug"],
       "stopAtEntry": false,
       "preLaunchTask": "Build Mod (Debug)",
       "console": "internalConsole",
-      // "justMyCode": false
       "justMyCode": false,
       "symbolOptions": {
         "searchMicrosoftSymbolServer": true,
-        "searchNuGetOrgSymbolServer": true
+        "searchNuGetOrgSymbolServer": true,
+        "searchPaths": ["${workspaceFolder}/.game/mods/HideDetailsMod"]
       }
     }
   ]
