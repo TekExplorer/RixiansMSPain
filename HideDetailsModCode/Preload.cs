@@ -2,106 +2,114 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using Godot;
 
-namespace HideDetailsMod.HideDetailsModCode;
+namespace HideDetailsMod;
 
 /// <summary>
-/// Pre-warms backing atlas textures and proxy .tres resources in the background
-/// for HideDetailsMod to eliminate runtime frame drops and GPU upload hitches.
+/// Pre-warms backing atlas textures and proxy .tres resources in the background.
+/// Zero-configuration: call Preload.Start() and Preload.Wait() with no parameters.
 /// </summary>
 public static class Preload
 {
     private static readonly ConcurrentBag<Resource> _pinnedResources = [];
+    private static Task? _activePreloadTask;
+    private static readonly object _taskLock = new();
 
     public const string DefaultModAtlasDir = "res://HideDetailsMod/images/atlases/";
 
-    public static readonly string[] DefaultModSpriteDirs =
-    {
-        "res://HideDetailsMod/images/atlases/card_atlas.sprites/"
-    };
-
     /// <summary>
-    /// Executes full preloading asynchronously on a background task.
-    /// Accepts multiple sprite directories or auto-detects all `.sprites/` folders if omitted.
+    /// Kicks off background preloading using all default paths and auto-discovery.
+    /// Does not block. Call Wait() at the end of your initializer.
     /// </summary>
-    public static Task WarmUpAsync(
-        string atlasBaseDir = DefaultModAtlasDir,
-        IEnumerable<string>? spriteDirs = null)
+    public static void Start()
     {
-        return Task.Run(() => WarmUpSync(atlasBaseDir, spriteDirs));
+        lock (_taskLock)
+        {
+            if (_activePreloadTask != null && !_activePreloadTask.IsCompleted)
+            {
+                return;
+            }
+
+            _activePreloadTask = Task.Run(WarmUpSync);
+        }
     }
 
     /// <summary>
-    /// Overload for params string[] convenience.
+    /// Blocks the calling thread until background preloading completes.
+    /// Safe to call even if Start() was not called or is already finished.
     /// </summary>
-    public static Task WarmUpAsync(string atlasBaseDir, params string[] spriteDirs)
+    public static bool Wait(int timeoutMs = -1)
     {
-        return Task.Run(() => WarmUpSync(atlasBaseDir, spriteDirs));
+        Task? task;
+        lock (_taskLock)
+        {
+            task = _activePreloadTask;
+        }
+
+        if (task == null || task.IsCompleted)
+        {
+            return true;
+        }
+
+        try
+        {
+            if (timeoutMs < 0)
+            {
+                task.GetAwaiter().GetResult();
+                return true;
+            }
+
+            return task.Wait(timeoutMs);
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[HideDetailsMod] Exception while waiting for preload: {ex.Message}");
+            return false;
+        }
     }
 
     /// <summary>
-    /// Executes full preloading synchronously.
+    /// Returns true if background preloading is currently active.
     /// </summary>
-    public static void WarmUpSync(
-        string atlasBaseDir = DefaultModAtlasDir,
-        IEnumerable<string>? spriteDirs = null)
+    public static bool IsRunning
+    {
+        get
+        {
+            lock (_taskLock)
+            {
+                return _activePreloadTask != null && !_activePreloadTask.IsCompleted;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Synchronously executes discovery, VRAM upload, and sprite caching.
+    /// </summary>
+    public static void WarmUpSync()
     {
         var sw = Stopwatch.StartNew();
-        int atlasCount = 0;
-        int spriteCount = 0;
 
         GD.Print("[HideDetailsMod] 🚀 Starting asset preloading...");
 
-        // 1. Discover and upload all backing atlas PNG sheets in the atlas folder to VRAM
-        atlasCount = PreloadAllAtlasSheets(atlasBaseDir);
+        // 1. Auto-discover and upload all backing atlas PNG sheets
+        int atlasCount = PreloadAllAtlasSheets(DefaultModAtlasDir);
 
-        // 2. Resolve sprite directories (explicitly provided, default, or auto-discovered)
-        var targetDirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        // 2. Auto-discover all *.sprites/ folders inside the atlas directory
+        var spriteDirs = DiscoverSpriteDirectories(DefaultModAtlasDir);
+        int spriteCount = 0;
 
-        if (spriteDirs != null && spriteDirs.Any())
+        foreach (string dirPath in spriteDirs)
         {
-            foreach (var d in spriteDirs)
-            {
-                if (!string.IsNullOrWhiteSpace(d)) targetDirs.Add(d);
-            }
-        }
-        else
-        {
-            // Auto-discover all *.sprites/ folders inside the atlas base directory
-            foreach (var autoDir in DiscoverSpriteDirectories(atlasBaseDir))
-            {
-                targetDirs.Add(autoDir);
-            }
-
-            // Fallback to default if nothing discovered
-            if (targetDirs.Count == 0)
-            {
-                foreach (var d in DefaultModSpriteDirs) targetDirs.Add(d);
-            }
-        }
-
-        // 3. Recursively warm up all individual .tres proxy sprites into Godot's cache
-        foreach (string dirPath in targetDirs)
-        {
-            if (DirAccess.DirExistsAbsolute(dirPath))
-            {
-                spriteCount += PreloadDirectoryRecursive(dirPath);
-            }
+            spriteCount += PreloadDirectoryRecursive(dirPath);
         }
 
         sw.Stop();
-        GD.Print($"[HideDetailsMod] ✨ Preload complete in {sw.ElapsedMilliseconds} ms ({atlasCount} atlas sheets, {spriteCount} .tres sprites across {targetDirs.Count} directories cached).");
+        GD.Print($"[HideDetailsMod] ✨ Preload complete in {sw.ElapsedMilliseconds} ms ({atlasCount} atlas sheets, {spriteCount} .tres sprites across {spriteDirs.Count} directories cached).");
     }
 
-    /// <summary>
-    /// Auto-discovers any directories ending with `.sprites` inside the atlas root.
-    /// </summary>
     private static List<string> DiscoverSpriteDirectories(string atlasBaseDir)
     {
         var found = new List<string>();
-        if (!DirAccess.DirExistsAbsolute(atlasBaseDir))
-        {
-            return found;
-        }
+        if (!DirAccess.DirExistsAbsolute(atlasBaseDir)) return found;
 
         using var dir = DirAccess.Open(atlasBaseDir);
         if (dir == null) return found;
@@ -122,15 +130,9 @@ public static class Preload
         return found;
     }
 
-    /// <summary>
-    /// Scans the root atlas directory for any PNG sheets and uploads them to VRAM.
-    /// </summary>
     private static int PreloadAllAtlasSheets(string atlasBaseDir)
     {
-        if (!DirAccess.DirExistsAbsolute(atlasBaseDir))
-        {
-            return 0;
-        }
+        if (!DirAccess.DirExistsAbsolute(atlasBaseDir)) return 0;
 
         using var dir = DirAccess.Open(atlasBaseDir);
         if (dir == null) return 0;
@@ -156,9 +158,6 @@ public static class Preload
         return loadedCount;
     }
 
-    /// <summary>
-    /// Preloads and pins a specific texture in memory/VRAM.
-    /// </summary>
     public static bool PreloadTexture(string path)
     {
         if (string.IsNullOrWhiteSpace(path) || !ResourceLoader.Exists(path))
@@ -183,9 +182,6 @@ public static class Preload
         return false;
     }
 
-    /// <summary>
-    /// Recursively traverses a directory, caching all .tres files with CacheMode.Reuse.
-    /// </summary>
     private static int PreloadDirectoryRecursive(string dirPath)
     {
         if (string.IsNullOrWhiteSpace(dirPath) || !DirAccess.DirExistsAbsolute(dirPath))

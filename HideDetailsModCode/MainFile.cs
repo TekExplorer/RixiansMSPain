@@ -31,6 +31,8 @@ public partial class MainFile : Node
     public static bool IroncladSetActive => false;
     public static void Initialize()
     {
+        Preload.Start();
+
         var assembly = Assembly.GetExecutingAssembly();
 
         var version = ReleaseInfoManager.Instance.ReleaseInfo?.Version ?? "";
@@ -62,7 +64,7 @@ public partial class MainFile : Node
 
         InitModCredits();
 
-        Preload.WarmUpSync();
+        Preload.Wait();
     }
 
     static void InitModCredits()
