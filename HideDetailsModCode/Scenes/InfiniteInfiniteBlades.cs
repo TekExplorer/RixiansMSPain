@@ -32,7 +32,7 @@ public partial class InfiniteInfiniteBlades : Control
         Visible = false;
         ZIndex = 0;
         ZAsRelative = true;
-        Position = new Vector2(47f, -185f);
+        Position = new Vector2(46.5f, -185f);
 
         Gradient bladeGradient = new()
         {
