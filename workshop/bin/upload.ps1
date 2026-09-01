@@ -138,8 +138,11 @@ if ($shouldUploadToSteam) {
 
 # --- GITHUB JOB ---
 if ($githubReleaseNeedsSync -and $hasGhCli) {
-    $jobs += Start-Job -Name "GitHubRelease" -ArgumentList $version, $channelRoot, $contentRoot, $releaseNotes, $Channel -ScriptBlock {
-        param($ver, $channelDir, $contentDir, $notes, $chan)
+    $jobs += Start-Job -Name "GitHubRelease" -ArgumentList $version, $channelRoot, $contentRoot, $releaseNotes, $Channel, $workspaceRoot -ScriptBlock {
+        param($ver, $channelDir, $contentDir, $notes, $chan, $repoRoot)
+
+        # Ensure the job runs inside the Git repository root
+        Set-Location -LiteralPath $repoRoot
 
         $zipPath = Join-Path $channelDir "HideDetailsMod-$ver.zip"
         if (Test-Path -LiteralPath $zipPath) { Remove-Item -LiteralPath $zipPath -Force }
