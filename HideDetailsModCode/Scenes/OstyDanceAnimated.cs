@@ -8,6 +8,7 @@ namespace HideDetailsMod.HideDetailsModCode.Scenes;
 
 public partial class OstyDanceAnimated : Control
 {
+#if true
 	// Since AddedNode doesnt work properly...
 	[HarmonyPatch(typeof(NCard), "_Ready")]
 	public static class NCardOstyDancePatch
@@ -41,12 +42,15 @@ public partial class OstyDanceAnimated : Control
 			}
 		}
 	}
+#endif
 
-	// static public readonly AddedNode<NCard, OstyDanceAnimated> Node = new("res://HideDetailsMod/scenes/cards/osty_dance.tscn", static (card, animation) =>
-	// {
-	// 	animation.card = card;
-	// 	card._portraitCanvasGroup.AddChild(animation);
-	// });
+#if false // baselib bug. next version hopefully fixes it.
+	static public readonly AddedNode<NCard, OstyDanceAnimated> Node = new("res://HideDetailsMod/scenes/cards/osty_dance.tscn", static (card, animation) =>
+	{
+		animation.card = card;
+		card._portraitCanvasGroup.AddChild(animation);
+	});
+#endif
 
 #nullable disable
 	NCard card;
