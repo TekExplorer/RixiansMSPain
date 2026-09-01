@@ -11,6 +11,8 @@ if ($DryRun) {
     Write-Host "`n================ [DRY RUN MODE ENABLED] ================" -ForegroundColor Magenta
 }
 
+$GitHubRepoUrl = "https://github.com/TekExplorer/RixiansMSPain"
+
 $binRoot = $PSScriptRoot
 $workshopRoot = Split-Path -Parent $binRoot
 $workspaceRoot = Split-Path -Parent $workshopRoot
@@ -58,17 +60,48 @@ else {
     Write-Host "[Check] All $($requiredContentFiles.Count) content files exist in '$contentRoot'." -ForegroundColor Green
 }
 
-# 2. Extract Version and Notes
+# 2. Extract Version and Build Notes with Timeline Diff
 $manifest = Get-Content -LiteralPath $jsonPath -Raw | ConvertFrom-Json
 [string]$rawVersion = if ($manifest.version) { $manifest.version } elseif ($manifest.Version) { $manifest.Version } else { $null }
 $version = $rawVersion.Trim()
 if (-not $version.StartsWith('v')) { $version = "v$version" }
 if ($Channel -eq 'Canary' -and -not $version.EndsWith('-canary')) { $version = "$version-canary" }
 
-$releaseNotes = ""
+$rawChangeNotes = ""
 if (Test-Path -LiteralPath $workshopJsonPath) {
     $wsMeta = Get-Content -LiteralPath $workshopJsonPath -Raw | ConvertFrom-Json
-    if ($wsMeta.changeNote) { $releaseNotes = $wsMeta.changeNote }
+    if ($wsMeta.changeNote) { $rawChangeNotes = $wsMeta.changeNote }
+}
+
+# Format bullets
+$bulletNotes = ($rawChangeNotes -split "\r?\n" | Where-Object { $_.Trim() -ne '' } | ForEach-Object {
+        $line = $_.Trim()
+        if (-not ($line.StartsWith('-') -or $line.StartsWith('*'))) { "- $line" } else { $line }
+    }) -join "`n"
+
+# Determine previous tag for comparison diff
+$prevTag = if ($Channel -eq 'Canary') {
+    (git tag --sort=-v:refname | Where-Object { $_ -ne $version -and $_ -like "*-canary" } | Select-Object -First 1)
+}
+else {
+    (git tag --sort=-v:refname | Where-Object { $_ -ne $version -and $_ -notlike "*-canary" } | Select-Object -First 1)
+}
+if (-not $prevTag) {
+    $prevTag = (git tag --sort=-v:refname | Where-Object { $_ -ne $version } | Select-Object -First 1)
+}
+
+$diffSection = if ($prevTag) {
+    "### Git Timeline Diff`nSee complete code changes: [$($prevTag.Trim())...$version]($GitHubRepoUrl/compare/$($prevTag.Trim())...$version)"
+}
+else {
+    "### Git Timeline Diff`nSee release tag: [$version]($GitHubRepoUrl/releases/tag/$version)"
+}
+
+$fullReleaseNotes = if ($bulletNotes) {
+    "$bulletNotes`n`n$diffSection"
+}
+else {
+    $diffSection
 }
 
 # 3. Check GitHub Release State
@@ -86,7 +119,7 @@ if ($hasGhCli) {
         $assetName = "HideDetailsMod-$version.zip"
         $hasAsset = $releaseInfo.assets | Where-Object { $_.name -eq $assetName }
         if ($hasAsset -and -not $releaseInfo.isDraft) {
-            Write-Host "[GitHub] Release $version already exists. Would skip GitHub release." -ForegroundColor Gray
+            Write-Host "[GitHub] Release $version already exists with asset '$assetName'. Would skip." -ForegroundColor Gray
             $githubReleaseNeedsSync = $false
         }
     }
@@ -103,6 +136,10 @@ if ($DryRun) {
     Write-Host "`n[Steam] Would run: '$uploaderPath upload -w $channelRoot'" -ForegroundColor Yellow
     
     if ($githubReleaseNeedsSync) {
+        Write-Host "`n[GitHub] Target Release Body:" -ForegroundColor DarkGray
+        Write-Host "----------------------------------------" -ForegroundColor DarkGray
+        Write-Host $fullReleaseNotes -ForegroundColor White
+        Write-Host "----------------------------------------" -ForegroundColor DarkGray
         Write-Host "[GitHub] Would zip: '$contentRoot\*' -> 'HideDetailsMod-$version.zip'" -ForegroundColor Yellow
         Write-Host "[GitHub] Would run: 'gh release create $version ... $(if ($Channel -eq 'Canary') {'--prerelease'})'" -ForegroundColor Yellow
     }
@@ -131,51 +168,67 @@ $jobs = @()
 if ($shouldUploadToSteam) {
     $jobs += Start-Job -Name "SteamWorkshop" -ArgumentList $uploaderPath, $channelRoot -ScriptBlock {
         param($uploader, $workshop)
+        Write-Output "Starting Steam Workshop upload..."
         & $uploader upload -w $workshop 2>&1
         if ($LASTEXITCODE -ne 0) { throw "Steam upload failed with exit code $LASTEXITCODE" }
+        Write-Output "Steam Workshop upload finished successfully."
     }
 }
 
 # --- GITHUB JOB ---
 if ($githubReleaseNeedsSync -and $hasGhCli) {
-    $jobs += Start-Job -Name "GitHubRelease" -ArgumentList $version, $channelRoot, $contentRoot, $releaseNotes, $Channel, $workspaceRoot -ScriptBlock {
+    $jobs += Start-Job -Name "GitHubRelease" -ArgumentList $version, $channelRoot, $contentRoot, $fullReleaseNotes, $Channel, $workspaceRoot -ScriptBlock {
         param($ver, $channelDir, $contentDir, $notes, $chan, $repoRoot)
 
-        # Ensure the job runs inside the Git repository root
         Set-Location -LiteralPath $repoRoot
 
-        $zipPath = Join-Path $channelDir "HideDetailsMod-$ver.zip"
+        $zipName = "HideDetailsMod-$ver.zip"
+        $zipPath = Join-Path $channelDir $zipName
         if (Test-Path -LiteralPath $zipPath) { Remove-Item -LiteralPath $zipPath -Force }
+
+        Write-Output "Collecting content files for archive..."
+        $filesToZip = Get-ChildItem -Path $contentDir -File
+        $totalBytes = ($filesToZip | Measure-Object -Property Length -Sum).Sum
+        $sizeMB = [math]::Round($totalBytes / 1MB, 2)
+        Write-Output "Compressing $($filesToZip.Count) files (~$sizeMB MB) into $zipName..."
+        
         Compress-Archive -Path (Join-Path $contentDir '*') -DestinationPath $zipPath -Force
+        $zipSizeMB = [math]::Round((Get-Item -LiteralPath $zipPath).Length / 1MB, 2)
+        Write-Output "Archive created ($zipSizeMB MB)."
 
         $tempNotes = [System.IO.Path]::GetTempFileName()
         $notes | Set-Content -Path $tempNotes -Encoding utf8
 
-        $flags = @('--title', $ver, '--notes-file', $tempNotes)
-        if ($chan -eq 'Canary') { $flags += '--prerelease' }
-
-        $prevEAP = $ErrorActionPreference
-        $ErrorActionPreference = 'Continue'
-        $null = gh release view $ver 2>$null
+        Write-Output "Querying GitHub release status for tag '$ver'..."
+        $null = cmd /c "gh release view $ver 2>nul"
         $releaseExists = ($LASTEXITCODE -eq 0)
-        $ErrorActionPreference = $prevEAP
 
         if ($releaseExists) {
-            gh release upload $ver $zipPath --clobber
+            Write-Output "Release '$ver' exists. Updating notes and uploading '$zipName'..."
+            cmd /c "gh release edit $ver --notes-file `"$tempNotes`" 2>&1"
+            cmd /c "gh release upload $ver `"$zipPath`" --clobber 2>&1"
         }
         else {
-            gh release create $ver $zipPath @flags
+            Write-Output "Creating new release '$ver' and publishing asset..."
+            $flags = @('--title', "`"$ver`"", '--notes-file', "`"$tempNotes`"")
+            if ($chan -eq 'Canary') { $flags += '--prerelease' }
+            
+            $cmd = "gh release create $ver `"$zipPath`" " + ($flags -join ' ') + " 2>&1"
+            $createOut = cmd /c $cmd
+            if ($createOut) { Write-Output ($createOut -join "`n") }
         }
 
         if (Test-Path -LiteralPath $zipPath) { Remove-Item -LiteralPath $zipPath -Force }
         if (Test-Path -LiteralPath $tempNotes) { Remove-Item -LiteralPath $tempNotes -Force }
+        
+        Write-Output "GitHub Release completed successfully."
     }
 }
 
-# 6. Stream Live Output
+# 6. Stream Live Output Safely
 while ($jobs | Where-Object { $_.State -eq 'Running' }) {
     foreach ($job in $jobs) {
-        $output = Receive-Job -Job $job
+        $output = Receive-Job -Job $job -ErrorAction SilentlyContinue
         if ($output) {
             $color = if ($job.Name -eq 'SteamWorkshop') { 'Cyan' } else { 'Yellow' }
             foreach ($line in $output) {
@@ -187,8 +240,9 @@ while ($jobs | Where-Object { $_.State -eq 'Running' }) {
     Start-Sleep -Milliseconds 250
 }
 
+# Flush remaining output
 foreach ($job in $jobs) {
-    $output = Receive-Job -Job $job
+    $output = Receive-Job -Job $job -ErrorAction SilentlyContinue
     if ($output) {
         $color = if ($job.Name -eq 'SteamWorkshop') { 'Cyan' } else { 'Yellow' }
         foreach ($line in $output) {
@@ -202,6 +256,9 @@ $failedJobs = $jobs | Where-Object { $_.State -eq 'Failed' -or $_.JobStateInfo.R
 $jobs | Remove-Job -Force
 
 if ($failedJobs) {
+    foreach ($failedJob in $failedJobs) {
+        Write-Host "[$($failedJob.Name)] Execution Error: $($failedJob.JobStateInfo.Reason.Message)" -ForegroundColor Red
+    }
     throw "One or more upload operations failed. Inspect logs above."
 }
 
