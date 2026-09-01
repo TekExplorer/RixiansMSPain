@@ -12,22 +12,36 @@ if ($DryRun) {
 }
 
 $binRoot = $PSScriptRoot
-$workshopScriptsRoot = Split-Path -Parent $binRoot
-$workspaceRoot = Split-Path -Parent $workshopScriptsRoot
+$workshopRoot = Split-Path -Parent $binRoot
+$workspaceRoot = Split-Path -Parent $workshopRoot
 
-$channelRoot = Join-Path $workspaceRoot "workshop\$Channel"
-$workshopRoot = $channelRoot
+$channelRoot = Join-Path $workshopRoot $Channel
 $contentRoot = Join-Path $channelRoot 'content'
 $jsonPath = Join-Path $contentRoot 'HideDetailsMod.json'
 $workshopJsonPath = Join-Path $channelRoot 'workshop.json'
 
 $runtimeInfo = [System.Runtime.InteropServices.RuntimeInformation]
 $uploaderName = if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) { 'ModUploader.exe' } else { 'ModUploader' }
-$uploaderPath = Join-Path $workspaceRoot "uploader\$uploaderName"
+$uploaderPath = Join-Path $workshopRoot "uploader\$uploaderName"
+
+# 0. Ensure ModUploader Exists
+if (-not (Test-Path -LiteralPath $uploaderPath)) {
+    $getUploaderScript = Join-Path $binRoot 'get_uploader.ps1'
+    if (Test-Path -LiteralPath $getUploaderScript) {
+        Write-Host "[Uploader] '$uploaderName' not found. Downloading via get_uploader.ps1..." -ForegroundColor Yellow
+        & $getUploaderScript
+        if (-not (Test-Path -LiteralPath $uploaderPath)) {
+            throw "Failed to download or locate uploader at '$uploaderPath'."
+        }
+    }
+    else {
+        throw "Uploader not found at '$uploaderPath' and script '$getUploaderScript' is missing."
+    }
+}
 
 # 1. Verification Checks
-if (-not (Test-Path -LiteralPath $workshopRoot)) {
-    throw "Workshop channel folder not found at '$workshopRoot'."
+if (-not (Test-Path -LiteralPath $channelRoot)) {
+    throw "Workshop channel folder not found at '$channelRoot'."
 }
 
 $requiredContentFiles = @(
@@ -62,7 +76,6 @@ $hasGhCli = [bool](Get-Command gh -ErrorAction SilentlyContinue)
 $githubReleaseNeedsSync = $true
 
 if ($hasGhCli) {
-    # Suppress NativeCommandError by merging stderr into stdout or catching via try/finally
     $prevEAP = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     $existingReleaseJson = gh release view $version --json "assets,isDraft" 2>$null
@@ -84,10 +97,10 @@ if ($DryRun) {
     Write-Host "`n--- Dry Run Plan Summary ---" -ForegroundColor Cyan
     Write-Host "Target Channel:   $Channel"
     Write-Host "Target Version:   $version"
-    Write-Host "Workshop Folder:  $workshopRoot"
+    Write-Host "Workshop Folder:  $channelRoot"
     Write-Host "Uploader Binary:  $uploaderPath (Found: $(Test-Path -LiteralPath $uploaderPath))"
 
-    Write-Host "`n[Steam] Would run: '$uploaderPath upload -w $workshopRoot'" -ForegroundColor Yellow
+    Write-Host "`n[Steam] Would run: '$uploaderPath upload -w $channelRoot'" -ForegroundColor Yellow
     
     if ($githubReleaseNeedsSync) {
         Write-Host "[GitHub] Would zip: '$contentRoot\*' -> 'HideDetailsMod-$version.zip'" -ForegroundColor Yellow
@@ -116,7 +129,7 @@ $jobs = @()
 
 # --- STEAM JOB ---
 if ($shouldUploadToSteam) {
-    $jobs += Start-Job -Name "SteamWorkshop" -ArgumentList $uploaderPath, $workshopRoot -ScriptBlock {
+    $jobs += Start-Job -Name "SteamWorkshop" -ArgumentList $uploaderPath, $channelRoot -ScriptBlock {
         param($uploader, $workshop)
         & $uploader upload -w $workshop 2>&1
         if ($LASTEXITCODE -ne 0) { throw "Steam upload failed with exit code $LASTEXITCODE" }
@@ -138,7 +151,6 @@ if ($githubReleaseNeedsSync -and $hasGhCli) {
         $flags = @('--title', $ver, '--notes-file', $tempNotes)
         if ($chan -eq 'Canary') { $flags += '--prerelease' }
 
-        # Temporarily drop EAP so gh release view doesn't throw NativeCommandError when release is missing
         $prevEAP = $ErrorActionPreference
         $ErrorActionPreference = 'Continue'
         $null = gh release view $ver 2>$null
