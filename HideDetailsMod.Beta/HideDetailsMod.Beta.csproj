@@ -51,7 +51,7 @@
 
     <!-- Workshop -->
     <PropertyGroup>
-        <WorkshopChannel Condition="'$(WorkshopChannel)' == ''">Production</WorkshopChannel>
+        <WorkshopChannel Condition="'$(WorkshopChannel)' != 'Canary'">Production</WorkshopChannel>
     </PropertyGroup>
 
     <!-- AUTOMATED PIPELINE -->
