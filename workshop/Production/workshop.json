@@ -1,5 +1,14 @@
 ﻿{
-  "changeNote": "Added Necrobinder, Ancient, and Event cards!",
-  "tags": ["Cosmetics", "Art Pack", "Full Art", "Art", "Rixian", "TekExplorer"],
+  "changeNote": "Added Necrobinder, Ancient, and Event cards!\nAnd Character Select Screens!\nAnd a whole lot of cool interactions!\nAnd big preformance improvements!\nAnd more config options!\nThank you for your patience!",
+  "tags": [
+    "Configurable",
+    "Challenge",
+    "Cosmetics",
+    "Art Pack",
+    "Full Art",
+    "Art",
+    "Rixian",
+    "TekExplorer"
+  ],
   "dependencies": [3737335127]
 }
