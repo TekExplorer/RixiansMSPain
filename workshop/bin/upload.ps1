@@ -1,9 +1,15 @@
 param(
     [ValidateSet('Canary', 'Production')]
-    [string]$Channel = 'Production'
+    [string]$Channel = 'Production',
+
+    [switch]$DryRun
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ($DryRun) {
+    Write-Host "`n================ [DRY RUN MODE ENABLED] ================" -ForegroundColor Magenta
+}
 
 $binRoot = $PSScriptRoot
 $workshopScriptsRoot = Split-Path -Parent $binRoot
@@ -34,10 +40,14 @@ $missingFiles = foreach ($file in $requiredContentFiles) {
 if ($missingFiles) {
     throw "Missing required content files: $($missingFiles -join ', ')."
 }
+else {
+    Write-Host "[Check] All $($requiredContentFiles.Count) content files exist in '$contentRoot'." -ForegroundColor Green
+}
 
 # 2. Extract Version and Notes
 $manifest = Get-Content -LiteralPath $jsonPath -Raw | ConvertFrom-Json
-$version = $manifest.version
+[string]$rawVersion = if ($manifest.version) { $manifest.version } elseif ($manifest.Version) { $manifest.Version } else { $null }
+$version = $rawVersion.Trim()
 if (-not $version.StartsWith('v')) { $version = "v$version" }
 if ($Channel -eq 'Canary' -and -not $version.EndsWith('-canary')) { $version = "$version-canary" }
 
@@ -52,19 +62,43 @@ $hasGhCli = [bool](Get-Command gh -ErrorAction SilentlyContinue)
 $githubReleaseNeedsSync = $true
 
 if ($hasGhCli) {
-    $existingReleaseJson = gh release view $version --json assets, isDraft 2>$null
+    # Suppress NativeCommandError by merging stderr into stdout or catching via try/finally
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    $existingReleaseJson = gh release view $version --json "assets,isDraft" 2>$null
+    $ErrorActionPreference = $prevEAP
+
     if ($LASTEXITCODE -eq 0 -and $existingReleaseJson) {
         $releaseInfo = $existingReleaseJson | ConvertFrom-Json
         $assetName = "HideDetailsMod-$version.zip"
         $hasAsset = $releaseInfo.assets | Where-Object { $_.name -eq $assetName }
         if ($hasAsset -and -not $releaseInfo.isDraft) {
-            Write-Host "[GitHub] Release $version already exists. GitHub upload will be skipped." -ForegroundColor Gray
+            Write-Host "[GitHub] Release $version already exists. Would skip GitHub release." -ForegroundColor Gray
             $githubReleaseNeedsSync = $false
         }
     }
 }
 
-# 4. Prompt for Steam Workshop Upload
+# 4. Dry Run Output vs Live Execution
+if ($DryRun) {
+    Write-Host "`n--- Dry Run Plan Summary ---" -ForegroundColor Cyan
+    Write-Host "Target Channel:   $Channel"
+    Write-Host "Target Version:   $version"
+    Write-Host "Workshop Folder:  $workshopRoot"
+    Write-Host "Uploader Binary:  $uploaderPath (Found: $(Test-Path -LiteralPath $uploaderPath))"
+
+    Write-Host "`n[Steam] Would run: '$uploaderPath upload -w $workshopRoot'" -ForegroundColor Yellow
+    
+    if ($githubReleaseNeedsSync) {
+        Write-Host "[GitHub] Would zip: '$contentRoot\*' -> 'HideDetailsMod-$version.zip'" -ForegroundColor Yellow
+        Write-Host "[GitHub] Would run: 'gh release create $version ... $(if ($Channel -eq 'Canary') {'--prerelease'})'" -ForegroundColor Yellow
+    }
+
+    Write-Host "`n================ [END OF DRY RUN] ================`n" -ForegroundColor Magenta
+    exit 0
+}
+
+# 5. Live Confirmation Prompt
 $confirmation = Read-Host "Type UPLOAD to push $version ($Channel) to Steam Workshop (or press Enter to skip Steam)"
 $shouldUploadToSteam = ($confirmation -eq 'UPLOAD')
 
@@ -104,8 +138,14 @@ if ($githubReleaseNeedsSync -and $hasGhCli) {
         $flags = @('--title', $ver, '--notes-file', $tempNotes)
         if ($chan -eq 'Canary') { $flags += '--prerelease' }
 
+        # Temporarily drop EAP so gh release view doesn't throw NativeCommandError when release is missing
+        $prevEAP = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
         $null = gh release view $ver 2>$null
-        if ($LASTEXITCODE -eq 0) {
+        $releaseExists = ($LASTEXITCODE -eq 0)
+        $ErrorActionPreference = $prevEAP
+
+        if ($releaseExists) {
             gh release upload $ver $zipPath --clobber
         }
         else {
@@ -117,7 +157,7 @@ if ($githubReleaseNeedsSync -and $hasGhCli) {
     }
 }
 
-# 5. Stream Live Output from Jobs
+# 6. Stream Live Output
 while ($jobs | Where-Object { $_.State -eq 'Running' }) {
     foreach ($job in $jobs) {
         $output = Receive-Job -Job $job
@@ -132,7 +172,6 @@ while ($jobs | Where-Object { $_.State -eq 'Running' }) {
     Start-Sleep -Milliseconds 250
 }
 
-# Flush remaining buffers
 foreach ($job in $jobs) {
     $output = Receive-Job -Job $job
     if ($output) {
@@ -144,7 +183,6 @@ foreach ($job in $jobs) {
     }
 }
 
-# 6. Verify Results
 $failedJobs = $jobs | Where-Object { $_.State -eq 'Failed' -or $_.JobStateInfo.Reason }
 $jobs | Remove-Job -Force
 
