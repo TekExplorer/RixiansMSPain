@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.2.15-canary] - 2026-08-31
+- Fixed Pull Aggro not showing its animation due to BaseLib bug
+- Fixed credits showing as for upgraded art even when there is no distinct art for that card's upgrade.
+
 ## [v0.2.14-canary] - 2026-08-31
 - Fixed Luminesce sparkles leaking to other cards
 - Made more things responsive to the safe mode toggle
@@ -270,3 +274,5 @@ All notable changes to this project will be documented in this file.
 [v0.0.1]: https://github.com/TekExplorer/RixiansMSPain/releases/tag/v0.0.1
 
 [v0.2.14-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.13-canary...v0.2.14-canary
+
+[v0.2.15-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.14-canary...v0.2.15-canary
