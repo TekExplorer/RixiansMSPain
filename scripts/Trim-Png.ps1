@@ -3,7 +3,9 @@ param (
     [string]$InputPath,
 
     [Parameter(Position = 1)]
-    [string]$OutputPath
+    [string]$OutputPath,
+
+    [switch]$Recurse
 )
 
 Add-Type -AssemblyName System.Drawing
@@ -42,7 +44,6 @@ public class ImageTrimmer
             int rowOffset = y * stride;
             for (int x = 0; x < width; x++)
             {
-                // In 32bppArgb format, the byte order is Blue, Green, Red, Alpha (offset 3)
                 byte alpha = pixels[rowOffset + (x * 4) + 3];
                 if (alpha > alphaThreshold)
                 {
@@ -56,7 +57,7 @@ public class ImageTrimmer
 
         if (maxX == -1 || maxY == -1)
         {
-            return Rectangle.Empty; // Completely transparent
+            return Rectangle.Empty;
         }
 
         return new Rectangle(minX, minY, (maxX - minX) + 1, (maxY - minY) + 1);
@@ -64,54 +65,77 @@ public class ImageTrimmer
 }
 "@
 
-Add-Type -TypeDefinition $cSharpCode -ReferencedAssemblies System.Drawing
-
-# Resolve input file path
-$resolvedInput = (Resolve-Path $InputPath).Path
-if (-not (Test-Path $resolvedInput)) {
-    Write-Error "File not found: $InputPath"
-    exit 1
+if (-not ([System.Management.Automation.PSTypeName]'ImageTrimmer').Type) {
+    Add-Type -TypeDefinition $cSharpCode -ReferencedAssemblies System.Drawing
 }
 
-# Default output replaces the input file if not specified
-if (-not $OutputPath) {
-    $OutputPath = $resolvedInput
+function Trim-SinglePng {
+    param (
+        [string]$FileIn,
+        [string]$FileOut
+    )
+
+    $sourceBmp = $null
+    try {
+        # Read file stream to avoid GDI+ file-locking issues during in-place overwrite
+        $bytes = [System.IO.File]::ReadAllBytes($FileIn)
+        $ms = New-Object System.IO.MemoryStream(, $bytes)
+        $sourceBmp = [System.Drawing.Image]::FromStream($ms) -as [System.Drawing.Bitmap]
+
+        $cropArea = [ImageTrimmer]::GetContentBounds($sourceBmp, 0)
+
+        if ($cropArea.IsEmpty) {
+            Write-Warning "Skipped (fully transparent): $FileIn"
+            return
+        }
+
+        if ($cropArea.Width -eq $sourceBmp.Width -and $cropArea.Height -eq $sourceBmp.Height) {
+            Write-Host "No padding: $FileIn" -ForegroundColor DarkGray
+            return
+        }
+
+        $croppedBmp = $sourceBmp.Clone($cropArea, $sourceBmp.PixelFormat)
+
+        # Ensure target folder exists
+        $targetDir = [System.IO.Path]::GetDirectoryName($FileOut)
+        if (-not (Test-Path $targetDir)) {
+            [System.IO.Directory]::CreateDirectory($targetDir) | Out-Null
+        }
+
+        $croppedBmp.Save($FileOut, [System.Drawing.Imaging.ImageFormat]::Png)
+        $croppedBmp.Dispose()
+
+        Write-Host "Cropped [$($cropArea.Width)x$($cropArea.Height)] -> $FileOut" -ForegroundColor Green
+    }
+    catch {
+        Write-Error "Failed to process $FileIn : $_"
+    }
+    finally {
+        if ($sourceBmp) { $sourceBmp.Dispose() }
+        if ($ms) { $ms.Dispose() }
+    }
+}
+
+# Resolve input path
+$resolvedInput = (Resolve-Path $InputPath -ErrorAction Stop).Path
+
+if (Test-Path $resolvedInput -PathType Container) {
+    # Directory mode
+    $files = Get-ChildItem -Path $resolvedInput -Filter *.png -Recurse:$Recurse -File
+
+    foreach ($file in $files) {
+        if ($OutputPath) {
+            $destDir = [System.IO.Path]::GetFullPath($OutputPath)
+            $destFile = Join-Path $destDir $file.Name
+        }
+        else {
+            $destFile = $file.FullName
+        }
+        Trim-SinglePng -FileIn $file.FullName -FileOut $destFile
+    }
 }
 else {
-    $OutputPath = [System.IO.Path]::GetFullPath($OutputPath)
-}
-
-# Load image
-$sourceBmp = [System.Drawing.Image]::FromFile($resolvedInput) -as [System.Drawing.Bitmap]
-
-try {
-    $cropArea = [ImageTrimmer]::GetContentBounds($sourceBmp, 0)
-
-    if ($cropArea.IsEmpty) {
-        Write-Warning "The image is completely transparent. No cropping performed."
-        exit 0
-    }
-
-    if ($cropArea.Width -eq $sourceBmp.Width -and $cropArea.Height -eq $sourceBmp.Height) {
-        Write-Host "No transparent padding found around image." -ForegroundColor Yellow
-        exit 0
-    }
-
-    # Extract cropped section
-    $croppedBmp = $sourceBmp.Clone($cropArea, $sourceBmp.PixelFormat)
-
-    # Dispose source before saving (crucial if overwriting original)
-    $sourceBmp.Dispose()
-    $sourceBmp = $null
-
-    # Save to disk
-    $croppedBmp.Save($OutputPath, [System.Drawing.Imaging.ImageFormat]::Png)
-    $croppedBmp.Dispose()
-
-    Write-Host "Cropped successfully:" -ForegroundColor Green
-    Write-Host "  New Bounds: $($cropArea.Width) x $($cropArea.Height)"
-    Write-Host "  Saved To:   $OutputPath"
-}
-finally {
-    if ($sourceBmp) { $sourceBmp.Dispose() }
+    # Single file mode
+    $destFile = if ($OutputPath) { [System.IO.Path]::GetFullPath($OutputPath) } else { $resolvedInput }
+    Trim-SinglePng -FileIn $resolvedInput -FileOut $destFile
 }
