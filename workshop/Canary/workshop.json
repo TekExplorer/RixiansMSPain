@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Fixed Pull Aggro not showing its animation due to BaseLib bug\nFixed credits showing as for upgraded art even when there is no distinct art for that card's upgrade.",
+  "changeNote": "Fixed Right Hand Hand\nAdded preloading so card arts don't cause lag when they load for the first time",
   "tags": [],
   "dependencies": [3737335127]
 }

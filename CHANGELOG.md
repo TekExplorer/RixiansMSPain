@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.2.16-canary] 2026-09-01
+- Fixed Right Hand Hand
+- Added preloading so card arts don't cause lag when they load for the first time
+
 ## [v0.2.15-canary] - 2026-08-31
 - Fixed Pull Aggro not showing its animation due to BaseLib bug
 - Fixed credits showing as for upgraded art even when there is no distinct art for that card's upgrade.
