@@ -75,7 +75,7 @@ static class Credits
         var defaultKey = DefaultCreditsKeyFor(card);
 
         bool isAlt = key.WithoutUpgrade() != defaultKey.WithoutUpgrade();
-        bool isUpgrade = card.IsUpgraded;
+        bool isUpgrade = key.IsUpgraded;
 
         // 1. Main Card Art Credit
         string variantTemplate = (isUpgrade, isAlt) switch
