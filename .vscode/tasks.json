@@ -50,17 +50,30 @@
     {
       "label": "Upload Mod",
       "type": "shell",
-      // "command": "cmd /c call upload_to_workshop.bat ${input:channel}",
-      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ${workspaceFolder}/workshop/bin/upload.ps1 -Channel ${input:channel}",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/workshop/bin/upload.ps1\" -Channel ${input:channel}",
       "options": { "cwd": "${workspaceFolder}/workshop" },
-      "dependsOn": ["Commit version to Github"]
+      "dependsOrder": "sequence",
+      "dependsOn": ["Commit version to Github"],
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
     },
     {
       "label": "Commit version to Github",
       "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -File ${workspaceFolder}/workshop/bin/git_tag.ps1 -Channel ${input:channel}",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/workshop/bin/git_tag.ps1\" -Channel ${input:channel}",
       "options": { "cwd": "${workspaceFolder}/workshop" },
-      "dependsOn": ["Publish Mod"]
+      "dependsOrder": "sequence",
+      "dependsOn": ["Publish Mod"],
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
     },
     {
       "label": "Credits: Validate",

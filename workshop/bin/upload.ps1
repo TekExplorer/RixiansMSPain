@@ -5,79 +5,151 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$workspaceRoot = Split-Path -Parent $PSScriptRoot
-$workshopRoot = Join-Path $workspaceRoot $Channel
+$binRoot = $PSScriptRoot
+$workshopScriptsRoot = Split-Path -Parent $binRoot
+$workspaceRoot = Split-Path -Parent $workshopScriptsRoot
+
+$channelRoot = Join-Path $workspaceRoot "workshop\$Channel"
+$workshopRoot = $channelRoot
+$contentRoot = Join-Path $channelRoot 'content'
+$jsonPath = Join-Path $contentRoot 'HideDetailsMod.json'
+$workshopJsonPath = Join-Path $channelRoot 'workshop.json'
+
 $runtimeInfo = [System.Runtime.InteropServices.RuntimeInformation]
-
-$uploaderName = if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) {
-    'ModUploader.exe'
-}
-else {
-    'ModUploader'
-}
-
-# This is the uploader executable inside workshop\uploader.
+$uploaderName = if ($runtimeInfo::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) { 'ModUploader.exe' } else { 'ModUploader' }
 $uploaderPath = Join-Path $workspaceRoot "uploader\$uploaderName"
-# These are the files that must exist before upload starts.
-$contentRoot = Join-Path $workshopRoot 'content'
-$requiredContentFiles = @(
-    'HideDetailsMod.dll'
-    'HideDetailsMod.json'
-    'HideDetailsMod.pdb'
-    'HideDetailsMod.pck'
-    'HideDetailsMod.Beta.betapack'
-    'HideDetailsMod.Beta.pdb'
-)
 
-if (-not (Test-Path $workshopRoot)) {
+# 1. Verification Checks
+if (-not (Test-Path -LiteralPath $workshopRoot)) {
     throw "Workshop channel folder not found at '$workshopRoot'."
 }
 
-# Collect any missing required files so we can fail early.
-$missingFiles = foreach ($fileName in $requiredContentFiles) {
-    $filePath = Join-Path $contentRoot $fileName
-    if (-not (Test-Path $filePath)) { $fileName }
+$requiredContentFiles = @(
+    'HideDetailsMod.dll', 'HideDetailsMod.json', 'HideDetailsMod.pdb',
+    'HideDetailsMod.pck', 'HideDetailsMod.Beta.betapack', 'HideDetailsMod.Beta.pdb'
+)
+$missingFiles = foreach ($file in $requiredContentFiles) {
+    if (-not (Test-Path -LiteralPath (Join-Path $contentRoot $file))) { $file }
 }
-
-# Stop if the build/publish step has not produced all required outputs.
 if ($missingFiles) {
-    throw "Missing required workshop content files: $($missingFiles -join ', '). Build and publish before uploading."
+    throw "Missing required content files: $($missingFiles -join ', ')."
 }
 
-# If the uploader is missing, offer to download it first.
-if (-not (Test-Path $uploaderPath)) {
-    $downloadUploader = Read-Host 'Uploader is missing. Download it now? (Y/N)'
-    if ($downloadUploader -notin @('Y', 'y', 'Yes', 'yes')) {
-        Write-Host 'Upload cancelled.'
+# 2. Extract Version and Notes
+$manifest = Get-Content -LiteralPath $jsonPath -Raw | ConvertFrom-Json
+$version = $manifest.version
+if (-not $version.StartsWith('v')) { $version = "v$version" }
+if ($Channel -eq 'Canary' -and -not $version.EndsWith('-canary')) { $version = "$version-canary" }
+
+$releaseNotes = ""
+if (Test-Path -LiteralPath $workshopJsonPath) {
+    $wsMeta = Get-Content -LiteralPath $workshopJsonPath -Raw | ConvertFrom-Json
+    if ($wsMeta.changeNote) { $releaseNotes = $wsMeta.changeNote }
+}
+
+# 3. Check GitHub Release State
+$hasGhCli = [bool](Get-Command gh -ErrorAction SilentlyContinue)
+$githubReleaseNeedsSync = $true
+
+if ($hasGhCli) {
+    $existingReleaseJson = gh release view $version --json assets, isDraft 2>$null
+    if ($LASTEXITCODE -eq 0 -and $existingReleaseJson) {
+        $releaseInfo = $existingReleaseJson | ConvertFrom-Json
+        $assetName = "HideDetailsMod-$version.zip"
+        $hasAsset = $releaseInfo.assets | Where-Object { $_.name -eq $assetName }
+        if ($hasAsset -and -not $releaseInfo.isDraft) {
+            Write-Host "[GitHub] Release $version already exists. GitHub upload will be skipped." -ForegroundColor Gray
+            $githubReleaseNeedsSync = $false
+        }
+    }
+}
+
+# 4. Prompt for Steam Workshop Upload
+$confirmation = Read-Host "Type UPLOAD to push $version ($Channel) to Steam Workshop (or press Enter to skip Steam)"
+$shouldUploadToSteam = ($confirmation -eq 'UPLOAD')
+
+if (-not $shouldUploadToSteam) {
+    Write-Host "[Steam] Skipping Steam Workshop upload." -ForegroundColor Yellow
+    if (-not $githubReleaseNeedsSync) {
+        Write-Host "Nothing to upload. Exiting." -ForegroundColor Green
         exit 0
     }
+}
 
-    # Reuse the downloader script instead of duplicating the download logic.
-    & (Join-Path $PSScriptRoot 'get_uploader.ps1')
+Write-Host "`n>>> Starting Background Tasks for $version ($Channel) <<<`n" -ForegroundColor Magenta
 
-    if (-not (Test-Path $uploaderPath)) {
-        throw 'Uploader was not downloaded.'
+$jobs = @()
+
+# --- STEAM JOB ---
+if ($shouldUploadToSteam) {
+    $jobs += Start-Job -Name "SteamWorkshop" -ArgumentList $uploaderPath, $workshopRoot -ScriptBlock {
+        param($uploader, $workshop)
+        & $uploader upload -w $workshop 2>&1
+        if ($LASTEXITCODE -ne 0) { throw "Steam upload failed with exit code $LASTEXITCODE" }
     }
 }
 
-# --- STEP 1: Tag Before Upload ---
-Write-Host "Running pre-upload Git validation and tagging..."
-& (Join-Path $PSScriptRoot 'git_tag.ps1') -Channel $Channel
+# --- GITHUB JOB ---
+if ($githubReleaseNeedsSync -and $hasGhCli) {
+    $jobs += Start-Job -Name "GitHubRelease" -ArgumentList $version, $channelRoot, $contentRoot, $releaseNotes, $Channel -ScriptBlock {
+        param($ver, $channelDir, $contentDir, $notes, $chan)
 
-# --- STEP 2: Explicit Confirmation Prompt ---
-$confirmation = Read-Host "Type UPLOAD to proceed with publishing to Steam Workshop"
-if ($confirmation -ne 'UPLOAD') {
-    Write-Host 'Upload cancelled.'
-    exit 0
+        $zipPath = Join-Path $channelDir "HideDetailsMod-$ver.zip"
+        if (Test-Path -LiteralPath $zipPath) { Remove-Item -LiteralPath $zipPath -Force }
+        Compress-Archive -Path (Join-Path $contentDir '*') -DestinationPath $zipPath -Force
+
+        $tempNotes = [System.IO.Path]::GetTempFileName()
+        $notes | Set-Content -Path $tempNotes -Encoding utf8
+
+        $flags = @('--title', $ver, '--notes-file', $tempNotes)
+        if ($chan -eq 'Canary') { $flags += '--prerelease' }
+
+        $null = gh release view $ver 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            gh release upload $ver $zipPath --clobber
+        }
+        else {
+            gh release create $ver $zipPath @flags
+        }
+
+        if (Test-Path -LiteralPath $zipPath) { Remove-Item -LiteralPath $zipPath -Force }
+        if (Test-Path -LiteralPath $tempNotes) { Remove-Item -LiteralPath $tempNotes -Force }
+    }
 }
 
-# --- STEP 3: Execute Workshop Upload ---
-Write-Host "Uploading content to Steam Workshop..."
-& $uploaderPath upload -w $workshopRoot
+# 5. Stream Live Output from Jobs
+while ($jobs | Where-Object { $_.State -eq 'Running' }) {
+    foreach ($job in $jobs) {
+        $output = Receive-Job -Job $job
+        if ($output) {
+            $color = if ($job.Name -eq 'SteamWorkshop') { 'Cyan' } else { 'Yellow' }
+            foreach ($line in $output) {
+                Write-Host "[$($job.Name)] " -ForegroundColor $color -NoNewline
+                Write-Host $line
+            }
+        }
+    }
+    Start-Sleep -Milliseconds 250
+}
 
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "Success! Mod successfully tagged and pushed to the Workshop."
+# Flush remaining buffers
+foreach ($job in $jobs) {
+    $output = Receive-Job -Job $job
+    if ($output) {
+        $color = if ($job.Name -eq 'SteamWorkshop') { 'Cyan' } else { 'Yellow' }
+        foreach ($line in $output) {
+            Write-Host "[$($job.Name)] " -ForegroundColor $color -NoNewline
+            Write-Host $line
+        }
+    }
 }
-else {
-    throw "Uploader failed with exit code $LASTEXITCODE."
+
+# 6. Verify Results
+$failedJobs = $jobs | Where-Object { $_.State -eq 'Failed' -or $_.JobStateInfo.Reason }
+$jobs | Remove-Job -Force
+
+if ($failedJobs) {
+    throw "One or more upload operations failed. Inspect logs above."
 }
+
+Write-Host "`nAll operations completed successfully!" -ForegroundColor Green
