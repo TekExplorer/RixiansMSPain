@@ -113,9 +113,7 @@ public static class ArtPatch
         {
             // Simply pass the target base method directly
             MethodInfo baseMethod = AccessTools.PropertyGetter(typeof(CardModel), nameof(CardModel.PortraitPath));
-            var impls = HarmonyPatchHelpers.GetMethodImplementations(baseMethod);
-            MainFile.Logger.Info($"Found ");
-            return impls;
+            return HarmonyPatchHelpers.GetMethodImplementations(baseMethod);
         }
 
 
@@ -149,9 +147,7 @@ public static class ArtPatch
         {
             // Simply pass the target base method directly
             MethodInfo baseMethod = AccessTools.PropertyGetter(typeof(CardModel), "PortraitPngPath");
-            var impls = HarmonyPatchHelpers.GetMethodImplementations(baseMethod);
-            MainFile.Logger.Info($"Found ");
-            return impls;
+            return HarmonyPatchHelpers.GetMethodImplementations(baseMethod);
         }
         [HarmonyPostfix]
         internal static void PostFix(CardModel __instance, ref string __result)
