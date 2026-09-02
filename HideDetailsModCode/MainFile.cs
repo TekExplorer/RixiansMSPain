@@ -20,15 +20,23 @@ public partial class MainFile : Node
 {
     public static Mod Mod => ModManager.Mods.FirstOrDefault(mod => mod.manifest?.id == ModId)!;
     public const string ModId = "HideDetailsMod"; //At the moment, this is used only for the Logger and harmony names.
-#if DEBUG
+
+    // TODO: remove
     public static bool NecrobinderSetIsPublic => true;
-#else
-    public static bool NecrobinderSetIsPublic => Mod.version?.Minor >= 3;
-#endif
+
     public static Logger Logger { get; } = new(ModId, LogType.Generic);
     public static AutoModAudio Audio { get; } = new("res://HideDetailsMod/audio");
-    public static bool DefectSetActive => false;
-    public static bool IroncladSetActive => false;
+#if DEBUG 
+    public static bool DefectSetActive => true;
+    public static bool IroncladSetActive => true;
+#elif CANARY
+    public static bool DefectSetActive => Mod.version?.Minor >= 3;
+    public static bool IroncladSetActive => Mod.version?.Minor >= 4;
+#else 
+    public static bool DefectSetActive => Mod.version?.Minor >= 4;
+    public static bool IroncladSetActive => Mod.version?.Minor >= 5;
+#endif 
+
     public static void Initialize()
     {
         Preload.Start();
