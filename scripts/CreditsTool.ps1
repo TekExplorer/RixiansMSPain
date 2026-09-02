@@ -22,7 +22,6 @@ param (
     [string]$ArtistsPath = "HideDetailsMod/localization/eng/artists.json"
 )
 
-
 # ==========================================
 # HARDCODED CONSTANTS
 # ==========================================
@@ -31,6 +30,7 @@ $ExcludeBeta = $true
 $KeyIgnorePattern = "^\."
 $KeyBypassPattern = "\.TODO$"
 $ValueWrapPattern = "^\{.*\}$"
+$ColorSuffix = ".color"
 
 # Global pipeline tracking flags
 $Global:HasValidationErrors = $false
@@ -82,6 +82,28 @@ function Assert-Environment {
     }
 }
 
+function Test-ValidColorString ([string]$colorVal) {
+    if ([string]::IsNullOrWhiteSpace($colorVal)) { return $false }
+    $trimmed = $colorVal.Trim()
+
+    # Gradient format: #start->#end
+    if ($trimmed.Contains("->")) {
+        $parts = $trimmed -split '->'
+        if ($parts.Count -ne 2) { return $false }
+        return (Test-ValidSingleColor $parts[0].Trim()) -and (Test-ValidSingleColor $parts[1].Trim())
+    }
+
+    return Test-ValidSingleColor $trimmed
+}
+
+function Test-ValidSingleColor ([string]$singleColor) {
+    if ([string]::IsNullOrWhiteSpace($singleColor)) { return $false }
+    # Hex match (#RGB, #RGBA, #RRGGBB, #RRGGBBAA) or valid named identifier
+    if ($singleColor -match '^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$') { return $true }
+    if ($singleColor -match '^[a-zA-Z_]+$') { return $true }
+    return $false
+}
+
 # ==========================================
 # PIPELINE STEP FUNCTIONS
 # ==========================================
@@ -117,7 +139,6 @@ function Sync-ImageAssets ([System.Collections.Specialized.OrderedDictionary]$ar
         if (-not $artistsData.Contains($key)) {
             $missingKeys += $key
             if ($Mode -eq "Fix") {
-                # Modifying the dictionary is strictly isolated to Fix mode
                 $artistsData[$key] = $null
                 $Global:ArtistFileModified = $true
             }
@@ -175,7 +196,14 @@ function Get-ArtistsLookup ([System.Collections.Specialized.OrderedDictionary]$a
         if ($isBypassed -or ($artistValue -cmatch $ValueWrapPattern)) { continue }
 
         if (-not [string]::IsNullOrWhiteSpace([string]$artistValue)) {
-            $lookup[$artistValue] = $true
+            # Split pipe-delimited multiple authors (e.g. "tekexplorer|person2")
+            $authors = [string]$artistValue -split '\|'
+            foreach ($rawAuthor in $authors) {
+                $author = $rawAuthor.Trim()
+                if (-not [string]::IsNullOrWhiteSpace($author)) {
+                    $lookup[$author] = $true
+                }
+            }
         }
     }
 
@@ -203,11 +231,33 @@ function Test-AndFixUsernames ([System.Collections.Specialized.OrderedDictionary
             continue
         }
 
+        # 1. Handle Companion Color Override keys (e.g., "tekexplorer.color")
+        if ($key.EndsWith($ColorSuffix, [System.StringComparison]::OrdinalIgnoreCase)) {
+            $baseName = $key.Substring(0, $key.Length - $ColorSuffix.Length)
+            
+            # Warn if base author isn't referenced anywhere in artists.json
+            if (-not $artistsLookup.Contains($baseName)) {
+                Write-Host "[CREDITS FAIL] Orphan color key: '$key' exists in usernames.json, but '$baseName' is never used in artists.json." -ForegroundColor Red
+                $Global:HasValidationErrors = $true
+            }
+
+            # Validate color syntax (#hex, named, or #start->#end)
+            if (-not (Test-ValidColorString ([string]$value))) {
+                Write-Host "[CREDITS FAIL] Invalid color/gradient syntax in usernames.json at '$key': '$value'." -ForegroundColor Red
+                $Global:HasValidationErrors = $true
+            }
+            continue
+        }
+
+        # 2. Standard Username Key Validation
         if ($key -cmatch '[A-Z]') {
             Write-Warning "Credits: Username key '$key' in usernames.json contains uppercase letters."
         }
 
-        if ($key -ceq $value) {
+        # Redundant entry check: key equals value without any custom BBCode formatting
+        if ($key -ceq $value -and -not ($value -match '\[.+\]')) {
+            # If the user has a companion .color key, keeping the base key might be unnecessary unless intentional,
+            # but if it's strictly identical, prune in Fix mode.
             if ($Mode -eq "Fix") {
                 $usernamesData.Remove($key)
                 $Global:UsernameFileModified = $true
@@ -220,6 +270,7 @@ function Test-AndFixUsernames ([System.Collections.Specialized.OrderedDictionary
             continue
         }
 
+        # Extra unreferenced key check
         if (-not $artistsLookup.Contains($key)) {
             Write-Host "[CREDITS FAIL] Extra entry: Username key '$key' does not match any artist value in artists.json." -ForegroundColor Red
             $Global:HasValidationErrors = $true
