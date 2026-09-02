@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Text;
-using BaseLib.Abstracts;
 using Godot;
-using MegaCrit.Sts2.addons.mega_text;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Nodes.HoverTips;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
@@ -67,6 +62,8 @@ public readonly record struct CardCreditKey(
 
 static class Credits
 {
+    private readonly record struct RoleCredit(string RoleName, string FormattedAuthors);
+
     public static IEnumerable<IHoverTip> Tooltips(CardModel card)
     {
         var tips = new List<IHoverTip>();
@@ -77,29 +74,36 @@ static class Credits
         bool isAlt = key.WithoutUpgrade() != defaultKey.WithoutUpgrade();
         bool isUpgrade = key.IsUpgraded;
 
-        // 1. Main Card Art Credit
-        string variantTemplate = (isUpgrade, isAlt) switch
+        var roles = new List<RoleCredit>();
+
+        // 1. Determine main art role localized name
+        string artRoleKey = (isUpgrade, isAlt) switch
         {
-            (false, false) => ".description",
-            (true, false) => ".description.upgrade",
-            (false, true) => ".description.alt",
-            (true, true) => ".description.alt.upgrade",
+            (false, false) => ".role.art",
+            (true, false) => ".role.art.upgrade",
+            (false, true) => ".role.art.alt",
+            (true, true) => ".role.art.alt.upgrade",
         };
 
-        if (GetCreditTip(key, variantTemplate, suffix: null, isUpgrade) is { } mainTip)
-            tips.Add(mainTip);
+        if (ResolveAuthorsForKey(key, suffix: null, isUpgrade) is { } artAuthors)
+            roles.Add(new RoleCredit(GetRoleLabel(artRoleKey, "Art"), FormatLocalizedAuthorList(artAuthors)));
 
-        if (GetCreditTip(key, ".description.overlay", suffix: "overlay", isUpgrade) is { } overlayTip)
-            tips.Add(overlayTip);
+        if (ResolveAuthorsForKey(key, suffix: "overlay", isUpgrade) is { } overlayAuthors)
+            roles.Add(new RoleCredit(GetRoleLabel(".role.overlay", "Overlay"), FormatLocalizedAuthorList(overlayAuthors)));
 
-        // 3. Audio / Visual Effects Credits
-        if (GetCreditTip(key, ".description.sfx", suffix: "sfx", isUpgrade) is { } sfxTip)
-            tips.Add(sfxTip);
+        if (ResolveAuthorsForKey(key, suffix: "sfx", isUpgrade) is { } sfxAuthors)
+            roles.Add(new RoleCredit(GetRoleLabel(".role.sfx", "SFX"), FormatLocalizedAuthorList(sfxAuthors)));
 
-        if (GetCreditTip(key, ".description.vfx", suffix: "vfx", isUpgrade) is { } vfxTip)
-            tips.Add(vfxTip);
+        if (ResolveAuthorsForKey(key, suffix: "vfx", isUpgrade) is { } vfxAuthors)
+            roles.Add(new RoleCredit(GetRoleLabel(".role.vfx", "VFX"), FormatLocalizedAuthorList(vfxAuthors)));
 
-        // 4. Epitaph Credits
+        // Combine all asset contributors into a single cohesive tooltip
+        if (BuildCombinedCreditTip(roles) is { } combinedTip)
+        {
+            tips.Add(combinedTip);
+        }
+
+        // 2. Memorial / Epitaph Credits remain distinct
         if (GetEpitaphTip(key, isUpgrade) is { } epitaphTip)
         {
             tips.Add(epitaphTip);
@@ -108,59 +112,212 @@ static class Credits
         return tips;
     }
 
-    /// <summary>
-    /// Looks up the author string for the given asset/sub-asset key and injects it into the template.
-    /// If an upgraded key maps to an empty string (""), it explicitly suppresses/skips the tooltip.
-    /// </summary>
-    private static IHoverTip? GetCreditTip(
-        CardCreditKey key,
-        string templateKey,
-        string? suffix,
-        bool isUpgraded,
-        bool strictUpgrade = false,
-        bool isDebuff = true)
+    private static IHoverTip? BuildCombinedCreditTip(List<RoleCredit> roles)
     {
-        var template = new LocString("artists", templateKey);
-        if (!template.Exists()) return null;
+        if (roles.Count == 0) return null;
 
-        LocString? author = null;
+        // If single role or all roles share identical authors, collapse to one line
+        bool allSameAuthors = roles.All(r => r.FormattedAuthors == roles[0].FormattedAuthors);
+        if (allSameAuthors)
+        {
+            string combinedRoles = FormatLocalizedList(roles.Select(r => r.RoleName).ToList());
+            var tipLoc = new LocString("artists", ".credits.entry");
+            tipLoc.Add("Role", combinedRoles);
+            tipLoc.Add("Artists", roles[0].FormattedAuthors);
+            return new HoverTip(tipLoc) { IsDebuff = true };
+        }
+
+        // Multiple distinct roles -> generate each line via .credits.entry and combine
+        var lines = new List<string>(roles.Count);
+        foreach (var role in roles)
+        {
+            var lineLoc = new LocString("artists", ".credits.entry");
+            lineLoc.Add("Role", role.RoleName);
+            lineLoc.Add("Artists", role.FormattedAuthors);
+            lines.Add(lineLoc.GetFormattedText());
+        }
+
+        var multiLoc = new LocString("artists", ".credits.multi");
+        multiLoc.Add("Body", string.Join('\n', lines));
+
+        return new HoverTip(multiLoc) { IsDebuff = true };
+    }
+
+    private static string FormatLocalizedAuthorList(IReadOnlyList<string> authors) =>
+        FormatLocalizedList(authors);
+
+    /// <summary>
+    /// Formats an arbitrary number of items using Unicode CLDR-style list reduction:
+    /// - .credits.list.two    => "{0} and {1}"
+    /// - .credits.list.middle => "{0}, {1}"
+    /// - .credits.list.end    => "{0}, and {1}"
+    /// </summary>
+    private static string FormatLocalizedList(IReadOnlyList<string> items)
+    {
+        if (items.Count == 0) return string.Empty;
+        if (items.Count == 1) return items[0];
+
+        // 2 items: use pairwise template
+        if (items.Count == 2)
+        {
+            return FormatPattern(".credits.list.two", items[0], items[1], $"{items[0]} and {items[1]}");
+        }
+
+        // 3+ items: Fold left-to-right through 'middle', then close with 'end'
+        string accumulated = items[0];
+        for (int i = 1; i < items.Count - 1; i++)
+        {
+            accumulated = FormatPattern(".credits.list.middle", accumulated, items[i], $"{accumulated}, {items[i]}");
+        }
+
+        return FormatPattern(".credits.list.end", accumulated, items[^1], $"{accumulated}, and {items[^1]}");
+    }
+
+    private static string FormatPattern(string locKey, string left, string right, string fallback)
+    {
+        if (LocString.GetIfExists("artists", locKey) is { } pattern)
+        {
+            pattern.Add("0", left);
+            pattern.Add("1", right);
+            return pattern.GetFormattedText();
+        }
+
+        return fallback;
+    }
+
+    private static string GetRoleLabel(string locKey, string fallback)
+    {
+        return LocString.GetIfExists("artists", locKey)?.GetFormattedText() ?? fallback;
+    }
+
+    private static List<string>? ResolveAuthorsForKey(CardCreditKey key, string? suffix, bool isUpgraded, bool strictUpgrade = false)
+    {
         if (isUpgraded)
         {
             string upgKey = key.FormatKey(upgraded: true, overrideSubKey: suffix);
-            if (LocString.GetIfExists("artists", upgKey) is { } upgAuthor)
-            {
-                // If the JSON explicitly defines an empty string, suppress the tip entirely
-                if (string.IsNullOrEmpty(upgAuthor.GetRawText()))
-                {
-                    return null;
-                }
-                author = Replace(upgAuthor);
-            }
-            else if (strictUpgrade)
-            {
+            var upg = ResolveAuthors(upgKey);
+
+            if (upg.isExplicitlySuppressed)
                 return null;
-            }
+
+            if (upg.names.Count > 0)
+                return upg.names;
+
+            if (strictUpgrade)
+                return null;
         }
 
-        if (author is null && LocString.GetIfExists("artists", key.FormatKey(upgraded: false, overrideSubKey: suffix)) is { } baseAuthor)
-        {
-            // If base author is also empty, treat as non-existent
-            if (string.IsNullOrEmpty(baseAuthor.GetRawText()))
-            {
-                return null;
-            }
-            author = Replace(baseAuthor);
-        }
+        string baseKey = key.FormatKey(upgraded: false, overrideSubKey: suffix);
+        var baseRes = ResolveAuthors(baseKey);
 
-        if (author is null) return null;
+        if (baseRes.isExplicitlySuppressed || baseRes.names.Count == 0)
+            return null;
 
-        template.Add("Artist", author);
-        return new HoverTip(template) { IsDebuff = isDebuff };
+        return baseRes.names;
     }
 
-    /// <summary>
-    /// Handles epitaph tooltips. If an upgraded key maps to an empty string (""), it explicitly suppresses/skips it.
-    /// </summary>
+    private static (List<string> names, bool isExplicitlySuppressed) ResolveAuthors(string key)
+    {
+        var authors = new List<string>();
+
+        if (LocString.GetIfExists("artists", key) is { } directLoc)
+        {
+            string raw = directLoc.GetRawText().Trim();
+            if (string.IsNullOrEmpty(raw))
+            {
+                return (authors, isExplicitlySuppressed: true);
+            }
+
+            // Split on '|' delimiter for multiple authors
+            var parts = raw.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            foreach (var part in parts)
+            {
+                authors.Add(ResolveDisplayName(part));
+            }
+
+            return (authors, isExplicitlySuppressed: false);
+        }
+
+        return (authors, isExplicitlySuppressed: false);
+    }
+
+    private static string ResolveDisplayName(string rawName)
+    {
+        string lookupKey = rawName.ToLowerInvariant();
+        string displayName = rawName;
+
+        if (LocString.GetIfExists("usernames", lookupKey) is { } loc)
+        {
+            displayName = loc.GetFormattedText();
+        }
+
+        // If the display name already contains explicit BBCode markup, leave as-is
+        if (displayName.Contains('['))
+        {
+            return displayName;
+        }
+
+        string handle = displayName.StartsWith('@') ? displayName : $"@{displayName}";
+
+        // Check for color override key, e.g. "tekexplorer.color"
+        if (LocString.GetIfExists("usernames", $"{lookupKey}.color") is { } colorLoc)
+        {
+            string colorDef = colorLoc.GetFormattedText().Trim();
+
+            // Gradient syntax: "#startColor->#endColor"
+            if (colorDef.Contains("->"))
+            {
+                var parts = colorDef.Split("->", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                if (parts.Length == 2 && TryParseGodotColor(parts[0], out var startCol) && TryParseGodotColor(parts[1], out var endCol))
+                {
+                    return ApplyGradient(handle, startCol, endCol);
+                }
+            }
+
+            // Single color (hex code, numeric hex, or named color)
+            if (!string.IsNullOrEmpty(colorDef))
+            {
+                return colorDef.StartsWith('#')
+                    ? $"[color={colorDef}]{handle}[/color]"
+                    : $"[{colorDef}]{handle}[/{colorDef}]";
+            }
+        }
+
+        // Default fallback: Gold
+        return $"[gold]{handle}[/gold]";
+    }
+
+    private static bool TryParseGodotColor(string input, out Color color)
+    {
+        var sentinel = new Color(-1f, -1f, -1f, -1f);
+        color = Color.FromString(input, sentinel);
+        if (color != sentinel)
+        {
+            return true;
+        }
+
+        color = Colors.White;
+        return false;
+    }
+
+    private static string ApplyGradient(string text, Color start, Color end)
+    {
+        if (text.Length <= 1)
+        {
+            return $"[color=#{start.ToHtml(false)}]{text}[/color]";
+        }
+
+        var sb = new StringBuilder(text.Length * 24);
+        for (int i = 0; i < text.Length; i++)
+        {
+            float weight = (float)i / (text.Length - 1);
+            Color c = start.Lerp(end, weight);
+            sb.Append("[color=#").Append(c.ToHtml(false)).Append(']').Append(text[i]).Append("[/color]");
+        }
+
+        return sb.ToString();
+    }
+
     private static IHoverTip? GetEpitaphTip(CardCreditKey key, bool isUpgraded, bool strictUpgrade = false)
     {
         var epitaphTitle = new LocString("artists", ".epitaph.freddy.title");
