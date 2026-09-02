@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Update Jackydaw credit",
+  "changeNote": "Update Jackydaw credit\nFixed Dowsing and Melancholy showing alt art indicators when not actually an alt art",
   "tags": [],
   "dependencies": [3737335127]
 }

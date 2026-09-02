@@ -1,3 +1,4 @@
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Models.Cards;
 namespace HideDetailsMod.HideDetailsModCode.AlternateArts.Cards;
 
@@ -7,7 +8,7 @@ public class DowsingArt : AlternateCardArt<Dowsing>
     static CardImg Remains2 { get; } = new("quest/dowsing_2");
     static CardImg Remains3 { get; } = new("quest/dowsing_3");
     static CardImg Remains4 { get; } = new("quest/dowsing_4");
-    static CardImg Remains5 { get; } = new("quest/dowsing_5");
+    // static CardImg Remains5 { get; } = new("quest/dowsing_5");
 
     public override CardImg? Get(Dowsing card)
     {
@@ -18,7 +19,7 @@ public class DowsingArt : AlternateCardArt<Dowsing>
             2 => Remains2,
             3 => Remains3,
             4 => Remains4,
-            5 => Remains5,
+            // 5 => Remains5,
             _ => null
         };
     }
