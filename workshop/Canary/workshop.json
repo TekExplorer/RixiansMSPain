@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Fixed Right Hand Hand\nAdded preloading so card arts don't cause lag when they load for the first time",
+  "changeNote": "Update Jackydaw credit",
   "tags": [],
   "dependencies": [3737335127]
 }
