@@ -44,6 +44,7 @@ Write-Host "Target version resolved: '$version' for channel: '$Channel'" -Foregr
 # 2. Evaluate CHANGELOG.md
 $currentDate = Get-Date -Format "yyyy-MM-dd"
 $oldContent = if (Test-Path -LiteralPath $changelogPath) { Get-Content -LiteralPath $changelogPath -Raw } else { "" }
+$oldContent = $oldContent -replace "\r\n", "`n"
 
 if ($oldContent -match "(?m)^##\s+\[$([regex]::Escape($version))\]") {
     Write-Host "[CHANGELOG] Notes for $version already present. Would skip." -ForegroundColor Gray
@@ -58,7 +59,8 @@ elseif (Test-Path -LiteralPath $workshopJsonPath) {
                 if (-not ($line.StartsWith('-') -or $line.StartsWith('*'))) { "- $line" } else { $line }
             }) -join "`n"
 
-        $newEntry = "## [$version] - $currentDate`n`n$formattedNotes`n"
+        # Formatted without trailing newline; delimiter spacing is handled during joining
+        $newEntry = "## [$version] - $currentDate`n`n$formattedNotes"
 
         $prevTag = (git tag --sort=-v:refname | Where-Object { $_ -ne $version -and $_ -notlike "*-canary" } | Select-Object -First 1)
         if (-not $prevTag) { $prevTag = (git tag --sort=-v:refname | Where-Object { $_ -ne $version } | Select-Object -First 1) }
@@ -73,7 +75,7 @@ elseif (Test-Path -LiteralPath $workshopJsonPath) {
         if ($DryRun) {
             Write-Host "[CHANGELOG] Would prepend new section to CHANGELOG.md:" -ForegroundColor Yellow
             Write-Host "----------------------------------------" -ForegroundColor DarkGray
-            Write-Host $newEntry.Trim() -ForegroundColor White
+            Write-Host $newEntry -ForegroundColor White
             Write-Host "`nFooter Reference:" -ForegroundColor DarkGray
             Write-Host $urlRef -ForegroundColor White
             Write-Host "----------------------------------------" -ForegroundColor DarkGray
@@ -82,21 +84,31 @@ elseif (Test-Path -LiteralPath $workshopJsonPath) {
         else {
             Write-Host "[CHANGELOG] Prepending release notes for $version..." -ForegroundColor Cyan
             if ([string]::IsNullOrWhiteSpace($oldContent)) {
-                $finalChangelog = "# Changelog`n`nAll notable changes to this project will be documented in this file.`n`n$newEntry`n$urlRef`n"
+                $finalChangelog = "# Changelog`n`nAll notable changes to this project will be documented in this file.`n`n$newEntry`n`n$urlRef`n"
             }
             else {
                 $parts = $oldContent -split "(?m)(?=^\[[^\]]+\]:\s*http)"
-                $body = $parts[0].TrimEnd()
+                $body = $parts[0].Trim()
                 $links = if ($parts.Count -gt 1) { ($parts[1..($parts.Count - 1)] -join "`n").Trim() } else { "" }
 
-                if ($body -match "(?s)^(#\s+Changelog\r?\n+.*?\r?\n)(##\s+\[.*)") {
-                    $body = $matches[1] + "`n" + $newEntry + "`n" + $matches[2]
+                # Match header block up to the first version entry
+                if ($body -match "(?s)^(#\s+Changelog\b[^\n]*\n+.*?\n)(##\s+\[.*)") {
+                    $header = $matches[1].TrimEnd()
+                    $existingEntries = $matches[2].TrimStart()
+                    $body = "$header`n`n$newEntry`n`n$existingEntries"
                 }
                 else {
-                    $body = "# Changelog`n`n$newEntry`n" + ($body -replace "^#\s+Changelog\r?\n*", "")
+                    $cleanedBody = ($body -replace "^#\s+Changelog\b[^\n]*\n*", "").Trim()
+                    if ([string]::IsNullOrWhiteSpace($cleanedBody)) {
+                        $body = "# Changelog`n`nAll notable changes to this project will be documented in this file.`n`n$newEntry"
+                    }
+                    else {
+                        $body = "# Changelog`n`nAll notable changes to this project will be documented in this file.`n`n$newEntry`n`n$cleanedBody"
+                    }
                 }
 
-                $finalChangelog = "$body`n`n" + ($links + "`n" + $urlRef).Trim() + "`n"
+                $combinedLinks = if ([string]::IsNullOrWhiteSpace($links)) { $urlRef } else { "$links`n$urlRef" }
+                $finalChangelog = "$body`n`n$combinedLinks`n"
             }
 
             Set-Content -LiteralPath $changelogPath -Value $finalChangelog -Encoding utf8
