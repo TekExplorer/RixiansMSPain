@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Updated credits\nFixed Dowsing and Melancholy showing alt art indicators when not actually an alt art\nFix Charge showing 0 draw alt art in card rewards\nFixed issue with Main branch players not being able to play multiplayer with people without the mod",
+  "changeNote": "Updated credits\nFixed Dowsing and Melancholy showing alt art indicators when not actually an alt art\nFix Charge showing 0 draw alt art in card rewards\nFixed issue with public branch players not being able to play multiplayer with people without the mod\nEnabled certain card effects on public branch",
   "tags": [
     "Configurable",
     "Challenge",

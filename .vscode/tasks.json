@@ -61,6 +61,18 @@
       "problemMatcher": []
     },
     {
+      "label": "Upload Mod (No Commit)",
+      "type": "shell",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/workshop/bin/upload.ps1\" -Channel ${input:channel}",
+      "options": { "cwd": "${workspaceFolder}/workshop" },
+      "dependsOrder": "sequence",
+      "presentation": {
+        "reveal": "always",
+        "focus": true
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Commit version to Github",
       "type": "shell",
       "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/workshop/bin/git_tag.ps1\" -Channel ${input:channel}",
