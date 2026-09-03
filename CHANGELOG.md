@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.3.3] - 2026-09-03
+
+- Updated credits
+- Fixed Dowsing and Melancholy showing alt art indicators when not actually an alt art
+- Fix Charge showing 0 draw alt art in card rewards
+- Fixed issue with public branch players not being able to play multiplayer with people without the mod
+- Enabled certain card effects on public branch
+
 ## [v0.3.2+2-canary] - 2026-09-02
 
 - Fix it for real, cause i did, in fact, miss a thing.
@@ -266,7 +274,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.0.2]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.1...v0.0.2
+
 
 
 
@@ -274,7 +284,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.0.4]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.3...v0.0.4
+
 
 
 
@@ -282,7 +294,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.0.6]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.5...v0.0.6
+
 
 
 
@@ -290,7 +304,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.0.8]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.7...v0.0.8
+
 
 
 
@@ -298,7 +314,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.1.0]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.9...v0.1.0
+
 
 
 
@@ -306,7 +324,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.1.2]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.1...v0.1.2
+
 
 
 
@@ -314,7 +334,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.1.4]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.3...v0.1.4
+
 
 
 
@@ -322,7 +344,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.1.8]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.5...v0.1.8
+
 
 
 
@@ -330,7 +354,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.1.10-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.9-beta...v0.1.10-beta
+
 
 
 
@@ -338,7 +364,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.1.12-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.11-beta...v0.1.12-beta
+
 
 
 
@@ -346,7 +374,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.1.14-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.13-beta...v0.1.14-beta
+
 
 
 
@@ -354,7 +384,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.1.16-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.15-beta...v0.1.16-beta
+
 
 
 
@@ -362,7 +394,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.1.18-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.17-beta...v0.1.18-beta
+
 
 
 
@@ -370,7 +404,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.2.1]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.0...v0.2.1
+
 
 
 
@@ -378,7 +414,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.2.3]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.2...v0.2.3
+
 
 
 
@@ -386,7 +424,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.2.5]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.4...v0.2.5
+
 
 
 
@@ -394,7 +434,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.2.7-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.6-canary...v0.2.7-canary
+
 
 
 
@@ -402,7 +444,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.2.9-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.8-canary...v0.2.9-canary
+
 
 
 
@@ -410,7 +454,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.2.11-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.10-canary...v0.2.11-canary
+
 
 
 
@@ -418,7 +464,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.2.13-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.12-canary...v0.2.13-canary
+
 
 
 
@@ -426,7 +474,9 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.2.15-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.14-canary...v0.2.15-canary
+
 
 
 
@@ -434,15 +484,21 @@ All notable changes to this project will be documented in this file.
 
 
 
+
 [v0.3.0]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.5...v0.3.0
+
 
 
 
 [v0.3.1-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.3.0...v0.3.1-canary
 
 
+
 [v0.3.2-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.3.0...v0.3.2-canary
 
+
 [v0.3.2+1-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.3.0...v0.3.2+1-canary
+
 [v0.3.2+2-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.3.0...v0.3.2+2-canary
+[v0.3.3]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.3.0...v0.3.3
 
