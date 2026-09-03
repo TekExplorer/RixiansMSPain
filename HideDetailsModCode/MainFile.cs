@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.Debug;
 using System.Runtime.Loader;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Helpers;
+using MegaCrit.Sts2.Core.Models;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
@@ -37,15 +38,23 @@ public partial class MainFile : Node
     public static bool IroncladSetActive => Mod.version?.Minor >= 5;
 #endif 
 
+    static public bool? IsV107
+    {
+        get
+        {
+            var version = ReleaseInfoManager.Instance.SemVer;
+            if (version == null) return null;
+            return version.Minor <= 107;
+        }
+    }
+
     public static void Initialize()
     {
         Preload.Start();
 
         var assembly = Assembly.GetExecutingAssembly();
 
-        var version = ReleaseInfoManager.Instance.ReleaseInfo?.Version ?? "";
-        var is107 = version.Contains(".107.");
-        if (!is107)
+        if (IsV107 ?? false)
         {
 #nullable disable
             string modFolder = Path.GetDirectoryName(assembly.Location);
@@ -56,6 +65,9 @@ public partial class MainFile : Node
                 var asm = AssemblyLoadContext.GetLoadContext(typeof(ModManager).Assembly).LoadFromAssemblyPath(betaPackPath);
                 AccessTools.Method(typeof(ModManager), "AssociateAssemblyWithMod").Invoke(null, [ModId, asm]);
                 // ModManager.AssociateAssemblyWithMod(ModId, asm);
+                var models = ReflectionHelper.GetSubtypesFromAssembly(asm, typeof(AbstractModel));
+
+                if (ModelDb._allAbstractModelSubtypes != null) ModelDb._allAbstractModelSubtypes = [.. ModelDb._allAbstractModelSubtypes, .. models];
             }
 #nullable restore
         }

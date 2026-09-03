@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Update credits\nFixed Dowsing and Melancholy showing alt art indicators when not actually an alt art\nFix Charge showing 0 draw alt art in card rewards",
+  "changeNote": "Fix Main branch multiplayer issue",
   "tags": [],
   "dependencies": [3737335127]
 }

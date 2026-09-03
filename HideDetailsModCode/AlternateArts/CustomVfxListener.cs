@@ -1,14 +1,15 @@
 using BaseLib.Abstracts;
+using BaseLib.Utils;
 using Godot;
 using HarmonyLib;
 using HideDetailsMod.HideDetailsModCode.Vfx;
 using MegaCrit.Sts2.Core.Combat;
-using MegaCrit.Sts2.Core.Debug;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
-using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Models.Singleton;
 using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
@@ -16,31 +17,35 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace HideDetailsMod.HideDetailsModCode.AlternateArts;
 
-// AllAbstractModelSubtypes
-[HarmonyPatch(typeof(ModelDb), nameof(ModelDb.AllAbstractModelSubtypes), MethodType.Getter)]
-static class RemoveListenerOnMainV107Patch
+[HarmonyPatch(typeof(AbstractModel))]
+static class CustomVfxListenerPatch
 {
-    [HarmonyPostfix]
-    static internal void Postfix(ref Type[] __result)
+    static readonly NotNullSpireField<MultiplayerScalingModel, CustomVfxListener> Listener = new(() => new());
+
+    [HarmonyPatch(nameof(AbstractModel.AfterDamageGiven))]
+    [HarmonyPrefix]
+    static bool AfterDamageGiven(AbstractModel __instance, ref Task __result, PlayerChoiceContext choiceContext, Creature? dealer, DamageResult result, ValueProp props, Creature target, CardModel? cardSource)
     {
-        var args = OS.GetCmdlineArgs();
-        if (args.Contains("-noremovelistener")) return;
-        var version = ReleaseInfoManager.Instance.ReleaseInfo?.Version ?? "";
-        var is107 = version.Contains(".107.");
-        if (is107 || args.Contains("-removelistener"))
-        {
-            var list = __result.ToList();
-            list.Remove(typeof(CustomVfxListener));
-            __result = [.. list];
-        }
+        if (__instance is not MultiplayerScalingModel model) return true;
+        __result = Listener[model].AfterDamageGiven(choiceContext, dealer, result, props, target, cardSource);
+        return false;
+    }
+
+    [HarmonyPatch(nameof(AbstractModel.AfterSideTurnStart))]
+    [HarmonyPrefix]
+    static bool AfterSideTurnStart(AbstractModel __instance, ref Task __result, CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
+    {
+        if (__instance is not MultiplayerScalingModel model) return true;
+        __result = Listener[model].AfterSideTurnStart(side, participants, combatState);
+        return false;
     }
 }
 
-// TODO: make it general so i can apply the transforms to anything
-// TODO: make work on main branch for multiplayer
-class CustomVfxListener() : CustomSingletonModel(HookType.Combat)
+// TODO: use this when beta becomes main, then delete the above
+// class CustomVfxListener() : CustomSingletonModel(HookType.Combat)
+class CustomVfxListener()
 {
-    public override async Task AfterDamageGiven(PlayerChoiceContext choiceContext, Creature? dealer, DamageResult result, ValueProp props, Creature target, CardModel? cardSource)
+    public async Task AfterDamageGiven(PlayerChoiceContext choiceContext, Creature? dealer, DamageResult result, ValueProp props, Creature target, CardModel? cardSource)
     {
         if (MyModConfig.UseSimpleMode) return;
 
@@ -112,7 +117,7 @@ class CustomVfxListener() : CustomSingletonModel(HookType.Combat)
     Dictionary<NCreature, NCreatureModifierVfx> FlattenVfxs { get; } = [];
     Dictionary<NCreature, NCreatureModifierVfx> SqueezeVfxs { get; } = [];
     HashSet<NCreature> CreaturesWithVfx { get; } = [];
-    public override Task AfterSideTurnStart(CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
+    public Task AfterSideTurnStart(CombatSide side, IReadOnlyList<Creature> participants, ICombatState combatState)
     {
         foreach (var creature in CreaturesWithVfx)
         {
