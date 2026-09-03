@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Added Necrobinder, Ancient, and Event cards!\nAnd Character Select Screens!\nAnd a whole lot of cool interactions!\nAnd big preformance improvements!\nAnd more config options!\nThank you for your patience!",
+  "changeNote": "Updated credits\nFixed Dowsing and Melancholy showing alt art indicators when not actually an alt art\nFix Charge showing 0 draw alt art in card rewards\nFixed issue with Main branch players not being able to play multiplayer with people without the mod",
   "tags": [
     "Configurable",
     "Challenge",

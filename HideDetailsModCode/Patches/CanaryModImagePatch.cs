@@ -14,7 +14,7 @@ class CanaryModImagePatch
     public static void Postfix(NModInfoContainer __instance, Mod mod)
     {
         if (mod.manifest?.id != MainFile.ModId) return;
-        if (!MainFile.IsCanary) return;
+        if (!MainFile.IsActuallyCanary) return;
         string path = "res://HideDetailsMod/mod_image_canary.png";
         if (ResourceLoader.Exists(path))
         {
