@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.3.2+2-canary] - 2026-09-02
+
+- Fix it for real, cause i did, in fact, miss a thing.
+
 ## [v0.3.2+1-canary] - 2026-09-02
 
 - Fix Main branch multiplayer issue, reupload
@@ -261,137 +265,184 @@ All notable changes to this project will be documented in this file.
 [v0.0.1]: https://github.com/TekExplorer/RixiansMSPain/releases/tag/v0.0.1
 
 
+
 [v0.0.2]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.1...v0.0.2
+
 
 
 [v0.0.3]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.2...v0.0.3
 
 
+
 [v0.0.4]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.3...v0.0.4
+
 
 
 [v0.0.5]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.4...v0.0.5
 
 
+
 [v0.0.6]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.5...v0.0.6
+
 
 
 [v0.0.7]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.6...v0.0.7
 
 
+
 [v0.0.8]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.7...v0.0.8
+
 
 
 [v0.0.9]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.8...v0.0.9
 
 
+
 [v0.1.0]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.0.9...v0.1.0
+
 
 
 [v0.1.1]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.0...v0.1.1
 
 
+
 [v0.1.2]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.1...v0.1.2
+
 
 
 [v0.1.3]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.2...v0.1.3
 
 
+
 [v0.1.4]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.3...v0.1.4
+
 
 
 [v0.1.5]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.4...v0.1.5
 
 
+
 [v0.1.8]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.5...v0.1.8
+
 
 
 [v0.1.9-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.8...v0.1.9-beta
 
 
+
 [v0.1.10-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.9-beta...v0.1.10-beta
+
 
 
 [v0.1.11-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.10-beta...v0.1.11-beta
 
 
+
 [v0.1.12-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.11-beta...v0.1.12-beta
+
 
 
 [v0.1.13-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.12-beta...v0.1.13-beta
 
 
+
 [v0.1.14-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.13-beta...v0.1.14-beta
+
 
 
 [v0.1.15-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.14-beta...v0.1.15-beta
 
 
+
 [v0.1.16-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.15-beta...v0.1.16-beta
+
 
 
 [v0.1.17-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.16-beta...v0.1.17-beta
 
 
+
 [v0.1.18-beta]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.17-beta...v0.1.18-beta
+
 
 
 [v0.2.0]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.8...v0.2.0
 
 
+
 [v0.2.1]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.0...v0.2.1
+
 
 
 [v0.2.2]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.1...v0.2.2
 
 
+
 [v0.2.3]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.2...v0.2.3
+
 
 
 [v0.2.4]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.3...v0.2.4
 
 
+
 [v0.2.5]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.4...v0.2.5
+
 
 
 [v0.2.6-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.1.18-beta...v0.2.6-canary
 
 
+
 [v0.2.7-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.6-canary...v0.2.7-canary
+
 
 
 [v0.2.8-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.7-canary...v0.2.8-canary
 
 
+
 [v0.2.9-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.8-canary...v0.2.9-canary
+
 
 
 [v0.2.10-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.9-canary...v0.2.10-canary
 
 
+
 [v0.2.11-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.10-canary...v0.2.11-canary
+
 
 
 [v0.2.12-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.11-canary...v0.2.12-canary
 
 
+
 [v0.2.13-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.12-canary...v0.2.13-canary
+
 
 
 [v0.2.14-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.13-canary...v0.2.14-canary
 
 
+
 [v0.2.15-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.14-canary...v0.2.15-canary
+
 
 
 [v0.2.16-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.15-canary...v0.2.16-canary
 
 
+
 [v0.3.0]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.2.5...v0.3.0
+
 
 
 [v0.3.1-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.3.0...v0.3.1-canary
 
+
 [v0.3.2-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.3.0...v0.3.2-canary
+
 [v0.3.2+1-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.3.0...v0.3.2+1-canary
+[v0.3.2+2-canary]: https://github.com/TekExplorer/RixiansMSPain/compare/v0.3.0...v0.3.2+2-canary
 
