@@ -54,7 +54,7 @@ public partial class MainFile : Node
 
         var assembly = Assembly.GetExecutingAssembly();
 
-        if (IsV107 ?? false)
+        if (IsV107 != true)
         {
 #nullable disable
             string modFolder = Path.GetDirectoryName(assembly.Location);
@@ -63,7 +63,8 @@ public partial class MainFile : Node
             if (File.Exists(betaPackPath))
             {
                 var asm = AssemblyLoadContext.GetLoadContext(typeof(ModManager).Assembly).LoadFromAssemblyPath(betaPackPath);
-                AccessTools.Method(typeof(ModManager), "AssociateAssemblyWithMod").Invoke(null, [ModId, asm]);
+                var AssociateAssemblyWithMod = AccessTools.Method(typeof(ModManager), "AssociateAssemblyWithMod");
+                AssociateAssemblyWithMod.Invoke(null, [ModId, asm]);
                 // ModManager.AssociateAssemblyWithMod(ModId, asm);
             }
 #nullable restore
