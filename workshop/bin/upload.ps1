@@ -2,7 +2,8 @@ param(
     [ValidateSet('Canary', 'Production')]
     [string]$Channel = 'Production',
 
-    [switch]$DryRun
+    [switch]$DryRun,
+    [switch]$NoCommit
 )
 
 $ErrorActionPreference = 'Stop'
@@ -106,9 +107,9 @@ else {
 
 # 3. Check GitHub Release State
 $hasGhCli = [bool](Get-Command gh -ErrorAction SilentlyContinue)
-$githubReleaseNeedsSync = $true
+$githubReleaseNeedsSync = -not $NoCommit
 
-if ($hasGhCli) {
+if ($hasGhCli -and -not $NoCommit) {
     $prevEAP = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     $existingReleaseJson = gh release view $version --json "assets,isDraft" 2>$null
@@ -124,6 +125,9 @@ if ($hasGhCli) {
         }
     }
 }
+elseif ($NoCommit) {
+    Write-Host "[Git/GitHub] -NoCommit specified. Git commits, tags, and GitHub release creation will be skipped." -ForegroundColor Yellow
+}
 
 # 4. Dry Run Output vs Live Execution
 if ($DryRun) {
@@ -132,6 +136,7 @@ if ($DryRun) {
     Write-Host "Target Version:   $version"
     Write-Host "Workshop Folder:  $channelRoot"
     Write-Host "Uploader Binary:  $uploaderPath (Found: $(Test-Path -LiteralPath $uploaderPath))"
+    Write-Host "NoCommit Mode:    $([bool]$NoCommit)"
 
     Write-Host "`n[Steam] Would run: '$uploaderPath upload -w $channelRoot'" -ForegroundColor Yellow
     
@@ -142,6 +147,9 @@ if ($DryRun) {
         Write-Host "----------------------------------------" -ForegroundColor DarkGray
         Write-Host "[GitHub] Would zip: '$contentRoot\*' -> 'HideDetailsMod-$version.zip'" -ForegroundColor Yellow
         Write-Host "[GitHub] Would run: 'gh release create $version ... $(if ($Channel -eq 'Canary') {'--prerelease'})'" -ForegroundColor Yellow
+    }
+    else {
+        Write-Host "`n[GitHub] GitHub release creation/update skipped (NoCommit=$([bool]$NoCommit) or already up-to-date)." -ForegroundColor Gray
     }
 
     Write-Host "`n================ [END OF DRY RUN] ================`n" -ForegroundColor Magenta

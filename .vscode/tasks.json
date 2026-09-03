@@ -63,7 +63,7 @@
     {
       "label": "Upload Mod (No Commit)",
       "type": "shell",
-      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/workshop/bin/upload.ps1\" -Channel ${input:channel}",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/workshop/bin/upload.ps1\" -Channel ${input:channel} -NoCommit",
       "options": { "cwd": "${workspaceFolder}/workshop" },
       "dependsOrder": "sequence",
       "presentation": {

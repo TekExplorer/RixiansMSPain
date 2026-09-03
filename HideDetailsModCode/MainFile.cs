@@ -11,7 +11,6 @@ using MegaCrit.Sts2.Core.Debug;
 using System.Runtime.Loader;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Helpers;
-using MegaCrit.Sts2.Core.Models;
 
 namespace HideDetailsMod.HideDetailsModCode;
 
