@@ -65,9 +65,6 @@ public partial class MainFile : Node
                 var asm = AssemblyLoadContext.GetLoadContext(typeof(ModManager).Assembly).LoadFromAssemblyPath(betaPackPath);
                 AccessTools.Method(typeof(ModManager), "AssociateAssemblyWithMod").Invoke(null, [ModId, asm]);
                 // ModManager.AssociateAssemblyWithMod(ModId, asm);
-                var models = ReflectionHelper.GetSubtypesFromAssembly(asm, typeof(AbstractModel));
-
-                if (ModelDb._allAbstractModelSubtypes != null) ModelDb._allAbstractModelSubtypes = [.. ModelDb._allAbstractModelSubtypes, .. models];
             }
 #nullable restore
         }
