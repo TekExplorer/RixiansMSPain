@@ -83,9 +83,6 @@ public partial class OstyDanceAnimated : Control
 
 	void UpdateModel(CardModel? cardModel)
 	{
-#if DEBUG
-		MainFile.Logger.Info($"[OstyDanceAnimated] UpdateModel({cardModel?.Id.Entry ?? "null"}) Config(UseCustomArt: {MyModConfig.UseCustomArt}, UseSimpleMode: {MyModConfig.UseSimpleMode})");
-#endif
 		if (animation is null) return;
 		if (cardModel is PullAggro && MyModConfig.UseCustomArt && !MyModConfig.UseSimpleMode)
 		{
