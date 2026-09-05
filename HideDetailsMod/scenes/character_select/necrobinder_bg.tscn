@@ -215,7 +215,6 @@ expand_mode = 1
 
 [node name="Signature" type="TextureRect" parent="."]
 unique_name_in_owner = true
-top_level = true
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0

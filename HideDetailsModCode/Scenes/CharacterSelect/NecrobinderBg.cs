@@ -1,9 +1,8 @@
 using Godot;
 using HarmonyLib;
-using MegaCrit.Sts2.addons.mega_text;
+using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
-using System;
 
 namespace HideDetailsMod.HideDetailsModCode.Scenes.CharacterSelect;
 
@@ -22,6 +21,7 @@ public partial class NecrobinderBg : Control
 #nullable disable
 	public TextureRect OstyFingers;
 	public Control Osty; // Keep as Control to match the container type in your scene file
+	public TextureRect Signature;
 #nullable restore
 	NCharacterSelectScreen? nCharacterSelectScreen;
 	Control? InfoPanel => nCharacterSelectScreen?._infoPanel;
@@ -33,6 +33,9 @@ public partial class NecrobinderBg : Control
 		Osty = GetNode<Control>("%Osty"); // Corrected type to match the scene node layout
 		OstyFingers = GetNode<TextureRect>("%OstyFront");
 		OstyFingers.ZIndex = 1;
+
+		Signature = GetNode<TextureRect>("%Signature");
+		UpdateSignaturePosition();
 	}
 
 	internal void ResetFingersPosition()
@@ -45,11 +48,14 @@ public partial class NecrobinderBg : Control
 	public override void _EnterTree()
 	{
 		Node = this;
+		NGame.Instance?.WindowChange += UpdateSignaturePosition;
+		UpdateSignaturePosition();
 	}
 
 	public override void _ExitTree()
 	{
 		if (ReferenceEquals(this, Node)) Node = null;
+		NGame.Instance?.WindowChange -= UpdateSignaturePosition;
 	}
 
 	// --- Hover / Bobbing Configurations ---
@@ -80,5 +86,32 @@ public partial class NecrobinderBg : Control
 
 			Osty.Position = finalPosition;
 		}
+
+		// 1. Check if the game is transitioning.
+		// As soon as NTransition starts fading (to run, to menu, etc.), drop OstyFingers
+		// back to Z=0 so it renders underneath the transition rect.
+		bool isTransitioning = NGame.Instance?.Transition?.InTransition ?? false;
+		int targetZ = isTransitioning ? 0 : 1;
+		if (OstyFingers.ZIndex != targetZ)
+		{
+			OstyFingers.ZIndex = targetZ;
+		}
+	}
+
+	private void UpdateSignaturePosition()
+	{
+		if (!IsInstanceValid(Signature)) return;
+
+		// Viewport coordinates for bottom-left with padding (e.g., 20px from left, 20px from bottom)
+		Vector2 viewportSize = GetViewportRect().Size;
+		float paddingX = 20f;
+		float paddingBottom = 20f;
+
+		// The signature's unscaled visual dimensions
+		Vector2 sigSize = Signature.Size * Signature.Scale;
+		Vector2 targetGlobalPos = new(paddingX, viewportSize.Y - sigSize.Y - paddingBottom);
+
+		// Convert global screen coordinate to local space of NecrobinderBg
+		Signature.Position = GetGlobalTransform().AffineInverse() * targetGlobalPos;
 	}
 }
