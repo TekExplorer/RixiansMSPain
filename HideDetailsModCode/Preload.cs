@@ -12,7 +12,7 @@ public static class Preload
 {
     private static readonly ConcurrentBag<Resource> _pinnedResources = [];
     private static Task? _activePreloadTask;
-    private static readonly object _taskLock = new();
+    private static readonly Lock _taskLock = new();
 
     public const string DefaultModAtlasDir = "res://HideDetailsMod/images/atlases/";
 
