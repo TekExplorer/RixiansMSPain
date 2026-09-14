@@ -7,8 +7,16 @@ class GoForTheEyesArt : AlternateCardArt<GoForTheEyes>
     static CardImg TargetLocked { get; } = new("defect/go_for_the_eyes_target_locked");
     public override CardImg? Get(GoForTheEyes card)
     {
-        var intendsToAttack = card.CurrentTarget?.Monster?.IntendsToAttack;
-        if (intendsToAttack == true) return TargetLocked;
+        var node = card.Node;
+        // Only really need node?._previewTarget
+        var Target = node?._previewTarget ?? card.CurrentTarget;
+
+        var intendsToAttack = Target?.Monster?.IntendsToAttack;
+
+        if (intendsToAttack == true)
+        {
+            return TargetLocked;
+        }
         return null;
     }
 }
