@@ -103,6 +103,8 @@
   "defect.adaptive_strike": "fierce_rea",
   "defect.ball_lightning": "coilgunner",
   "defect.barrage": "rewemberwind",
+  "defect.barrage_if_dramatic_entrance": "rewemberwind",
+  "defect.barrage_if_ten_orbs": "de_mastu",
   "defect.barrage_plus": "rewemberwind",
   "defect.beam_cell": "fishstickmystic",
   "defect.beam_cell_plus": "fishstickmystic",
