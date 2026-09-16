@@ -32,7 +32,17 @@ public partial class NecrobinderBg : Control
 		nCharacterSelectScreen = this.GetAncestorOfType<NCharacterSelectScreen>();
 		Osty = GetNode<Control>("%Osty"); // Corrected type to match the scene node layout
 		OstyFingers = GetNode<TextureRect>("%OstyFront");
+
+		// Fingers stay inside Osty so they inherit transform, scale, and bobbing 1:1
 		OstyFingers.ZIndex = 1;
+		OstyFingers.ZAsRelative = true;
+
+		// Ensure back button always sorts above the fingers if they ever overlap
+		if (nCharacterSelectScreen != null)
+		{
+			var backBtn = nCharacterSelectScreen._backButton;
+			backBtn?.ZIndex = 2;
+		}
 
 		Signature = GetNode<TextureRect>("%Signature");
 		UpdateSignaturePosition();
@@ -56,6 +66,16 @@ public partial class NecrobinderBg : Control
 	{
 		if (ReferenceEquals(this, Node)) Node = null;
 		NGame.Instance?.WindowChange -= UpdateSignaturePosition;
+
+		// Reset BackButton ZIndex if we modified it
+		if (nCharacterSelectScreen != null)
+		{
+			var backBtn = nCharacterSelectScreen._backButton;
+			if (IsInstanceValid(backBtn))
+			{
+				backBtn.ZIndex = 0;
+			}
+		}
 	}
 
 	// --- Hover / Bobbing Configurations ---
@@ -84,6 +104,7 @@ public partial class NecrobinderBg : Control
 			Vector2 finalPosition = localTargetCenter - ostyCenterOffset;
 			finalPosition.Y += bobOffset;
 
+			// OstyFingers is a child of Osty, so moving Osty moves the fingers in 100% locked synchronization
 			Osty.Position = finalPosition;
 		}
 
