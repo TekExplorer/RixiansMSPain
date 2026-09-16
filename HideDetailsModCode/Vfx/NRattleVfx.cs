@@ -1,5 +1,6 @@
 using Godot;
 using MegaCrit.Sts2.Core.Nodes.Combat;
+using MegaCrit.Sts2.Core.Random;
 
 namespace HideDetailsMod.HideDetailsModCode.Vfx;
 // NRattleVfx.cs
@@ -18,11 +19,12 @@ public partial class NRattleVfx : NCreatureModifierVfx
 
     protected override void ApplyProgress(float t)
     {
+        var rng = Rng.Chaotic;
         float currentShake = _shakeIntensity * t;
         CurrentPositionOffset = new Vector2(
-            MegaCrit.Sts2.Core.Random.Rng.Chaotic.NextFloat(-currentShake, currentShake),
-            MegaCrit.Sts2.Core.Random.Rng.Chaotic.NextFloat(-currentShake * 0.5f, currentShake * 0.5f)
+            rng.NextFloat(-currentShake, currentShake),
+            rng.NextFloat(-currentShake * 0.5f, currentShake * 0.5f)
         );
-        CurrentRotationOffset = MegaCrit.Sts2.Core.Random.Rng.Chaotic.NextFloat(-_rotationIntensity * t, _rotationIntensity * t);
+        CurrentRotationOffset = rng.NextFloat(-_rotationIntensity * t, _rotationIntensity * t);
     }
 }

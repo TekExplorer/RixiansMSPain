@@ -216,24 +216,6 @@ public abstract class AlternateCardArt
                 }
             }
         }
-        internal static void PortraitPngPath(CardModel card, ref string result)
-        {
-            if (IsRestricted(card)) return;
-            var arts = GetArtsFor(card);
-            foreach ((var Base, var Upgraded) in arts)
-            {
-                if (card.IsUpgraded)
-                {
-                    if (Upgraded == null || !Upgraded.Exists) continue;
-                    result = Upgraded.PortraitPngPath;
-                }
-                else
-                {
-                    if (Base == null || !Base.Exists) continue;
-                    result = Base.PortraitPngPath;
-                }
-            }
-        }
     }
 
     protected static NetModSettings ConfigFrom(Player? player) => NetModSettings.GetPlayerConfig(player?.NetId) ?? new();

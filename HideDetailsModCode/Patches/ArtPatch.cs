@@ -101,7 +101,6 @@ public static class ArtPatch
         }
     }
 
-
     static private SpireField<CardModel, (CardImg? Base, CardImg? Upgraded)> OverrideImg = new SpireField<CardModel, (CardImg? Base, CardImg? Upgraded)>(() => (null, null)).CopyOnClone();
     static public void SetOverrideImage(this CardModel card, (CardImg? Base, CardImg? Upgraded) Override) => OverrideImg.Set(card, Override);
     static public (CardImg? Base, CardImg? Upgraded) GetOverrideImage(this CardModel card) => OverrideImg.Get(card);
@@ -116,14 +115,12 @@ public static class ArtPatch
             return HarmonyPatchHelpers.GetMethodImplementations(baseMethod);
         }
 
-
         [HarmonyPostfix]
         internal static void PostFix(CardModel __instance, ref string __result)
         {
             if (!MyModConfig.UseCustomArt) return;
             try
             {
-
                 var (OverrideBase, OverrideUpgrade) = __instance.GetOverrideImage();
                 var Override = __instance.IsUpgraded ? OverrideUpgrade : OverrideBase;
                 if (Override != null && Override.Exists)
@@ -138,36 +135,5 @@ public static class ArtPatch
             { MainFile.Logger.Error($"Error in PortraitPath: {e}"); }
         }
 
-    }
-    [HarmonyPatch]
-    public static class PortraitPngPath
-    {
-        [HarmonyTargetMethods]
-        public static IEnumerable<MethodBase> TargetMethods()
-        {
-            // Simply pass the target base method directly
-            MethodInfo baseMethod = AccessTools.PropertyGetter(typeof(CardModel), "PortraitPngPath");
-            return HarmonyPatchHelpers.GetMethodImplementations(baseMethod);
-        }
-        [HarmonyPostfix]
-        internal static void PostFix(CardModel __instance, ref string __result)
-        {
-            if (!MyModConfig.UseCustomArt) return;
-            if (__instance == null) return;
-            try
-            {
-                var (OverrideBase, OverrideUpgrade) = __instance.GetOverrideImage();
-                var Override = __instance.IsUpgraded ? OverrideUpgrade : OverrideBase;
-                if (Override != null && Override.Exists)
-                {
-                    __result = Override.PortraitPngPath;
-                    return;
-                }
-
-                AlternateCardArt.Patch.PortraitPngPath(__instance, ref __result);
-            }
-            catch (Exception e)
-            { MainFile.Logger.Error($"Error in PortraitPngPath: {e}"); }
-        }
     }
 }

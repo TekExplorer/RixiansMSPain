@@ -8,12 +8,12 @@ namespace HideDetailsMod.HideDetailsModCode.Scenes;
 
 public partial class OstyDanceAnimated : Control
 {
+	public const string ScenePath = "res://HideDetailsMod/scenes/cards/osty_dance.tscn";
 #if true
 	// Since AddedNode doesnt work properly...
 	[HarmonyPatch(typeof(NCard), "_Ready")]
 	public static class NCardOstyDancePatch
 	{
-		private const string ScenePath = "res://HideDetailsMod/scenes/cards/osty_dance.tscn";
 
 		private static readonly PackedScene Scene = ResourceLoader.Load<PackedScene>(ScenePath);
 
@@ -45,7 +45,7 @@ public partial class OstyDanceAnimated : Control
 #endif
 
 #if false // baselib bug. next version hopefully fixes it.
-	static public readonly AddedNode<NCard, OstyDanceAnimated> Node = new("res://HideDetailsMod/scenes/cards/osty_dance.tscn", static (card, animation) =>
+	static public readonly AddedNode<NCard, OstyDanceAnimated> Node = new(ScenePath, static (card, animation) =>
 	{
 		animation.card = card;
 		card._portraitCanvasGroup.AddChild(animation);

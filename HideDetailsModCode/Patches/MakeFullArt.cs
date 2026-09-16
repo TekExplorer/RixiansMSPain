@@ -8,8 +8,6 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Nodes.Cards;
 
-// ReSharper disable InconsistentNaming
-
 namespace HideDetailsMod.HideDetailsModCode.Patches;
 
 [HarmonyPatch(typeof(NCard))]
