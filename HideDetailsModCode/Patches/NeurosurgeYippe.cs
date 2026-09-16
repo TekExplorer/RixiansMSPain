@@ -19,8 +19,8 @@ class NeurosurgeYippe
         if (MyModConfig.UseSimpleMode) return;
         if (!MyModConfig.EnableNeurosurgeYippee) return;
         if (Assets.Length == 0) return;
-        var chosen = Assets.TakeRandom(1, new Rng(cardPlay.Card.Owner.PlayerRng.Seed));
+        var chosen = Assets.Length == 1 ? Assets.First() : Assets.TakeRandom(1, Rng.Chaotic).First();
         // TODO: mess with pitchVariation
-        MainFile.Audio.PlaySfx(chosen.First() /*,pitchVariation: .3f*/);
+        MainFile.Audio.PlaySfx(chosen /*,pitchVariation: .3f*/);
     }
 }

@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Resolve Necrobinder splash credit. No clipping!",
+  "changeNote": "Resolve Necrobinder splash credit. No clipping!\nFix Neurosurge bug on Main branch",
   "tags": [],
   "dependencies": [3737335127]
 }
