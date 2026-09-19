@@ -9,6 +9,7 @@ public class ChargeArt : AlternateCardArt<Charge>
     static CardImg OneDraw { get; } = new("regent/charge_1_draw");
     public override CardImg? Get(Charge card)
     {
+        if (card.Owner == null) return null;
         if (CombatManager.Instance.IsOverOrEnding) return null;
 
         var drawPile = PileType.Draw.GetPile(card.Owner);

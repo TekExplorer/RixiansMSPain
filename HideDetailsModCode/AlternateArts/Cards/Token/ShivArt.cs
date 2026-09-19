@@ -24,7 +24,7 @@ public class ShivArt : AlternateCardArt<Shiv>
             return card.Enchantment is Inky ? FannedInky : Fanned;
         }
 
-        NetModSettings netModSettings = card.IsCanonical ? new() : ConfigFrom(card);
+        NetModSettings netModSettings = card.IsCanonical ? new() : Util.ConfigFrom(card);
 
         if (netModSettings.BetaShiv) return Beta;
         return null;

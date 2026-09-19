@@ -10,6 +10,7 @@ public class TheGambitArt : AlternateCardArt<TheGambit>
 
     public override CardImg? Get(TheGambit card)
     {
+        if (card.Owner == null) return null;
         if (card.DynamicVars.Block.IntValue <= 0) return NoBlock;
         if (card.Owner.HasPower<NoBlockPower>()) return NoBlock;
         return null;

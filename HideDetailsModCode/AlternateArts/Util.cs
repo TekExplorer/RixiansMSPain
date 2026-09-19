@@ -28,8 +28,8 @@ static class Extensions
 }
 public static class Util
 {
-    public static NetModSettings ConfigFrom(Player? player) => NetModSettings.GetPlayerConfig(player?.NetId) ?? new();
-    public static NetModSettings ConfigFrom(CardModel? card) => ConfigFrom(GetOwner(card));
+    public static NetModSettings ConfigFrom(this Player? player) => NetModSettings.GetPlayerConfig(player?.NetId) ?? new();
+    public static NetModSettings ConfigFrom(this CardModel? card) => ConfigFrom(card.GetOwnerSafely());
     public static bool HasCard<T>(Player? owner) where T : CardModel => HasCard(owner, card => card is T);
     public static bool HasCard(Player? owner, Func<CardModel, bool> predicate) => CardsOf(owner).Any(predicate);
     public static IEnumerable<CardModel> CombatCardsOf(Player? player) => CardsOf(player, IncludeDeck: false);
@@ -42,23 +42,21 @@ public static class Util
     public static PileType[] AllPilesExceptDeck => [PileType.Draw, PileType.Hand, PileType.Discard, PileType.Exhaust, PileType.Play];
     public static PileType[] AllPiles => [PileType.Deck, .. AllPilesExceptDeck];
 
-    public static Player? GetOwner(PowerModel? power) => power?.Owner?.Player;
+    public static Player? GetOwnerSafely(this PowerModel? power) => power?.Owner?.Player;
 
-    public static Player? GetOwner(CardModel? card)
+    public static Player? GetOwnerSafely(this CardModel? card)
     {
-        if (card == null) return null;
-        if (card.IsCanonical) return null;
-        Player? player = null;
         try
-        { player ??= card.Owner; }
+        {
+            if (card == null) return null;
+            if (card.IsCanonical) return null;
+            if (card.Owner is { } owner) return owner;
+            return LocalContext.GetMe(card.RunState);
+        }
         catch (Exception e)
-        { MainFile.Logger.Warn($"card.Owner errored with: {e}"); }
-
-        try
-        { player ??= LocalContext.GetMe(card.RunState); }
-        catch (Exception e)
-        { MainFile.Logger.Warn($"LocalContext.GetMe(card.RunState) errored with: {e}"); }
-
-        return player;
+        {
+            MainFile.Logger.Error($"An error threw while trying to get the owner of card {card?.Id}: {e}");
+            return null;
+        }
     }
 }

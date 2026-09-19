@@ -218,9 +218,6 @@ public abstract class AlternateCardArt
         }
     }
 
-    protected static NetModSettings ConfigFrom(Player? player) => NetModSettings.GetPlayerConfig(player?.NetId) ?? new();
-    protected static NetModSettings ConfigFrom(CardModel? card) => ConfigFrom(Util.GetOwner(card));
-
     public virtual void AfterNCardUpdateVisuals(CardModel card, NCard node, PileType pileType, CardPreviewMode previewMode) { }
     public virtual void OnNCardUpdateModel(CardModel previousModel, CardModel newModel, NCard node) { }
     public virtual void OnNCardSubscribed(CardModel model, NCard node) { }

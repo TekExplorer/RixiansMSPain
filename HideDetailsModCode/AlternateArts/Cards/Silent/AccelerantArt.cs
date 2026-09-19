@@ -8,6 +8,8 @@ public class AccelerantArt : AlternateCardArt<Accelerant>
 
     public override CardImg? Get(Accelerant card)
     {
+        if (card.Owner == null) return null;
+
         var AnyCardInDeckWithPoison = Util.HasCard(card.Owner, Card =>
             Card.DynamicVars.ContainsKey("PoisonPower")
         );

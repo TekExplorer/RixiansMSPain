@@ -8,6 +8,7 @@ public class LanternKeyArt : AlternateCardArt<LanternKey>
 
     public override CardImg? Get(LanternKey card)
     {
+        if (card.Owner == null) return null;
         return card.Owner.Relics.OfType<Bread>().Any() ? Bread : null;
     }
 }

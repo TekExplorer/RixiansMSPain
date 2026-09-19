@@ -9,6 +9,7 @@ public class CalculatedGambleArt : AlternateCardArt<CalculatedGamble>
     static CardImg NoDraw { get; } = new("silent/calculated_gamble_no_draw");
     public override CardImg? Get(CalculatedGamble card)
     {
+        if (card.Owner == null) return null;
         var HasFiddle = card.Owner.Relics.Any(relic => relic is Fiddle);
         var HasNoDrawPower = card.Owner.HasPower<NoDrawPower>();
 

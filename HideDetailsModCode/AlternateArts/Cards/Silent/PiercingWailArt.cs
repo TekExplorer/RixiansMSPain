@@ -13,6 +13,7 @@ public class PiercingWailArt : AlternateCardArt<PiercingWail>
 
     public override CardImg? Get(PiercingWail card)
     {
+        if (card.Owner == null) return null;
         if (card.Owner.Potions.Any(potion => potion is CunningPotion)) return Shivs;
         var hand = CardPile.Get(PileType.Hand, card.Owner);
         if (hand == null) return null;

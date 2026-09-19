@@ -9,6 +9,7 @@ public class OutbreakArt : AlternateCardArt<Outbreak>
 
     public override CardImg? Get(Outbreak card)
     {
+        if (card.Owner == null) return null;
         // MainFile.Logger.Debug($"[Alt Art] [Outbreak] Checking for NoxiousFumes");
         if (Util.HasCard<NoxiousFumes>(card.Owner) || card.Owner.HasPower<NoxiousFumesPower>())
         {

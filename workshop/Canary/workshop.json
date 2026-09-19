@@ -1,5 +1,5 @@
 ﻿{
-  "changeNote": "Resolve Necrobinder splash credit. No clipping!\nFix Neurosurge bug on Main branch",
+  "changeNote": "Fixed a bug where some cards with alternate arts that depend on the card's owner existing throwing errors in the compendium",
   "tags": [],
   "dependencies": [3737335127]
 }

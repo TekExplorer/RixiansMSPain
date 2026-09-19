@@ -15,7 +15,7 @@ public class SoulArt : AlternateCardArt<Soul>
 
     public override CardImg? Get(Soul card)
     {
-        NetModSettings netModSettings = card.IsCanonical ? new() : ConfigFrom(card);
+        NetModSettings netModSettings = card.IsCanonical ? new() : Util.ConfigFrom(card);
         return netModSettings.BetaSoul ? Freddy : null;
     }
 }

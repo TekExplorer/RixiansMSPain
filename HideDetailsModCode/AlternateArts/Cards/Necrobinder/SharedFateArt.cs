@@ -10,6 +10,7 @@ public class SharedFateArt : AlternateCardArt<SharedFate>
 
     public override CardImg? Get(SharedFate card)
     {
+        if (card.Owner == null) return null;
         if (Util.HasCard<Friendship>(card.Owner) || card.Owner.HasPower<FriendshipPower>())
         {
             return Friendship;
